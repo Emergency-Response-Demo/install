@@ -1,0 +1,98 @@
+kind: List
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Route
+  metadata:
+    labels:
+      app: {{ application_name }}
+    name: {{ pgadmin4_route_name }}
+  spec:
+    port:
+      targetPort: http
+    to:
+      kind: Service
+      name: {{ pgadmin4_service_name }}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: {{ application_name }}
+    name: {{ pgadmin4_service_name }}
+  spec:
+    ports:
+    - name: http
+      port: 5050
+      protocol: TCP
+      targetPort: http
+    selector:
+      app: {{ application_name }}
+      name: {{ pgadmin4_deployment_name }}
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    labels:
+      app: {{ application_name }}
+    name: {{ pgadmin4_deployment_name }}
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: {{ application_name }}
+        name: {{ pgadmin4_deployment_name }}
+    template:
+      metadata:
+        labels:
+          app: {{ application_name }}
+          name: {{ pgadmin4_deployment_name }}
+      spec:
+        containers:
+        - env:
+          - name: PGADMIN_SETUP_EMAIL
+            valueFrom:
+              secretKeyRef:
+                key: pgadmin4.username
+                name: {{ pgadmin4_secret }}
+          - name: PGADMIN_SETUP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: pgadmin4.password
+                name: {{ pgadmin4_secret }}
+          image: {{ pgadmin4_image }}
+          name: {{ pgadmin4_deployment_name }}
+          ports:
+          - containerPort: 5050
+            name: http
+          resources:
+            limits:
+              cpu: 100m
+              memory: 200Mi
+            requests:
+              cpu: 50m
+              memory: 100Mi
+          volumeMounts:
+          - mountPath: /var/lib/pgadmin
+            name: pgadmin4-persistence
+            readOnly: false
+          - mountPath: /run/httpd
+            name: run
+            readOnly: false
+        volumes:
+        - name: pgadmin4-persistence
+          persistentVolumeClaim:
+            claimName: {{ pgadmin4_pvc_name }}
+        - name: run
+          emptyDir:
+            medium: Memory
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    labels:
+      app: {{ application_name }}
+    name: {{ pgadmin4_pvc_name }}
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi

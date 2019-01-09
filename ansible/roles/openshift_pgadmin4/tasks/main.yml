@@ -1,0 +1,35 @@
+---
+
+- name: pgadmin4 secret
+  oc_secret:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    name: "{{ pgadmin4_secret }}"
+    type: generic
+    from_literal:
+      pgadmin4.username: "{{ pgadmin4_username }}"
+      pgadmin4.password: "{{ pgadmin4_password }}"
+
+- name: copy pgadmin4 template
+  template:
+    src: "{{ pgadmin4_template }}"
+    dest: "{{ work_dir }}/pgadmin4.yml"
+
+- name: check if pgadmin4 is deployed
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ pgadmin4_deployment_name }}"
+    namespace: "{{ namespace }}"
+    kind: deployment
+  register: result
+
+- name: deploy pgadmin4
+  oc_list:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/pgadmin4.yml"
+  when: result.results.stderr is defined and result.results.stderr != ""

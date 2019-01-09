@@ -1,0 +1,14 @@
+---
+
+pgadmin4_template: "{{ resources_dir }}/pgadmin4/pgadmin4.yml"
+
+pgadmin4_image: crunchydata/crunchy-pgadmin4:centos7-9.6.8-1.8.2
+
+pgadmin4_secret: pgadmin4-credentials
+pgadmin4_username: admin@example.com
+pgadmin4_password: admin123
+
+pgadmin4_pvc_name: pgadmin4-pvc
+pgadmin4_service_name: pgadmin4
+pgadmin4_route_name: pgadmin4
+pgadmin4_deployment_name: pgadmin4
