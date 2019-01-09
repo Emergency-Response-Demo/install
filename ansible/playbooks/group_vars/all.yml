@@ -1,0 +1,17 @@
+---
+
+home_dir: "{{ playbook_dir }}/.."
+
+# resources dir
+resources_dir: "{{ home_dir }}/resources"
+
+# oc executable
+openshift_cli: oc
+
+# namespace:
+namespace: naps-emergency-response
+namespace_display_name: NAPS Emergency Response
+namespace_desc: NAPS Emergency Response
+
+# application
+application_name: naps-emergency-response

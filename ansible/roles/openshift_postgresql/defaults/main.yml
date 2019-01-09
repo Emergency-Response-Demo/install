@@ -1,0 +1,13 @@
+---
+
+postgresql_application_name: postgresql
+postgresql_service_account: postgresql
+postgresql_template: "{{ resources_dir }}/postgresql/postgresql.yml"
+postgresql_credentials_secret: "{{ postgresql_application_name }}-credentials" 
+postgresql_init_configmap: "{{ postgresql_application_name }}-init"
+postgresql_pv_capacity: 5Gi
+postgresql_version: 9.6
+postgresql_is_namespace: openshift
+postgresql_max_connections: 100
+postgresql_max_prepared_transactions: 100
+postgresql_memory_limit: 512Mi
