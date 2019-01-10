@@ -1,0 +1,84 @@
+---
+
+- name: create {{ service_account }} service account for responder service
+  oc_serviceaccount:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ service_account }}"
+    namespace: "{{ namespace }}"
+
+- name: give cluster view privileges to {{ service_account }} service account
+  oc_adm_policy_user:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    resource_kind: role
+    resource_name: view
+    user: "system:serviceaccount:{{ namespace }}:{{ service_account }}"
+    namespace: "{{ namespace }}"
+    rolebinding_name: "{{ service_account }}-view"
+
+- name: get postgresql credentials secret
+  oc_secret:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    namespace: "{{ namespace }}"
+    decode: true
+    name: "{{ postgresql_credentials_secret }}"
+  register: postgresql_credentials_secret
+
+- set_fact:
+    database_user: "{{ postgresql_credentials_secret.results.decoded[\"database-user\"] }}"
+    database_password: "{{ postgresql_credentials_secret.results.decoded[\"database-password\"] }}"
+    database_name: "{{ postgresql_credentials_secret.results.decoded[\"database-name\"] }}"
+
+- name: copy application properties template
+  template:
+    src: "{{ resources_dir }}/responder-service/{{ application_properties }}"
+    dest: "{{ work_dir }}/{{ application_properties }}"
+
+- name: create {{ application_configmap }} application configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ application_configmap }}"
+    namespace: "{{ namespace }}"
+    from_file:
+      dir: "{{ work_dir }}/{{ application_properties }}"
+
+- name: copy build config template
+  template:
+    src: "{{ resources_dir }}/responder-service/{{ responder_service_buildconfig_template }}"
+    dest: "{{ work_dir }}/{{ responder_service_buildconfig_template }}"
+
+- name: create build config
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    kind: buildconfig
+    name: "{{ responder_service_buildconfig_name }}"
+    files:
+      - "{{ work_dir }}/{{ responder_service_buildconfig_template }}"
+
+- name: copy application template
+  template:
+    src: "{{ resources_dir }}/responder-service/{{ responder_service_application_template }}"
+    dest: "{{ work_dir }}/{{ responder_service_application_template }}"
+
+- name: check if responder-service is deployed
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    namespace: "{{ namespace }}"
+    name: "{{ responder_service_application_name }}"
+    kind: dc
+  register: result
+
+- name: deploy responder-service
+  oc_list:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/{{ responder_service_application_template }}"
+  when: result.results.stderr is defined and result.results.stderr != ""

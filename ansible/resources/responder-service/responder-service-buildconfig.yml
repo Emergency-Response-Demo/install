@@ -1,0 +1,32 @@
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  creationTimestamp: '2019-01-09T19:53:56Z'
+  labels:
+    app: {{ responder_service_application_name }}
+  name: {{ responder_service_buildconfig_name }}
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: {}
+  output:
+    to:
+      kind: ImageStreamTag
+      name: "{{ responder_service_application_name }}:latest"
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    git:
+      uri: "{{ responder_service_git_url }}"
+      ref: "{{ responder_service_git_ref }}"
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: "{{ responder_service_image }}"
+        namespace: "{{ responder_service_image_namespace }}"
+    type: Source
+  successfulBuildsHistoryLimit: 5
+  triggers: []

@@ -1,0 +1,102 @@
+---
+kind: List
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: {{ responder_service_application_name }}
+    name: {{ responder_service_application_name }}
+  spec:
+    ports:
+      - name: http
+        port: 8080
+        protocol: TCP
+        targetPort: 8080
+    selector:
+      app: {{ responder_service_application_name }}
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: {{ responder_service_application_name }}
+    name: {{ responder_service_application_name }}
+  spec:
+    port:
+      targetPort: 8080
+    to:
+      kind: Service
+      name: {{ responder_service_application_name }}
+      weight: 100
+    wildcardPolicy: None
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: {{ responder_service_application_name }}
+    name: {{ responder_service_application_name }}
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 2
+    selector:
+      app: {{ responder_service_application_name }}
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 3600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: responder-service
+      spec:
+        containers:
+          - env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            imagePullPolicy: IfNotPresent
+            name: {{ responder_service_application_name }}
+            ports:
+              - containerPort: 8080
+                name: http
+                protocol: TCP
+              - containerPort: 9779
+                name: prometheus
+                protocol: TCP
+              - containerPort: 8778
+                name: jolokia
+                protocol: TCP
+            resources: {}
+            securityContext:
+              privileged: false
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: {{ service_account }}
+        serviceAccountName: {{ service_account }}
+        terminationGracePeriodSeconds: 30
+    triggers:
+      - type: ConfigChange
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+            - {{ responder_service_application_name }}
+          from:
+            kind: ImageStreamTag
+            name: "{{ responder_service_application_name }}:latest"
+            namespace: naps-emergency-response
+        type: ImageChange

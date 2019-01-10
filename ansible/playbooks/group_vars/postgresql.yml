@@ -8,3 +8,6 @@ postgresql_init_scripts:
 postgresql_username: naps
 postgresql_password: naps
 postgresql_database: naps_emergency_response
+
+postgresql_application_name: postgresql
+postgresql_credentials_secret: "{{ postgresql_application_name }}-credentials"
