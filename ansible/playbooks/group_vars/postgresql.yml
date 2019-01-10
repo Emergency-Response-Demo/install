@@ -7,4 +7,4 @@ postgresql_init_scripts:
 
 postgresql_username: naps
 postgresql_password: naps
-postgresql_database: naps-emergency-response
+postgresql_database: naps_emergency_response

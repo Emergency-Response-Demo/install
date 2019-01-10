@@ -22,7 +22,7 @@ $ ansible-playbook playbooks/postgresql -e ACTION=uninstall"
 Variables:
 * postgresql user: defaults to `naps`
 * postgresql password: defaults to `naps`
-* postgresql database: defaults to `naps-emergency-response`
+* postgresql database: defaults to `naps_emergency_response`
 
 #### PgAdmin4
 
