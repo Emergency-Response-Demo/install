@@ -2,7 +2,7 @@
 
 responder_service_application_name: responder-service
 
-service_account: naps-emergency-response
+service_account: responder-service
 
 application_configmap: responder-service
 
@@ -16,6 +16,9 @@ responder_service_image_namespace: openshift
 
 responder_service_buildconfig_name: "{{ responder_service_application_name }}-s2i"
 responder_service_buildconfig_template: responder-service-buildconfig.yml
+
+responder_service_imagestream_name: "{{ responder_service_application_name }}"
+responder_service_imagestream_template: responder-service-imagestream.yml
 
 responder_service_application_template: responder-service.yml
 

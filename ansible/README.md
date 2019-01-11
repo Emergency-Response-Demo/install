@@ -39,3 +39,22 @@ To unprovision:
 ```
 $ ansible-playbook playbooks/pgadmin4 -e ACTION=uninstall"
 ```
+
+#### Responder service
+
+The playbook creates the following artifacts:
+* buildconfig for s2i build and binary builds
+* serviceaccount and rolebinding (cluster view access)
+* imagestream for images created by the build
+* configmap for application configuration properties
+* deploymentconfig, service and route for the application
+
+To provision:
+```
+$ ansible-playbook playbooks/responder-service
+```
+
+To unprovision:
+```
+$ ansible-playbook playbooks/responder-service -e ACTION=uninstall
+```

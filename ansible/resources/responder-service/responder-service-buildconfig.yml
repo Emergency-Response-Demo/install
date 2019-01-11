@@ -2,7 +2,6 @@
 apiVersion: build.openshift.io/v1
 kind: BuildConfig
 metadata:
-  creationTimestamp: '2019-01-09T19:53:56Z'
   labels:
     app: {{ responder_service_application_name }}
   name: {{ responder_service_buildconfig_name }}

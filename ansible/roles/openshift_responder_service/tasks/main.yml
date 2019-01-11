@@ -60,6 +60,21 @@
     files:
       - "{{ work_dir }}/{{ responder_service_buildconfig_template }}"
 
+- name: copy imagestream template
+  template:
+    src: "{{ resources_dir }}/responder-service/{{ responder_service_imagestream_template }}"
+    dest: "{{ work_dir }}/{{ responder_service_imagestream_template }}"
+
+- name: create output imagestream
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    kind: imagestream
+    name: "{{ responder_service_imagestream_name }}"
+    files:
+      - "{{ work_dir }}/{{ responder_service_imagestream_template }}"
+
 - name: copy application template
   template:
     src: "{{ resources_dir }}/responder-service/{{ responder_service_application_template }}"
