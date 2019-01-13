@@ -1,0 +1,34 @@
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: {{ incident_service_application_name }}
+  name: {{ incident_service_buildconfig_name }}
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: {}
+  output:
+    to:
+      kind: ImageStreamTag
+      name: "{{ incident_service_application_name }}:latest"
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    git:
+      uri: "{{ incident_service_git_url }}"
+      ref: "{{ incident_service_git_ref }}"
+    type: Git
+  strategy:
+    sourceStrategy:
+      env:
+        - name: MAVEN_MIRROR_URL
+          value: {{ nexus_service_url }}
+      from:
+        kind: ImageStreamTag
+        name: "{{ incident_service_image }}"
+        namespace: "{{ incident_service_image_namespace }}"
+    type: Source
+  successfulBuildsHistoryLimit: 5
+  triggers: []

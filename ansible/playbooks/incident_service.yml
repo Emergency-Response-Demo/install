@@ -1,0 +1,27 @@
+---
+
+- name: Deploy Responder Service
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  run_once: true
+  vars_files:
+    - group_vars/services.yml
+    - group_vars/postgresql.yml
+
+  tasks:
+    - set_fact:
+       work_dir_name: incident-service
+    - include_role:
+        name: ../roles/openshift_incident_service
+      when: >
+        ACTION is not defined or
+        ACTION is none or
+        ACTION|trim() == "" or
+        ACTION|trim() == "install"
+    - include_role:
+        name: ../roles/openshift_incident_service
+        tasks_from: uninstall
+      when: >
+        ACTION is defined and
+        ACTION|trim() == "uninstall"

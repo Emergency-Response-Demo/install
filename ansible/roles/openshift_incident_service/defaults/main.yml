@@ -1,0 +1,24 @@
+---
+
+incident_service_application_name: incident-service
+
+service_account: incident-service
+
+application_configmap: incident-service
+
+application_properties: application.properties
+
+incident_service_git_url: https://github.com/NAPS-emergency-response-project/incident-service.git
+incident_service_git_ref: master
+
+incident_service_image: redhat-openjdk18-openshift:1.4
+incident_service_image_namespace: openshift
+
+incident_service_buildconfig_name: "{{ incident_service_application_name }}-s2i"
+incident_service_buildconfig_template: incident-service-buildconfig.yml
+
+incident_service_imagestream_name: "{{ incident_service_application_name }}"
+incident_service_imagestream_template: incident-service-imagestream.yml
+
+incident_service_application_template: incident-service.yml
+
