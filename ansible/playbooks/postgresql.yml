@@ -9,6 +9,8 @@
     - group_vars/postgresql.yml
 
   tasks:
+    - set_fact:
+        work_dir_name: postgresql
     - include_role:
         name: ../roles/openshift_postgresql
       when: >

@@ -1,7 +1,5 @@
 ---
 
-work_dir_name: postgresql
-
 postgresql_init_scripts:
   - https://raw.githubusercontent.com/NAPS-emergency-response-project/sql-scripts/master/sql_ddl_script.sql
 
@@ -10,4 +8,5 @@ postgresql_password: naps
 postgresql_database: naps_emergency_response
 
 postgresql_application_name: postgresql
+postgresql_namespace: "{{ namespace }}"
 postgresql_credentials_secret: "{{ postgresql_application_name }}-credentials"

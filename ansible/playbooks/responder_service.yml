@@ -10,6 +10,8 @@
     - group_vars/postgresql.yml
 
   tasks:
+    - set_fact:
+       work_dir_name: responder-service
     - include_role:
         name: ../roles/openshift_responder_service
       when: >

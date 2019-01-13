@@ -1,6 +1,6 @@
 ---
 
-- name: create {{ service_account }} service account for responder service
+- name: create {{ service_account }} service account for {{ responder_service_application_name }} application
   oc_serviceaccount:
     oc_binary: "{{ openshift_cli }}"
     state: present
@@ -21,7 +21,7 @@
   oc_secret:
     state: list
     oc_binary: "{{ openshift_cli }}"
-    namespace: "{{ namespace }}"
+    namespace: "{{ postgresql_namespace }}"
     decode: true
     name: "{{ postgresql_credentials_secret }}"
   register: postgresql_credentials_secret
@@ -80,7 +80,7 @@
     src: "{{ resources_dir }}/responder-service/{{ responder_service_application_template }}"
     dest: "{{ work_dir }}/{{ responder_service_application_template }}"
 
-- name: check if responder-service is deployed
+- name: check if {{ responder_service_application_name }} application is deployed
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: list
@@ -89,7 +89,7 @@
     kind: dc
   register: result
 
-- name: deploy responder-service
+- name: deploy {{ responder_service_application_name }} application
   oc_list:
     oc_binary: "{{ openshift_cli }}"
     state: present

@@ -7,6 +7,7 @@ items:
   metadata:
     labels:
       app: {{ responder_service_application_name }}
+      expose: "true"
     name: {{ responder_service_application_name }}
   spec:
     ports:
@@ -56,7 +57,7 @@ items:
     template:
       metadata:
         labels:
-          app: responder-service
+          app: {{ responder_service_application_name }}
       spec:
         containers:
           - env:
@@ -122,5 +123,5 @@ items:
           from:
             kind: ImageStreamTag
             name: "{{ responder_service_application_name }}:latest"
-            namespace: naps-emergency-response
+            namespace: {{ namespace }}
         type: ImageChange

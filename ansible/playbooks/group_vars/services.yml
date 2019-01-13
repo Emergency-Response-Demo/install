@@ -1,2 +1,3 @@
 ---
 
+nexus_service_url: http://nexus.nexus.svc:8081/nexus/content/groups/public/

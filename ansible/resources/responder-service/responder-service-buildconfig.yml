@@ -22,6 +22,9 @@ spec:
     type: Git
   strategy:
     sourceStrategy:
+      env:
+        - name: MAVEN_MIRROR_URL
+          value: {{ nexus_service_url }}
       from:
         kind: ImageStreamTag
         name: "{{ responder_service_image }}"
