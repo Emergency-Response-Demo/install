@@ -10,8 +10,6 @@ openshift_cli: oc
 
 # namespace:
 namespace: naps-emergency-response
-namespace_display_name: NAPS Emergency Response
-namespace_desc: NAPS Emergency Response
 
 # application
 application_name: naps-emergency-response

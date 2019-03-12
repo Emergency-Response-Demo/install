@@ -7,8 +7,6 @@
     state: present
     oc_binary: "{{ openshift_cli }}"    
     name: "{{ namespace }}"
-    display_name: "{{ namespace_display_name }}"
-    description: "{{ namespace_desc }}"
 
 - name: assign user {{ project_admin }} as project admin in {{ namespace }}
   oc_adm_policy_user:
