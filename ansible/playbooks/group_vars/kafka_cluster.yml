@@ -3,7 +3,7 @@
 cluster_provisioner: developer
 
 namespace_operator: kafka-operator
-namespace_kafka_cluster: "{{ namespace_project }}"
+namespace_kafka_cluster: "{{ namespace }}"
 
 strimzi_cluster_operator: strimzi-cluster-operator
 

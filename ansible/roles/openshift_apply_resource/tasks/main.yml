@@ -5,7 +5,7 @@
     state: list
     oc_binary: "{{ openshift_cli }}"
     name: "{{ resource }}"
-    namespace: "{{ namespace }}"
+    namespace: "{{ resource_namespace }}"
     kind: "{{ resource_type }}"
   register: result
 
@@ -13,7 +13,7 @@
   oc_list:
     state: present
     oc_binary: "{{ openshift_cli }}"
-    namespace: "{{ namespace }}"
+    namespace: "{{ resource_namespace }}"
     files:
       - "{{ resource_template }}"
   when: result.results.stderr is defined and result.results.stderr != ""

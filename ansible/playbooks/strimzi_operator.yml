@@ -10,6 +10,7 @@
 
   tasks:
     - set_fact:
+        namespace: "{{ namespace_operator }}"
         resources_dir: "{{ resources_base_dir }}/strimzi"
         work_dir_name: strimzi-operator
     - include_role:

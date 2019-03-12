@@ -10,7 +10,7 @@
 
   tasks:
     - set_fact:
-        namespace: "{{ namespace_project }}"
+        namespace: "{{ namespace_postgresql }}"
         resources_dir: "{{ resources_base_dir }}/postgresql"
         work_dir_name: postgresql
     - include_role:

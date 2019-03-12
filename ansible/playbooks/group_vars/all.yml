@@ -9,7 +9,7 @@ resources_base_dir: "{{ home_dir }}/resources"
 openshift_cli: oc
 
 # namespace:
-namespace_project: naps-emergency-response
+namespace: naps-emergency-response
 
 # application
 application_name: naps-emergency-response

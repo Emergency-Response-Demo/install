@@ -21,7 +21,7 @@
   oc_secret:
     state: list
     oc_binary: "{{ openshift_cli }}"
-    namespace: "{{ postgresql_namespace }}"
+    namespace: "{{ namespace_postgresql }}"
     decode: true
     name: "{{ postgresql_credentials_secret }}"
   register: postgresql_credentials_secret

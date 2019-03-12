@@ -8,5 +8,5 @@ postgresql_password: naps
 postgresql_database: naps_emergency_response
 
 postgresql_application_name: postgresql
-postgresql_namespace: "{{ namespace }}"
+namespace_postgresql: "{{ namespace }}"
 postgresql_credentials_secret: "{{ postgresql_application_name }}-credentials"

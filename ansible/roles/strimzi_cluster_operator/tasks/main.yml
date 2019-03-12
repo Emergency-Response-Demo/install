@@ -6,7 +6,7 @@
     resource_type: serviceaccount
     resource: "{{sa_cluster_operator }}"
     resource_template: "{{ resources_dir }}/cluster-operator/{{ sa_cluster_operator_template }}"
-    namespace: "{{ namespace_operator }}"
+    resource_namespace: "{{ namespace_operator }}"
 
 - import_role:
     name: openshift_apply_cluster_resource
@@ -127,7 +127,7 @@
     resource_type: rolebinding
     resource: "{{ rolebinding_cluster_operator }}"
     resource_template: "{{ work_dir }}/{{ rolebinding_cluster_operator_template }}"
-    namespace: "{{ namespace_kafka_cluster }}"
+    resource_namespace: "{{ namespace_kafka_cluster }}"
 
 - name: copy rolebinding template to work directory
   template:
@@ -140,7 +140,7 @@
     resource_type: rolebinding
     resource: "{{ rolebinding_entity_operator }}"
     resource_template: "{{ work_dir }}/{{ rolebinding_entity_operator_template }}"
-    namespace: "{{ namespace_kafka_cluster }}"
+    resource_namespace: "{{ namespace_kafka_cluster }}"
 
 - name: copy rolebinding template to work directory
   template:
@@ -153,7 +153,7 @@
     resource_type: rolebinding
     resource: "{{ rolebinding_topic_operator }}"
     resource_template: "{{ work_dir }}/{{ rolebinding_topic_operator_template }}"
-    namespace: "{{ namespace_kafka_cluster }}"
+    resource_namespace: "{{ namespace_kafka_cluster }}"
 
 - name: copy deployment template to work directory
   template:
@@ -166,4 +166,4 @@
     resource_type: deployment
     resource: "{{ deployment_cluster_operator }}"
     resource_template: "{{ work_dir }}/{{ deployment_cluster_operator_template }}"
-    namespace: "{{ namespace_operator }}"
+    resource_namespace: "{{ namespace_operator }}"

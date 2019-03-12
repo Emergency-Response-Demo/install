@@ -14,7 +14,7 @@
     oc_binary: "{{ openshift_cli }}"
     resource_kind: role
     user: "{{ project_admin }}"
-    namespace: "{{ namespace}}"
+    namespace: "{{ namespace }}"
     rolebinding_name: "{{ project_admin }}-admin"
     resource_name: admin
   when: >
