@@ -1,0 +1,46 @@
+---
+
+- name: set nexus url fact
+  set_fact: 
+    nexus_url: "http://{{ nexus_service}}:{{ nexus_service_port }}/content/groups/public"
+  when: use_nexus|bool == true
+
+- name: copy template for {{ jenkins_maven_slave_configmap }} configmap
+  template:
+    src: "{{ resources_dir }}/{{ jenkins_maven_slave_configmap_template }}"
+    dest: "{{ work_dir }}/{{ jenkins_maven_slave_configmap_template }}"
+
+- import_role:
+    name: openshift_apply_resource
+  vars:
+    resource_type: configmap
+    resource: "{{ jenkins_maven_slave_configmap }}"
+    resource_template: "{{ work_dir }}/{{ jenkins_maven_slave_configmap_template }}"
+    resource_namespace: "{{ namespace }}"
+
+- name: copy template for {{ jenkins_maven_slave_pvc }} pvc
+  template:
+    src: "{{ resources_dir }}/{{ jenkins_maven_slave_pvc_template }}"
+    dest: "{{ work_dir }}/{{ jenkins_maven_slave_pvc_template }}"
+
+- import_role:
+    name: openshift_apply_resource
+  vars:
+    resource_type: pvc
+    resource: "{{ jenkins_maven_slave_pvc }}"
+    resource_template: "{{ work_dir }}/{{ jenkins_maven_slave_pvc_template }}"
+    resource_namespace: "{{ namespace }}"
+
+- name: copy jenkins template
+  template:
+    src: "{{ resources_dir }}/{{ jenkins_template }}"
+    dest: "{{ work_dir }}/{{ jenkins_template }}"
+
+  # deploy jenkins
+- import_role:
+    name: openshift_apply_resource
+  vars:
+    resource_type: dc
+    resource: "{{ jenkins_service }}"
+    resource_template: "{{ work_dir }}/{{ jenkins_template }}"
+    resource_namespace: "{{ namespace }}"

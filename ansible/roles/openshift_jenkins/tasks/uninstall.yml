@@ -1,0 +1,73 @@
+---
+
+- name: remove {{ jenkins_service }} route
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ jenkins_service }}"
+    kind: route
+    namespace: "{{ namespace }}"
+
+- name: remove {{ jenkins_jnlp_service }} service
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ jenkins_jnlp_service }}"
+    kind: service
+    namespace: "{{ namespace }}"
+
+- name: remove {{ jenkins_service }} service
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ jenkins_service }}"
+    kind: service
+    namespace: "{{ namespace }}"
+
+- name: remove {{ jenkins_service }} dc
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ jenkins_service }}"
+    kind: dc
+    namespace: "{{ namespace }}"
+
+- name: remove {{ jenkins_maven_slave_configmap }} configmap
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ jenkins_maven_slave_configmap }}"
+    kind: configmap
+    namespace: "{{ namespace }}"
+
+- name: remove {{ jenkins_service }} pvc
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ jenkins_service }}"
+    kind: pvc
+    namespace: "{{ namespace }}"
+
+- name: remove {{ jenkins_maven_slave_pvc }} pvc
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ jenkins_maven_slave_pvc }}"
+    kind: pvc
+    namespace: "{{ namespace }}"
+
+- name: remove {{ jenkins_service }}_edit rolebinding
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ jenkins_service }}_edit"
+    kind: rolebinding
+    namespace: "{{ namespace }}"
+
+- name: remove {{ jenkins_service }} serviceaccount
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ jenkins_service }}"
+    kind: sa
+    namespace: "{{ namespace }}"

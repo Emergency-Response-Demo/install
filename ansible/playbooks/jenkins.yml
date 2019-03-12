@@ -1,0 +1,28 @@
+---
+
+- name: Deploy Jenkins
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  run_once: true
+  vars_files:
+    - group_vars/tools.yml
+
+  tasks:
+    - set_fact:
+        work_dir_name: jenkins
+        namespace: "{{ namespace_tools }}"
+        resources_dir: "{{ resources_base_dir }}/jenkins"
+    - include_role:
+        name: openshift_jenkins
+      when: >
+        ACTION is not defined or
+        ACTION is none or
+        ACTION|trim() == "" or
+        ACTION|trim() == "create"
+    - include_role:
+        name: openshift_jenkins
+        tasks_from: uninstall
+      when: >
+        ACTION is defined and
+        ACTION|trim() == "uninstall"
