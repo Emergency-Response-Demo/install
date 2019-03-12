@@ -1,0 +1,5 @@
+---
+
+- import_role:
+    name: kafka_cluster
+    tasks_from: uninstall

@@ -8,8 +8,10 @@ resources_base_dir: "{{ home_dir }}/resources"
 # oc executable
 openshift_cli: oc
 
+project_name: naps-emergency-response
+
 # namespace:
-namespace: naps-emergency-response
+namespace: "{{ project_name }}"
 
 # application
 application_name: naps-emergency-response

@@ -1,0 +1,14 @@
+---
+
+- import_role:
+    name: kafka_cluster
+
+- name: wait until topic-operator is active
+  shell: "{{ openshift_cli }} get deployment kafka-cluster-entity-operator -o template --template={{ json_template }} -n {{ namespace }}"
+  vars:
+    json_template: '\{\{.status.readyReplicas\}\}'
+  register: result
+  until: result.stdout == "1"
+  retries: 30
+  delay: 10
+  changed_when: false

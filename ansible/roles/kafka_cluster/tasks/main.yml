@@ -1,0 +1,14 @@
+---
+
+- name: copy kafka template to work directory
+  template:
+    src: "{{ resources_dir }}/templates/{{ kafka_template }}"
+    dest: "{{ work_dir }}/{{ kafka_template }}"
+
+- import_role:
+    name: openshift_apply_resource
+  vars:
+    resource_type: kafka
+    resource: "{{ kafka_cluster }}"
+    resource_template: "{{ work_dir }}/{{ kafka_template }}"
+    resource_namespace: "{{ namespace }}"
