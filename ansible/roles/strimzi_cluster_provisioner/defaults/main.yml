@@ -1,0 +1,4 @@
+---
+
+clusterrole_cluster_provisioner: kafka-cluster-provisioner
+clusterrole_cluster_provisioner_template: ClusterRole-cluster-provisioner.yaml

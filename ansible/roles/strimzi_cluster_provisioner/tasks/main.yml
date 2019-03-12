@@ -1,0 +1,32 @@
+---
+
+# TODO: make provisioner admin in project
+
+- name: assign user {{ cluster_provisioner }} as project admin in {{ namespace_kafka_cluster }}
+  oc_adm_policy_user:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace_kafka_cluster }}"
+    rolebinding_name: "{{ cluster_provisioner }}-admin"
+    user: "{{ cluster_provisioner }}"
+    resource_name: admin
+    resource_kind: role
+
+# create cluster provisioner clusterrole
+- import_role:
+    name: openshift_apply_cluster_resource
+  vars:
+    resource_type: clusterrole
+    resource: "{{ clusterrole_cluster_provisioner }}"
+    resource_template: "{{ resources_dir }}/cluster-provisioner/{{ clusterrole_cluster_provisioner_template }}"
+
+# create role binding
+- name: add {{ clusterrole_cluster_provisioner }} role to user {{ cluster_provisioner }}
+  oc_adm_policy_user:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace_kafka_cluster }}"
+    rolebinding_name: "cluster-provisioner-{{ cluster_provisioner }}"
+    user: "{{ cluster_provisioner }}"
+    resource_name: "{{ clusterrole_cluster_provisioner }}"
+    resource_kind: role

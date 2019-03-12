@@ -1,0 +1,143 @@
+---
+
+- name: remove deployment {{ deployment_cluster_operator }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ deployment_cluster_operator }}"
+    kind: deployment
+    namespace: "{{ namespace_operator }}"
+
+- name: remove crd {{ crd_kafka }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ crd_kafka }}"
+    kind: crd
+  when: uninstall_cluster_resources|bool == true
+
+- name: remove crd {{ crd_kafka_connect }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ crd_kafka_connect }}"
+    kind: crd
+  when: uninstall_cluster_resources|bool == true
+
+- name: remove crd {{ crd_kafka_connect_s2i }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ crd_kafka_connect_s2i }}"
+    kind: crd
+  when: uninstall_cluster_resources|bool == true
+
+- name: remove crd {{ crd_kafka_topic }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ crd_kafka_topic }}"
+    kind: crd
+  when: uninstall_cluster_resources|bool == true
+
+- name: remove crd {{ crd_kafka_user }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ crd_kafka_user }}"
+    kind: crd
+  when: uninstall_cluster_resources|bool == true
+
+- name: remove crd {{ crd_kafka_mirror_maker }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ crd_kafka_mirror_maker }}"
+    kind: crd
+  when: uninstall_cluster_resources|bool == true
+
+- name: remove rolebinding {{ rolebinding_topic_operator }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ rolebinding_topic_operator }}"
+    kind: rolebinding
+    namespace: "{{ namespace_kafka_cluster }}"
+
+- name: remove clusterrole {{ clusterrole_topic_operator }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrole_topic_operator }}"
+    kind: clusterrole
+  when: uninstall_cluster_resources|bool == true
+
+- name: remove rolebinding {{ rolebinding_entity_operator }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ rolebinding_entity_operator }}"
+    kind: rolebinding
+    namespace: "{{ namespace_kafka_cluster }}"
+
+- name: remove clusterrole {{ clusterrole_entity_operator }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrole_entity_operator }}"
+    kind: clusterrole
+  when: uninstall_cluster_resources|bool == true
+
+- name: remove clusterrolebinding {{ clusterrolebinding_cluster_operator_kafka }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrolebinding_cluster_operator_kafka }}-{{ namespace_operator }}"
+    kind: clusterrolebinding
+
+- name: remove clusterrole {{ clusterrole_kafka_broker }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrole_kafka_broker }}"
+    kind: clusterrole
+  when: uninstall_cluster_resources|bool == true
+
+- name: remove clusterrolebinding {{ clusterrolebinding_cluster_operator }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrolebinding_cluster_operator }}-{{ namespace_operator }}"
+    kind: clusterrolebinding
+
+- name: remove clusterrole {{ clusterrole_cluster_operator_role_global }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrole_cluster_operator_role_global }}"
+    kind: clusterrole
+  when: uninstall_cluster_resources|bool == true
+
+- name: remove rolebinding {{ rolebinding_cluster_operator }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ rolebinding_cluster_operator }}"
+    kind: rolebinding
+    namespace: "{{ namespace_kafka_cluster }}"
+
+- name: remove clusterrole {{ clusterrole_cluster_operator_role }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrole_cluster_operator_role }}"
+    kind: clusterrole
+  when: uninstall_cluster_resources|bool == true
+
+- name: remove serviceaccount {{ sa_cluster_operator }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ sa_cluster_operator }}"
+    kind: serviceaccount
+    namespace: "{{ namespace_operator }}"

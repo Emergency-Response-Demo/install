@@ -1,0 +1,17 @@
+---
+
+- name: remove rolebinding cluster-provisioner-{{ cluster_provisioner }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "cluster-provisioner-{{ cluster_provisioner }}"
+    kind: rolebinding
+    namespace: "{{ namespace_kafka_cluster }}"
+
+- name: remove clusterrole {{ clusterrole_cluster_provisioner }}
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrole_cluster_provisioner }}"
+    kind: clusterrole
+  when: uninstall_cluster_resources|bool == true

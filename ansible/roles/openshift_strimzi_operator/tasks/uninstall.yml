@@ -1,0 +1,27 @@
+---
+
+- import_role:
+    name: strimzi_cluster_provisioner
+    tasks_from: uninstall
+
+- import_role:
+    name: strimzi_cluster_operator
+    tasks_from: uninstall
+
+- name: delete project
+  oc_project:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ namespace_kafka_cluster }}"
+  when: >
+    uninstall_delete_project is defined and
+    uninstall_delete_project|bool == True
+
+- name: delete project
+  oc_project:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ namespace_operator }}"
+  when: >
+    uninstall_delete_project is defined and
+    uninstall_delete_project|bool == True
