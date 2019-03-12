@@ -11,6 +11,7 @@
 
   tasks:
     - set_fact:
+       namespace: "{{ namespace_project }}"
        work_dir_name: responder-service
     - include_role:
         name: ../roles/openshift_responder_service

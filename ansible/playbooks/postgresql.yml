@@ -10,6 +10,7 @@
 
   tasks:
     - set_fact:
+        namespace: "{{ namespace_project }}"
         work_dir_name: postgresql
     - include_role:
         name: ../roles/openshift_postgresql
