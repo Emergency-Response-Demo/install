@@ -33,7 +33,7 @@
 
 - name: copy application properties template
   template:
-    src: "{{ resources_dir }}/responder-service/{{ application_properties }}"
+    src: "{{ resources_dir }}/{{ application_properties }}"
     dest: "{{ work_dir }}/{{ application_properties }}"
 
 - name: create {{ application_configmap }} application configmap
@@ -47,7 +47,7 @@
 
 - name: copy build config template
   template:
-    src: "{{ resources_dir }}/responder-service/{{ responder_service_buildconfig_template }}"
+    src: "{{ resources_dir }}/{{ responder_service_buildconfig_template }}"
     dest: "{{ work_dir }}/{{ responder_service_buildconfig_template }}"
 
 - name: create build config
@@ -62,7 +62,7 @@
 
 - name: copy imagestream template
   template:
-    src: "{{ resources_dir }}/responder-service/{{ responder_service_imagestream_template }}"
+    src: "{{ resources_dir }}/{{ responder_service_imagestream_template }}"
     dest: "{{ work_dir }}/{{ responder_service_imagestream_template }}"
 
 - name: create output imagestream
@@ -77,7 +77,7 @@
 
 - name: copy application template
   template:
-    src: "{{ resources_dir }}/responder-service/{{ responder_service_application_template }}"
+    src: "{{ resources_dir }}/{{ responder_service_application_template }}"
     dest: "{{ work_dir }}/{{ responder_service_application_template }}"
 
 - name: check if {{ responder_service_application_name }} application is deployed

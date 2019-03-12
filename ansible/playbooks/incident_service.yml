@@ -1,6 +1,6 @@
 ---
 
-- name: Deploy Responder Service
+- name: Deploy Incident Service
   hosts: localhost
   connection: local
   gather_facts: false
@@ -12,6 +12,7 @@
   tasks:
     - set_fact:
        namespace: "{{ namespace_project }}"
+       resources_dir: "{{ resources_base_dir }}/incident-service"
        work_dir_name: incident-service
     - include_role:
         name: ../roles/openshift_incident_service

@@ -18,7 +18,7 @@
     src: "{{ item }}"
     dest: "{{ work_dir }}/{{ postgresql_init_configmap }}/"
   with_fileglob:
-    - "{{ resources_dir }}/postgresql/sql/*.sh"
+    - "{{ resources_dir }}/sql/*.sh"
 
 - name: download sql scripts from remote repository
   get_url:
@@ -32,7 +32,7 @@
     oc_binary: "{{ openshift_cli }}"
     state: present
     name: "{{ postgresql_init_configmap }}"
-    namespace: "{{namespace }}"
+    namespace: "{{ namespace }}"
     from_file:
       dir: "{{ work_dir }}/{{ postgresql_init_configmap }}"
 

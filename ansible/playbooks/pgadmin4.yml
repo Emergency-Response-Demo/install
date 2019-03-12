@@ -11,6 +11,7 @@
   tasks:
     - set_fact:
         namespace: "{{ namespace_tools }}"
+        resources_dir: "{{ resources_base_dir }}/pgadmin4"
         application_name: pgadmin4
         work_dir_name: pgadmin4
     - include_role:
