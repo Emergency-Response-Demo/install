@@ -12,6 +12,3 @@ project_name: naps-emergency-response
 
 # namespace:
 namespace: "{{ project_name }}"
-
-# application
-application_name: naps-emergency-response
