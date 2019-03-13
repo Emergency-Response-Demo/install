@@ -1,0 +1,5 @@
+---
+
+- import_role:
+    name: kafka_topics
+    tasks_from: uninstall

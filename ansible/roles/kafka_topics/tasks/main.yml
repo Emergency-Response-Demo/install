@@ -1,0 +1,11 @@
+---
+
+# topics
+- name: create topics
+  include_tasks: create_topic.yml
+  with_items:
+    - "{{ kafka_topics }}"
+  loop_control:
+    loop_var: topic
+  vars:
+    topic_kafka_cluster: "{{ kafka_cluster }}"

@@ -15,4 +15,4 @@ uninstall_cluster_resources: false
 kafka_cluster: kafka-cluster
 
 kafka_topics: >
-  []
+  [{"name": "topic-incident-event", "partitions": "15", "replicas": "2", "config": "{}"}]

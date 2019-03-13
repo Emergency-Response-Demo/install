@@ -1,0 +1,21 @@
+---
+
+- name: set topic facts
+  set_fact:
+    topic_name: "{{ topic.name }}"
+    topic_partitions: "{{ topic.partitions }}"
+    topic_replicas: "{{ topic.replicas }}"
+    topic_config: "{{ topic.config }}"
+
+- name: copy topic template to work directory
+  template:
+    src: "{{ resources_dir }}/templates/{{ topic_template }}"
+    dest: "{{ work_dir }}/{{ topic_name }}-{{ topic_template }}"
+
+- import_role:
+    name: openshift_apply_resource
+  vars:
+    resource_type: kafkatopic
+    resource: "{{ topic_name }}"
+    resource_template: "{{ work_dir }}/{{ topic_name }}-{{ topic_template }}"
+    resource_namespace: "{{ namespace }}"

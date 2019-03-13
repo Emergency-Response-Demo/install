@@ -1,0 +1,9 @@
+---
+
+# topics
+- name: remove topics
+  include_tasks: remove_topic.yml
+  with_items:
+    - "{{ kafka_topics }}"
+  loop_control:
+    loop_var: topic
