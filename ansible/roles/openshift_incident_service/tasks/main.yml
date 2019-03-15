@@ -1,6 +1,9 @@
 ---
 
-- name: create {{ service_account }} service account for {{ incident_service_application_name }} application
+- debug:
+    var: application_name
+
+- name: create {{ service_account }} service account for {{ application_name }} application
   oc_serviceaccount:
     oc_binary: "{{ openshift_cli }}"
     state: present
@@ -45,10 +48,35 @@
     from_file:
       dir: "{{ work_dir }}/{{ application_properties }}"
 
+# logging configmap
+- name: set logging template fact
+  set_fact:
+    logging_configmap_template: logback.xml
+
+- name: set logging template fact
+  set_fact:
+    logging_configmap_template: logback-dev.xml
+  when: >
+    logging_style is defined and logging_style == "dev"
+
+- name: copy {{ logging_configmap }} configmap template
+  template: 
+    src: "{{ resources_dir }}/{{ logging_configmap_template }}" 
+    dest: "{{ work_dir }}/logback.xml"
+
+- name: create {{ logging_configmap }} configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    name: "{{ logging_configmap }}"
+    from_file:
+      logback.xml: "{{ work_dir }}/logback.xml"
+
 - name: copy build config template
   template:
-    src: "{{ resources_dir }}/{{ incident_service_buildconfig_template }}"
-    dest: "{{ work_dir }}/{{ incident_service_buildconfig_template }}"
+    src: "{{ resources_dir }}/{{ buildconfig_template }}"
+    dest: "{{ work_dir }}/{{ buildconfig_template }}"
 
 - name: create build config
   oc_obj:
@@ -56,14 +84,14 @@
     state: present
     namespace: "{{ namespace }}"
     kind: buildconfig
-    name: "{{ incident_service_buildconfig_name }}"
+    name: "{{ buildconfig_name }}"
     files:
-      - "{{ work_dir }}/{{ incident_service_buildconfig_template }}"
+      - "{{ work_dir }}/{{ buildconfig_template }}"
 
 - name: copy imagestream template
   template:
-    src: "{{ resources_dir }}/{{ incident_service_imagestream_template }}"
-    dest: "{{ work_dir }}/{{ incident_service_imagestream_template }}"
+    src: "{{ resources_dir }}/{{ imagestream_template }}"
+    dest: "{{ work_dir }}/{{ imagestream_template }}"
 
 - name: create output imagestream
   oc_obj:
@@ -71,29 +99,29 @@
     state: present
     namespace: "{{ namespace }}"
     kind: imagestream
-    name: "{{ incident_service_imagestream_name }}"
+    name: "{{ imagestream_name }}"
     files:
-      - "{{ work_dir }}/{{ incident_service_imagestream_template }}"
+      - "{{ work_dir }}/{{ imagestream_template }}"
 
 - name: copy application template
   template:
-    src: "{{ resources_dir }}/{{ incident_service_application_template }}"
-    dest: "{{ work_dir }}/{{ incident_service_application_template }}"
+    src: "{{ resources_dir }}/{{ application_template }}"
+    dest: "{{ work_dir }}/{{ application_template }}"
 
-- name: check if {{ incident_service_application_name }} appplication is deployed
+- name: check if {{ application_name }} application is deployed
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: list
     namespace: "{{ namespace }}"
-    name: "{{ incident_service_application_name }}"
+    name: "{{ application_name }}"
     kind: dc
   register: result
 
-- name: deploy {{ incident_service_application_name }} application
+- name: deploy {{ application_name }} application
   oc_list:
     oc_binary: "{{ openshift_cli }}"
     state: present
     namespace: "{{ namespace }}"
     files:
-      - "{{ work_dir }}/{{ incident_service_application_template }}"
+      - "{{ work_dir }}/{{ application_template }}"
   when: result.results.stderr is defined and result.results.stderr != ""

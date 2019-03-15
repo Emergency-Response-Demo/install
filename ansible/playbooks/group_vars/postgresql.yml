@@ -1,7 +1,5 @@
 ---
 
-application_name: naps-emergency-response
-
 postgresql_init_scripts:
   - https://raw.githubusercontent.com/NAPS-emergency-response-project/sql-scripts/master/sql_ddl_script.sql
 

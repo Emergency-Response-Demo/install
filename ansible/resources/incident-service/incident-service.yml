@@ -6,9 +6,9 @@ items:
   kind: Service
   metadata:
     labels:
-      app: {{ incident_service_application_name }}
+      app: {{ application_name }}
       expose: "true"
-    name: {{ incident_service_application_name }}
+    name: {{ application_name }}
   spec:
     ports:
       - name: http
@@ -16,34 +16,34 @@ items:
         protocol: TCP
         targetPort: 8080
     selector:
-      app: {{ incident_service_application_name }}
+      app: {{ application_name }}
     sessionAffinity: None
     type: ClusterIP
 - apiVersion: route.openshift.io/v1
   kind: Route
   metadata:
     labels:
-      app: {{ incident_service_application_name }}
-    name: {{ incident_service_application_name }}
+      app: {{ application_name }}
+    name: {{ application_name }}
   spec:
     port:
       targetPort: 8080
     to:
       kind: Service
-      name: {{ incident_service_application_name }}
+      name: {{ application_name }}
       weight: 100
     wildcardPolicy: None
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
     labels:
-      app: {{ incident_service_application_name }}
-    name: {{ incident_service_application_name }}
+      app: {{ application_name }}
+    name: {{ application_name }}
   spec:
     replicas: 1
     revisionHistoryLimit: 2
     selector:
-      app: {{ incident_service_application_name }}
+      app: {{ application_name }}
     strategy:
       activeDeadlineSeconds: 21600
       resources: {}
@@ -57,7 +57,7 @@ items:
     template:
       metadata:
         labels:
-          app: {{ incident_service_application_name }}
+          app: {{ application_name }}
       spec:
         containers:
           - env:
@@ -67,7 +67,7 @@ items:
                   apiVersion: v1
                   fieldPath: metadata.namespace
             imagePullPolicy: IfNotPresent
-            name: {{ incident_service_application_name }}
+            name: {{ application_name }}
             ports:
               - containerPort: 8080
                 name: http
@@ -119,9 +119,9 @@ items:
       - imageChangeParams:
           automatic: true
           containerNames:
-            - {{ incident_service_application_name }}
+            - {{ application_name }}
           from:
             kind: ImageStreamTag
-            name: "{{ incident_service_application_name }}:latest"
+            name: "{{ application_name }}:latest"
             namespace: {{ namespace }}
         type: ImageChange

@@ -16,15 +16,9 @@ spec:
   resources: {}
   runPolicy: Serial
   source:
-    git:
-      uri: "{{ git_url }}"
-      ref: "{{ git_ref }}"
-    type: Git
+    type: Binary
   strategy:
     sourceStrategy:
-      env:
-        - name: MAVEN_MIRROR_URL
-          value: {{ nexus_service_url }}
       from:
         kind: ImageStreamTag
         name: "{{ application_image }}"
