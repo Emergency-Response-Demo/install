@@ -1,0 +1,46 @@
+---
+
+application_name: process-service
+
+application_configmap: process-service
+logging_configmap: process-service-logging
+
+kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
+kafka_bootstrap_port: 9092
+kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
+kafka_groupid: process-service
+kafka_consumer_concurrency: 5
+
+kafka_incident_reported_event_topic: topic-incident-event
+
+postgresql_template: "{{ resources_dir }}/postgresql-persistent-template.yaml"
+postgresql_service_name: process-service-postgresql
+postgresql_init_configmap: "{{ postgresql_service_name }}-init"
+postgresql_username: rhpam
+postgresql_password: rhpam
+postgresql_database: rhpam
+postgresql_max_connections: 100
+postgresql_max_prepared_transactions: 100
+
+postgresql_host: "{{ postgresql_service_name }}"
+
+narayana_dbcp_max_total: 20
+
+quartz_configuration: "/app/config/jbpm-quartz.properties"
+quartz_datasource_dbcp_max_total: 20
+quartz_clustered: true
+
+logging_style: dev
+
+service_account: process-service
+
+buildconfig_template: process-service-binary-buildconfig.yml
+buildconfig_name: "{{ application_name }}-binary"
+
+imagestream_template: process-service-imagestream.yml
+imagestream_name: "{{ application_name }}"
+
+application_template: process-service.yml
+
+application_image: redhat-openjdk18-openshift:1.4
+application_image_namespace: openshift

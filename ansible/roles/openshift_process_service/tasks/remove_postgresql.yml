@@ -1,0 +1,41 @@
+---
+
+- name: remove {{ postgresql_init_configmap }} configmap
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ postgresql_init_configmap }}"
+    namespace: "{{ namespace }}"
+    kind: configmap
+
+- name: remove {{ postgresql_service_name }} secret
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ postgresql_service_name }}"
+    namespace: "{{ namespace }}"
+    kind: secret
+
+- name: remove {{ postgresql_service_name }} service
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ postgresql_service_name }}"
+    namespace: "{{ namespace }}"
+    kind: service
+
+- name: remove {{ postgresql_service_name }} dc
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ postgresql_service_name }}"
+    namespace: "{{ namespace }}"
+    kind: dc
+
+- name: remove {{ postgresql_service_name }} pvc
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ postgresql_service_name }}"
+    namespace: "{{ namespace }}"
+    kind: pvc

@@ -1,0 +1,47 @@
+---
+
+# configmap
+- name: create directory in work dir for configmap files
+  file:
+    path: "{{ work_dir }}/{{ postgresql_init_configmap }}"
+    state: directory
+
+- name: copy init files to work directory
+  copy:
+    src: "{{ item }}"
+    dest: "{{ work_dir }}/{{ postgresql_init_configmap }}"
+  with_fileglob:
+    - "{{ resources_dir }}/postgresql/*.sh"
+    - "{{ resources_dir }}/postgresql/sql/*.sql"
+
+- name: create {{ postgresql_init_configmap }} configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    name: "{{ postgresql_init_configmap }}"
+    from_file:
+      dir: "{{ work_dir }}/{{ postgresql_init_configmap }}"
+
+# deploy postgresql
+- name: deploy postgresql
+  shell: |
+    {{ openshift_cli }} new-app -f {{ postgresql_template }} \
+        --param=APPLICATION_NAME={{ application_name }} \
+        --param=DATABASE_SERVICE_NAME={{ postgresql_service_name }} \
+        --param=POSTGRESQL_USER={{ postgresql_username }} \
+        --param=POSTGRESQL_PASSWORD={{ postgresql_password }} \
+        --param=POSTGRESQL_DATABASE={{ postgresql_database }} \
+        --param=POSTGRESQL_MAX_CONNECTIONS={{ postgresql_max_connections }} \
+        --param=POSTGRESQL_MAX_PREPARED_TRANSACTIONS={{ postgresql_max_prepared_transactions }} \
+        -n {{ namespace }}
+
+- name: wait until postgresql database is up and running
+  shell: "{{ openshift_cli }} get dc {{ postgresql_service_name }} -o template --template={{ json_template }} -n {{ namespace }}"
+  vars:
+    json_template: '\{\{.status.readyReplicas\}\}'
+  register: result
+  until: result.stdout == "1"
+  retries: 10
+  delay: 30
+  changed_when: false

@@ -1,0 +1,10 @@
+---
+
+dependencies:
+  - role: openshift_project
+    when: >
+      ACTION is not defined or
+      ACTION is none or
+      ACTION|trim() == "" or
+      ACTION|trim() == "install"
+  - role: work_dir
