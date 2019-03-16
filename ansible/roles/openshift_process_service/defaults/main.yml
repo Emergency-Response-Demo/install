@@ -43,5 +43,8 @@ imagestream_name: "{{ application_name }}"
 
 application_template: process-service.yml
 
-application_image: redhat-openjdk18-openshift:1.4
+application_image: openjdk18-openshift:1.6
 application_image_namespace: openshift
+
+nexus_url: "http://{{ nexus_service_name }}.{{ namespace_tools }}.svc:8081"
+nexus_mirror: "{{ nexus_url }}/content/groups/public"

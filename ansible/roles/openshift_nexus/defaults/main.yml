@@ -1,7 +1,5 @@
 ---
 
-nexus_service_name: nexus
-
 nexus_template: "{{ resources_dir }}/nexus2-persistent-template.yaml"
 
 nexus_version: 2.14.8

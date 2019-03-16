@@ -50,6 +50,8 @@ items:
               value: '200'
             - name: AB_JOLOKIA_OFF
               value: "true"
+            - name: MAVEN_MIRROR_URL
+              value: {{ nexus_mirror }}
             imagePullPolicy: IfNotPresent
             name: {{ application_name }}
             ports:
