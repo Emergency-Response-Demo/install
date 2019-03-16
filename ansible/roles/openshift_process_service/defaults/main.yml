@@ -12,6 +12,7 @@ kafka_groupid: process-service
 kafka_consumer_concurrency: 5
 
 kafka_incident_reported_event_topic: topic-incident-event
+kafka_create_mission_command_topic: topic-mission-command
 
 postgresql_template: "{{ resources_dir }}/postgresql-persistent-template.yaml"
 postgresql_service_name: process-service-postgresql
