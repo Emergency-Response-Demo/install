@@ -48,3 +48,7 @@ application_image_namespace: openshift
 
 nexus_url: "http://{{ nexus_service_name }}.{{ namespace_tools }}.svc:8081"
 nexus_mirror: "{{ nexus_url }}/content/groups/public"
+
+responder_service_scheme: http
+responder_service_url: "{{ responder_service_application_name }}.{{ namespace }}.svc:8080"
+responder_service_available_responders_path: /responders/available
