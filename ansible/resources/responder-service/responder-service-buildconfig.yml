@@ -24,7 +24,7 @@ spec:
     sourceStrategy:
       env:
         - name: MAVEN_MIRROR_URL
-          value: {{ nexus_service_url }}
+          value: http://{{ nexus_service_name }}.{{ namespace_tools }}.svc:8081/content/groups/public/
       from:
         kind: ImageStreamTag
         name: "{{ responder_service_image }}"
