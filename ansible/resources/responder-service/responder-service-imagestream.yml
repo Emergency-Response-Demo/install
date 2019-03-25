@@ -3,7 +3,7 @@
 apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
-  name: {{ responder_service_imagestream_name }}
+  name: {{ imagestream_name }}
   labels:
-    app: {{ responder_service_application_name }}  
+    app: {{ application_name }}  
 spec: {}

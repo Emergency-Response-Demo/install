@@ -1,24 +1,26 @@
 ---
 
-responder_service_application_name: responder-service
+application_name: responder-service
 
 service_account: responder-service
 
 application_configmap: responder-service
+logging_configmap: responder-service-logging
 
 application_properties: application.properties
 
-responder_service_git_url: https://github.com/NAPS-emergency-response-project/responder-service.git
-responder_service_git_ref: master
+git_url: https://github.com/NAPS-emergency-response-project/responder-service.git
+git_ref: master
 
-responder_service_image: redhat-openjdk18-openshift:1.4
-responder_service_image_namespace: openshift
+application_image: redhat-openjdk18-openshift:1.4
+application_image_namespace: openshift
 
-responder_service_buildconfig_name: "{{ responder_service_application_name }}-s2i"
-responder_service_buildconfig_template: responder-service-buildconfig.yml
+buildconfig_name: "{{ application_name }}-binary"
+buildconfig_template: responder-service-binary-buildconfig.yml
 
-responder_service_imagestream_name: "{{ responder_service_application_name }}"
-responder_service_imagestream_template: responder-service-imagestream.yml
+imagestream_name: "{{ application_name }}"
+imagestream_template: responder-service-imagestream.yml
 
-responder_service_application_template: responder-service.yml
+application_template: responder-service.yml
 
+logging_style: dev

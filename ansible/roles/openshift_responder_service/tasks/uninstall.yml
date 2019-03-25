@@ -4,7 +4,7 @@
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ responder_service_application_name }}"
+    name: "{{ application_name }}"
     namespace: "{{ namespace }}"
     kind: dc
 
@@ -12,7 +12,7 @@
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ responder_service_application_name }}"
+    name: "{{ _application_name }}"
     namespace: "{{ namespace }}"
     kind: service
 
@@ -20,7 +20,7 @@
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ responder_service_application_name }}"
+    name: "{{ application_name }}"
     namespace: "{{ namespace }}"
     kind: route
 
@@ -28,7 +28,7 @@
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ responder_service_buildconfig_name }}"
+    name: "{{ buildconfig_name }}"
     namespace: "{{ namespace }}"
     kind: buildconfig
 
@@ -36,7 +36,7 @@
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ responder_service_application_name }}"
+    name: "{{ application_name }}"
     namespace: "{{ namespace }}"
     kind: imagestream
 
@@ -44,7 +44,7 @@
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ responder_service_application_name }}"
+    name: "{{ application_name }}"
     namespace: "{{ namespace }}"
     kind: configmap
 
