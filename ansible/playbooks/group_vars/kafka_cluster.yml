@@ -16,4 +16,7 @@ kafka_cluster: kafka-cluster
 
 kafka_topics: >
   [{"name": "topic-incident-event", "partitions": "15", "replicas": "2", "config": "{}"},
-   {"name": "topic-mission-command", "partitions": "15", "replicas": "2", "config": "{}"}]
+   {"name": "topic-mission-command", "partitions": "15", "replicas": "2", "config": "{}"},
+   {"name": "topic-mission-event", "partitions": "15", "replicas": "2", "config": "{}"},
+   {"name": "topic-responder-command", "partitions": "15", "replicas": "2", "config": "{}"},
+   {"name": "topic-responder-event", "partitions": "15", "replicas": "2", "config": "{}"]
