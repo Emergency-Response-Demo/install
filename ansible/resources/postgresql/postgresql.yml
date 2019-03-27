@@ -10,7 +10,6 @@ items:
       template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
     labels:
       app: {{ postgresql_application_name }}
-      application: {{ application_name }}
   spec:
     ports:
     - name: postgresql
@@ -30,7 +29,6 @@ items:
     name: {{ postgresql_application_name }}
     labels:
       app: {{ postgresql_application_name }}
-      application: {{ application_name }}
   spec:
     accessModes:
     - ReadWriteOnce
@@ -43,7 +41,6 @@ items:
     name: {{ postgresql_application_name }}
     labels:
       app: {{ postgresql_application_name }}
-      application: {{ application_name }}
   spec:
     strategy:
       recreateParams:
