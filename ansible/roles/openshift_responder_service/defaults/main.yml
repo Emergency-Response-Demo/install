@@ -23,4 +23,13 @@ imagestream_template: responder-service-imagestream.yml
 
 application_template: responder-service.yml
 
+kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
+kafka_bootstrap_port: 9092
+kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
+kafka_groupid: responder-service
+kafka_consumer_concurrency: 5
+
+kafka_responder_command_topic: topic-responder-command
+kafka_responder_event_topic: topic-responder-event
+
 logging_style: dev

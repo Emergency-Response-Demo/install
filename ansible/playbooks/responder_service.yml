@@ -8,6 +8,7 @@
   vars_files:
     - group_vars/services.yml
     - group_vars/postgresql.yml
+    - group_vars/kafka_cluster.yml
 
   tasks:
     - set_fact:
