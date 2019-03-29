@@ -4,14 +4,23 @@ metadata:
   name: {{ kafka_cluster }}
 spec:
   kafka:
+    version: {{ kafka_version }}
     replicas: {{ kafka_replicas }}
     listeners:
       plain: {}
       tls: {}
+    resources:
+      requests:
+        cpu: '{{ kafka_requests_cpu }}'
+        memory: '{{ kafka_requests_memory }}'
+      limits:
+        cpu: '{{ kafka_limits_cpu }}'
+        memory: '{{ kafka_limits_memory }}'
     config:
       offsets.topic.replication.factor: {{ kafka_offsets_topic_replication_factor }}
       transaction.state.log.replication.factor: {{ kafka_transaction_state_log_replication_factor }}
       transaction.state.log.min.isr: {{ transaction_state_log_min_isr }}
+      log.message.format.version: {{ kafka_log_message_format_version }}
     storage:
 {% if kafka_storage_type == "persistent" %}
       type: persistent-claim
@@ -23,6 +32,13 @@ spec:
 {% endif %}
   zookeeper:
     replicas: {{ zookeeper_replicas }}
+    resources:
+      requests:
+        cpu: '{{ zookeeper_requests_cpu }}'
+        memory: '{{ zookeeper_requests_memory }}'
+      limits:
+        cpu: '{{ zookeeper_limits_cpu }}'
+        memory: '{{ zookeeper_limits_memory }}'
     storage:
 {% if zookeeper_storage_type == "persistent" %}
       type: persistent-claim

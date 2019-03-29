@@ -102,6 +102,7 @@ rules:
   - deployments/scale
   - deployments/status
   - statefulsets
+  - replicasets
   verbs:
   - get
   - list
@@ -205,9 +206,22 @@ rules:
   - patch
   - update
 - apiGroups:
+  - networking.k8s.io
+  resources:
+  - networkpolicies
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - delete
+  - patch
+  - update
+- apiGroups:
   - route.openshift.io
   resources:
   - routes
+  - routes/custom-host
   verbs:
   - get
   - list
@@ -222,6 +236,18 @@ rules:
   verbs:
   - get
   - list
+  - create
+  - delete
+  - patch
+  - update
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - get
+  - list
+  - watch
   - create
   - delete
   - patch
