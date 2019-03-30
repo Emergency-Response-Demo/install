@@ -55,14 +55,14 @@
         Escalation_Constraints_Id int8,
         primary key (id)
     );
-
+    
     create table CaseIdInfo (
         id int8 not null,
         caseIdPrefix varchar(255),
         currentValue int8,
         primary key (id)
     );
-
+    
     create table CaseFileDataLog (
         id int8 not null,
         caseDefId varchar(255),
@@ -83,7 +83,7 @@
         roleName varchar(255),
         type int4 not null,
         primary key (id)
-    );
+    );    
 
     create table Content (
         id int8 not null,
@@ -181,7 +181,7 @@
         ERROR_TYPE varchar(255),
         primary key (id)
     );
-
+    
     create table I18NText (
         id int8 not null,
         language varchar(255),
@@ -494,9 +494,9 @@
         add constraint FK_394nf2qoc0k9ok6omgd6jtpso 
         foreign key (Escalation_Constraints_Id) 
         references Escalation;
-
+        
     alter table CaseIdInfo 
-        add constraint UK_CaseIdInfo_1 unique (caseIdPrefix);
+        add constraint UK_CaseIdInfo_1 unique (caseIdPrefix);        
 
     alter table CorrelationPropertyInfo 
         add constraint FK_hrmx1m882cejwj9c04ixh50i4 
@@ -715,12 +715,12 @@
     create sequence BAM_TASK_ID_SEQ;
 
     create sequence BOOLEANEXPR_ID_SEQ;
-
+    
     create sequence CASE_ID_INFO_ID_SEQ;
-
+    
     create sequence CASE_FILE_DATA_LOG_ID_SEQ;
 
-    create sequence CASE_ROLE_ASSIGN_LOG_ID_SEQ;
+    create sequence CASE_ROLE_ASSIGN_LOG_ID_SEQ;    
 
     create sequence COMMENT_ID_SEQ;
 
@@ -741,7 +741,7 @@
     create sequence ERROR_INFO_ID_SEQ;
 
     create sequence ESCALATION_ID_SEQ;
-
+    
     create sequence EXEC_ERROR_INFO_ID_SEQ;
 
     create sequence I18NTEXT_ID_SEQ;
@@ -774,7 +774,7 @@
 
     create sequence WORKITEMINFO_ID_SEQ;
 
-
+    
     create index IDX_Attachment_Id ON Attachment(attachedBy_id);
     create index IDX_Attachment_DataId ON Attachment(TaskData_Attachments_Id);
     create index IDX_BoolExpr_Id ON BooleanExpression(Escalation_Constraints_Id);
@@ -820,23 +820,23 @@
     create index IDX_Task_CreatedBy ON Task(createdBy_id);
     create index IDX_TaskComments_CreatedBy ON task_comment(addedBy_id);
     create index IDX_TaskComments_Id ON task_comment(TaskData_Comments_Id);
-
+        
     create index IDX_Task_processInstanceId on Task(processInstanceId);
     create index IDX_Task_processId on Task(processId);
     create index IDX_Task_status on Task(status);
     create index IDX_Task_archived on Task(archived);
     create index IDX_Task_workItemId on Task(workItemId);
-
+    
     create index IDX_EventTypes_element ON EventTypes(element);
 
-    create index IDX_CMI_Context ON ContextMappingInfo(CONTEXT_ID);
-    create index IDX_CMI_KSession ON ContextMappingInfo(KSESSION_ID);
+    create index IDX_CMI_Context ON ContextMappingInfo(CONTEXT_ID);    
+    create index IDX_CMI_KSession ON ContextMappingInfo(KSESSION_ID);    
     create index IDX_CMI_Owner ON ContextMappingInfo(OWNER_ID);
-
+    
     create index IDX_RequestInfo_status ON RequestInfo(status);
-    create index IDX_RequestInfo_timestamp ON RequestInfo(timestamp);
+    create index IDX_RequestInfo_timestamp ON RequestInfo(timestamp); -- remove this index on PostgreSQLPlus as it does not allow timestamp in column list 
     create index IDX_RequestInfo_owner ON RequestInfo(owner);
-
+    
     create index IDX_BAMTaskSumm_createdDate on BAMTaskSummary(createdDate);
     create index IDX_BAMTaskSumm_duration on BAMTaskSummary(duration);
     create index IDX_BAMTaskSumm_endDate on BAMTaskSummary(endDate);
@@ -846,7 +846,7 @@
     create index IDX_BAMTaskSumm_taskId on BAMTaskSummary(taskId);
     create index IDX_BAMTaskSumm_taskName on BAMTaskSummary(taskName);
     create index IDX_BAMTaskSumm_userId on BAMTaskSummary(userId);
-
+    
     create index IDX_PInstLog_duration on ProcessInstanceLog(duration);
     create index IDX_PInstLog_end_date on ProcessInstanceLog(end_date);
     create index IDX_PInstLog_extId on ProcessInstanceLog(externalId);
@@ -872,3 +872,14 @@
 
     create index IDX_ErrorInfo_pInstId on ExecutionErrorInfo(PROCESS_INST_ID);
     create index IDX_ErrorInfo_errorAck on ExecutionErrorInfo(ERROR_ACK);
+
+    create index IDX_AuditTaskImpl_taskId on AuditTaskImpl(taskId);
+    create index IDX_AuditTaskImpl_pInstId on AuditTaskImpl(processInstanceId);
+    create index IDX_AuditTaskImpl_workItemId on AuditTaskImpl(workItemId);
+    create index IDX_AuditTaskImpl_name on AuditTaskImpl(name);
+    create index IDX_AuditTaskImpl_processId on AuditTaskImpl(processId);
+    create index IDX_AuditTaskImpl_status on AuditTaskImpl(status);
+
+    create index IDX_TaskVariableImpl_taskId on TaskVariableImpl(taskId);
+    create index IDX_TaskVariableImpl_pInstId on TaskVariableImpl(processInstanceId);
+    create index IDX_TaskVariableImpl_processId on TaskVariableImpl(processId);
