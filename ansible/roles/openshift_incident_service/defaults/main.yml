@@ -31,4 +31,6 @@ kafka_consumer_concurrency: 5
 
 kafka_incident_reported_event_topic: topic-incident-event
 
+narayana_pool_max_total: 20
+
 logging_style: dev
