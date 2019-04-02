@@ -1,0 +1,33 @@
+---
+
+- name: delete {{ datagrid_application_name }}-ping service
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ datagrid_application_name }}-ping"
+    namespace: "{{ namespace }}"
+    kind: service
+
+- name: delete {{ datagrid_application_name }} service
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ datagrid_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: service
+
+- name: delete {{ datagrid_application_name }} statefulset
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ datagrid_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: statefulset
+
+- name: delete {{ datagrid_application_name }} secret
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ datagrid_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: secret

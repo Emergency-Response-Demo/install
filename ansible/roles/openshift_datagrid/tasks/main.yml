@@ -1,0 +1,34 @@
+---
+
+# deploy datagrid
+- name: check if Datagrid is deployed
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ datagrid_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: statefulset
+  register: result
+
+- name: deploy Datagrid
+  shell: |
+    {{ openshift_cli }} process -f {{ datagrid_template }} \
+    -p APPLICATION_NAME={{ datagrid_application_name }} \
+    -p IMAGE={{ datagrid_image }} \
+    -p NUMBER_OF_INSTANCES={{ number_of_instances }} \
+    -p TOTAL_CONTAINER_MEM={{ total_container_memory }} \
+    -p TOTAL_CONTAINER_STORAGE={{ total_container_storage }} \
+    -p APPLICATION_USER={{ application_user }} \
+    -p APPLICATION_PASSWORD={{ application_password }} \
+    | {{ openshift_cli }} create -f - -n {{ namespace }}
+  when: result.results.stderr is defined and result.results.stderr != ""
+
+- name: wait until datagrid is up and running
+  shell: "{{ openshift_cli }} get statefulset {{ datagrid_application_name }} -o template --template={{ json_template }} -n {{ namespace }}"
+  vars:
+    json_template: '\{\{.status.readyReplicas\}\}'
+  register: result
+  until: result.stdout == number_of_instances|quote
+  retries: 20
+  delay: 30
+  changed_when: false

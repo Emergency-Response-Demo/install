@@ -1,0 +1,28 @@
+---
+
+- name: Deploy Datagrid Service
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  run_once: true
+  vars_files:
+    - group_vars/datagrid.yml
+
+  tasks:
+    - set_fact:
+        namespace: "{{ namespace_datagrid }}"
+        resources_dir: "{{ resources_base_dir }}/datagrid"
+        work_dir_name: datagrid
+    - include_role:
+        name: ../roles/openshift_datagrid
+      when: >
+        ACTION is not defined or
+        ACTION is none or
+        ACTION|trim() == "" or
+        ACTION|trim() == "install"
+    - include_role:
+        name: ../roles/openshift_datagrid
+        tasks_from: uninstall
+      when: >
+        ACTION is defined and
+        ACTION|trim() == "uninstall"
