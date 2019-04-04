@@ -1,3 +1,8 @@
 ---
 
 namespace_datagrid: "{{ project_name }}"
+
+datagrid_application_name: datagrid-service
+
+datagrid_application_user: demo
+datagrid_application_password: demo

@@ -1,7 +1,5 @@
 ---
 
-datagrid_application_name: datagrid-service
-
 datagrid_template: "{{ resources_dir }}/datagrid-service-template.yml"
 
 datagrid_image: registry.redhat.io/jboss-datagrid-7/datagrid73-openshift
@@ -9,5 +7,3 @@ datagrid_image: registry.redhat.io/jboss-datagrid-7/datagrid73-openshift
 number_of_instances: 3
 total_container_memory: 512
 total_container_storage: 1
-application_user: demo
-application_password: demo

@@ -18,8 +18,8 @@
     -p NUMBER_OF_INSTANCES={{ number_of_instances }} \
     -p TOTAL_CONTAINER_MEM={{ total_container_memory }} \
     -p TOTAL_CONTAINER_STORAGE={{ total_container_storage }} \
-    -p APPLICATION_USER={{ application_user }} \
-    -p APPLICATION_PASSWORD={{ application_password }} \
+    -p APPLICATION_USER={{ datagrid_application_user }} \
+    -p APPLICATION_PASSWORD={{ datagrid_application_password }} \
     | {{ openshift_cli }} create -f - -n {{ namespace }}
   when: result.results.stderr is defined and result.results.stderr != ""
 

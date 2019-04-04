@@ -1,0 +1,35 @@
+---
+
+application_name: mission-service
+
+service_account: mission-service
+
+application_configmap: mission-service
+application_configmap_key: app-config.properties
+logging_configmap: mission-service-logging
+
+application_image: redhat-openjdk18-openshift:1.5
+application_image_namespace: openshift
+
+buildconfig_name: "{{ application_name }}-binary"
+buildconfig_template: mission-service-binary-buildconfig.yml
+
+imagestream_name: "{{ application_name }}"
+imagestream_template: mission-service-imagestream.yml
+
+application_template: mission-service.yml
+
+kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
+kafka_bootstrap_port: 9092
+kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
+kafka_groupid: mock-mission-service
+
+kafka_create_mission_command_topic: topic-mission-command
+kafka_mission_updated_event_topic: topic-mission-event
+
+datagrid_service: "{{ datagrid_application_name }}.{{ namespace_datagrid }}.svc"
+datagrid_port: 11222
+
+map_token: pk.eyJ1IjoibWVjaGV2YXJyaWEiLCJhIjoiY2pxbXNuMXF0MGwzNTQ5bzJwNGtyMTRqdyJ9.WZfALlPxuOveabQDrroLcQ
+
+logging_style: dev

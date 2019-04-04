@@ -1,0 +1,110 @@
+---
+
+- name: create {{ service_account }} service account for {{ application_name }} application
+  oc_serviceaccount:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ service_account }}"
+    namespace: "{{ namespace }}"
+
+- name: give cluster view privileges to {{ service_account }} service account
+  oc_adm_policy_user:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    resource_kind: role
+    resource_name: view
+    user: "system:serviceaccount:{{ namespace }}:{{ service_account }}"
+    namespace: "{{ namespace }}"
+    rolebinding_name: "{{ service_account }}-view"
+
+- name: copy {{ application_configmap }} configmap template
+  template: 
+    src: "{{ resources_dir }}/application.properties"
+    dest: "{{ work_dir }}/application.properties"
+
+- name: create {{ application_configmap }} application configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ application_configmap }}"
+    namespace: "{{ namespace }}"
+    from_file:
+      dir: "{{ work_dir }}/application.properties"
+
+# logging configmap
+- name: set logging template fact
+  set_fact:
+    logging_configmap_template: logback.xml
+
+- name: set logging template fact
+  set_fact:
+    logging_configmap_template: logback-dev.xml
+  when: >
+    logging_style is defined and logging_style == "dev"
+
+- name: copy {{ logging_configmap }} configmap template
+  template: 
+    src: "{{ resources_dir }}/{{ logging_configmap_template }}" 
+    dest: "{{ work_dir }}/logback.xml"
+
+- name: create {{ logging_configmap }} configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    name: "{{ logging_configmap }}"
+    from_file:
+      logback.xml: "{{ work_dir }}/logback.xml"
+
+- name: copy build config template
+  template:
+    src: "{{ resources_dir }}/{{ buildconfig_template }}"
+    dest: "{{ work_dir }}/{{ buildconfig_template }}"
+
+- name: create build config
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    kind: buildconfig
+    name: "{{ buildconfig_name }}"
+    files:
+      - "{{ work_dir }}/{{ buildconfig_template }}"
+
+- name: copy imagestream template
+  template:
+    src: "{{ resources_dir }}/{{ imagestream_template }}"
+    dest: "{{ work_dir }}/{{ imagestream_template }}"
+
+- name: create output imagestream
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    kind: imagestream
+    name: "{{ imagestream_name }}"
+    files:
+      - "{{ work_dir }}/{{ imagestream_template }}"
+
+- name: copy application template
+  template:
+    src: "{{ resources_dir }}/{{ application_template }}"
+    dest: "{{ work_dir }}/{{ application_template }}"
+
+- name: check if {{ application_name }} application is deployed
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    namespace: "{{ namespace }}"
+    name: "{{ application_name }}"
+    kind: dc
+  register: result
+
+- name: deploy {{ application_name }} application
+  oc_list:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/{{ application_template }}"
+  when: result.results.stderr is defined and result.results.stderr != ""
