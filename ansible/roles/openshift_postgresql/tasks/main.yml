@@ -70,3 +70,13 @@
     files:
       - "{{ work_dir }}/postgresql.yml"
   when: result.results.stderr is defined and result.results.stderr != ""
+
+- name: wait until postgresql database is up and running
+  shell: "{{ openshift_cli }} get dc {{ postgresql_application_name }} -o template --template={{ json_template }} -n {{ namespace }}"
+  vars:
+    json_template: '\{\{.status.readyReplicas\}\}'
+  register: result
+  until: result.stdout == "1"
+  retries: 10
+  delay: 30
+  changed_when: false
