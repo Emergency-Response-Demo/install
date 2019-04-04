@@ -30,6 +30,7 @@ kafka_groupid: incident-service
 kafka_consumer_concurrency: 5
 
 kafka_incident_reported_event_topic: topic-incident-event
+kafka_update_incident_command_topic: topic-incident-command
 
 narayana_pool_max_total: 20
 
