@@ -31,3 +31,11 @@
     name: "{{ datagrid_application_name }}"
     namespace: "{{ namespace }}"
     kind: secret
+
+- name: delete service-certs secret
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "service-certs"
+    namespace: "{{ namespace }}"
+    kind: secret
