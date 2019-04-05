@@ -1,0 +1,37 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    build: redhat-sso73-openshift-theme
+  name: {{ theme_build_name }}
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: '{{ theme_build_image }}:{{ theme_build_image_tag }}'
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    git:
+      uri: '{{ theme_build_source }}'
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: '{{ theme_build_imagestream }}:{{ theme_build_imagestream_tag }}'
+        namespace: {{ theme_build_imagestream_namespace }}
+    type: Source
+  successfulBuildsHistoryLimit: 5
+  triggers:
+    - github:
+        secret: kcDo2wWoTadyoq2IKfM6
+      type: GitHub
+    - generic:
+        secret: P9RpbU_lXUGj8XzN2AQY
+      type: Generic
+    - type: ConfigChange
+    - type: ImageChange

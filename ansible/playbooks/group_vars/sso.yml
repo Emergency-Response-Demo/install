@@ -1,0 +1,5 @@
+---
+
+namespace_sso: "{{ project_name }}"
+
+sso_build_theme_image: true

@@ -1,0 +1,97 @@
+---
+
+- name: delete {{ sso_application_name }} route
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ sso_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: route
+
+- name: delete {{ sso_application_name }} service
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ sso_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: service
+
+- name: delete {{ sso_application_name }}-ping service
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ sso_application_name }}-ping"
+    namespace: "{{ namespace }}"
+    kind: service
+
+- name: delete {{ sso_application_name }} dc
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ sso_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: dc
+
+- name: delete {{ sso_application_name }}-postgresql service
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ sso_application_name }}-postgresql"
+    namespace: "{{ namespace }}"
+    kind: service
+
+- name: delete {{ sso_application_name }}-postgresql dc
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ sso_application_name }}-postgresql"
+    namespace: "{{ namespace }}"
+    kind: dc
+
+- name: delete {{ sso_application_name }}-postgresql-claim pvc
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ sso_application_name }}-postgresql-claim"
+    namespace: "{{ namespace }}"
+    kind: pvc
+
+- name: delete {{ theme_build_name }} bc
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ theme_build_name }}"
+    namespace: "{{ namespace }}"
+    kind: bc
+
+- name: delete {{ theme_build_image }} is
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ theme_build_image }}"
+    namespace: "{{ namespace }}"
+    kind: is
+
+- name: delete {{sso_application_name }}-x509-https-secret secret
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{sso_application_name }}-x509-https-secret"
+    namespace: "{{ namespace }}"
+    kind: secret
+
+- name: delete {{sso_application_name }}-x509-jgroups-secret secret
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{sso_application_name }}-x509-jgroups-secret"
+    namespace: "{{ namespace }}"
+    kind: secret
+
+- name: delete client configmap
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    namespace: "{{ namespace }}"
+    name: "{{ sso_config_configmap }}"
+    kind: configmap

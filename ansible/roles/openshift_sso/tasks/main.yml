@@ -1,0 +1,170 @@
+---
+
+- name: copy theme build template to work directory
+  template:
+    src: "{{ theme_build_template }}"
+    dest: "{{ work_dir }}/theme-buildconfig.yml"
+
+- name: install theme-buildconfig
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ theme_build_name }}"
+    namespace: "{{ namespace }}"
+    kind: bc
+    files:
+      - "{{ work_dir }}/theme-buildconfig.yml"
+
+- name: copy theme imagestream template to work directory
+  template:
+    src: "{{ theme_build_imagestream_template }}"
+    dest: "{{ work_dir }}/theme-imagestream.yml"
+
+- name: install theme-buildconfig image stream
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ theme_build_image }}"
+    namespace: "{{ namespace }}"
+    kind: is
+    files:
+      - "{{ work_dir }}/theme-imagestream.yml"
+
+- name: check if sso is deployed
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ sso_application_name }}"
+    namespace: "{{namespace }}"
+    kind: dc
+  register: result
+
+- name: deploy sso
+  shell: |
+    {{ openshift_cli }} process -f {{ sso_template }} \
+    -p APPLICATION_NAME={{ sso_application_name }} \
+    -p DB_DATABASE={{ postgresql_database }} \
+    -p DB_MIN_POOL_SIZE={{ postgresql_min_pool_size }} \
+    -p DB_MAX_POOL_SIZE={{ postgresql_max_pool_size }} \
+    -p POSTGRESQL_MAX_CONNECTIONS={{ postgresql_max_connections }} \
+    -p POSTGRESQL_SHARED_BUFFERS={{ postgresql_shared_buffers }} \
+    -p DB_USERNAME={{ postgresql_user }} \
+    -p DB_PASSWORD={{ postgresql_password }} \
+    -p VOLUME_CAPACITY={{ postgresql_pv_capacity }} \
+    -p IMAGE_STREAM_NAMESPACE={{ postgresql_is_namespace }} \
+    -p SSO_ADMIN_USERNAME={{ sso_admin_username }} \
+    -p SSO_ADMIN_PASSWORD={{ sso_admin_password }} \
+    -p POSTGRESQL_IMAGE_STREAM_TAG={{ postgresql_version }} \
+    -p MEMORY_LIMIT={{ sso_memory_limit }} \
+    -p SSO_IMAGE_STREAM={{ theme_build_image }} \
+    -p SSO_IMAGE_STREAM_TAG={{ theme_build_image_tag }} \
+    -p SSO_IMAGE_STREAM_NAMESPACE={{ namespace }} \
+    | {{ openshift_cli }} create -f - -n {{ namespace }}
+  when: result.results.stderr is defined and result.results.stderr != ""  
+
+- name: wait for rhsso to be ready
+  shell: "{{ openshift_cli }} get dc {{ sso_application_name }} -o template --template={{ json_template }} -n {{ namespace }}"
+  vars:
+    json_template: '\{\{.status.readyReplicas\}\}'
+  register: result
+  until: result.stdout == "1"
+  retries: 10
+  delay: 30
+  changed_when: false
+
+- name: set rhsso route
+  set_fact:
+    sso_url: https://{{ sso_application_name }}-{{ namespace }}.{{ ocp_domain }}
+
+- name: get admin token
+  uri:
+    url: "{{ sso_url }}/auth/realms/master/protocol/openid-connect/token"
+    method: POST
+    headers:
+      Content-Type: application/x-www-form-urlencoded
+    body: "username={{ sso_admin_username }}&password={{ sso_admin_password }}&grant_type=password&client_id=admin-cli"
+    status_code: 200
+    validate_certs: no
+  register: admin_token_result
+
+- name: set admin token fact
+  set_fact:
+    admin_token: "{{ admin_token_result | json_query('json.access_token') }}"
+
+- name: copy realm template
+  template:
+    src: "{{ sso_realm_template }}"
+    dest: "{{ work_dir }}/{{ sso_realm_id }}.json"
+
+- name: check if {{ sso_realm_id }} exists
+  uri:
+    url: "{{ sso_url }}/auth/admin/realms/{{ sso_realm_id }}"
+    method: GET
+    headers:
+      Authorization: Bearer {{ admin_token }}
+    status_code: 200,404
+    validate_certs: no
+  register: result
+  changed_when: false
+
+- name: create {{ sso_realm_id }} realm
+  uri:
+    url: "{{ sso_url }}/auth/admin/realms"
+    method: POST
+    headers:
+      Authorization: Bearer {{ admin_token }}
+      Content-Type: application/json
+    body: "{{ lookup('file', work_dir + '/' + sso_realm_id + '.json') }}"
+    body_format: json
+    status_code: 201
+    validate_certs: no
+  when: result.status == 404
+
+- name: get rhsso realm certs
+  uri: 
+    url: "{{ sso_url }}/auth/realms/{{ sso_realm_id }}/protocol/openid-connect/certs"
+    validate_certs: false
+    return_content: true
+  register: sso_realm_certs
+  changed_when: false
+
+- name: extract sso realm cert modulus
+  shell: echo "{{ sso_realm_certs.content|from_json|json_query(json_query) }}" | sed s/-/+/g | sed s/_/\\//g
+  vars: 
+    json_query: keys[?kty=='RSA']|[0].n
+  register: sso_realm_certs_modulus
+
+- name: extract sso realm cert exponent
+  shell: echo "{{ sso_realm_certs.content|from_json|json_query(json_query) }}"
+  vars: 
+    json_query: keys[?kty=='RSA']|[0].e
+  register: sso_realm_certs_exponent
+
+- name: extract sso realm public key
+  shell: |
+    echo {{ sso_realm_certs_exponent.stdout }} | base64 -d > {{ work_dir }}/exponent.bin
+    echo '02 03' | xxd -r -p > {{ work_dir }}/mid-header.bin
+    echo 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA' | base64 -d > {{ work_dir }}/header.bin
+    _m={{ sso_realm_certs_modulus.stdout }}
+    _l={{ shell1 }}
+    if [ $_l -eq 2 ]; then _s="$_m"'=='
+    elif [ $_l -eq 3 ]; then _s="$_m"'='
+    else _s="$_m" ; fi
+    echo $_s | base64 -d > {{ work_dir }}/modulus.bin
+    cat {{ work_dir }}/header.bin {{ work_dir }}/modulus.bin {{ work_dir }}/mid-header.bin {{ work_dir }}/exponent.bin > {{ work_dir }}/key.der
+    openssl pkey -inform der -outform pem -pubin -in {{ work_dir }}/key.der -out {{ work_dir }}/key.pem
+    echo $(cat {{ work_dir }}/key.pem | tr -d "\n" | sed 's/-----BEGIN PUBLIC KEY-----//' | sed 's/-----END PUBLIC KEY-----//' ) > {{ work_dir }}/sso_public_key.txt
+    rm {{ work_dir }}/*.bin {{ work_dir }}/*.der {{ work_dir }}/*.pem
+  vars:
+    shell1: !unsafe "$((${#_m} % 4))"
+
+- name: create client configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    name: "{{ sso_config_configmap }}"
+    from_literal:
+      AUTH_URL: "{{ sso_url }}/auth"
+      KEYCLOAK: "true"
+      PUBLIC_KEY: "{{ lookup('file', work_dir + '/sso_public_key.txt') }}"

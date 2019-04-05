@@ -1,0 +1,9 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  labels:
+    build: {{ theme_build_name }}
+  name: {{ theme_build_image }}
+spec:
+  lookupPolicy:
+    local: false
