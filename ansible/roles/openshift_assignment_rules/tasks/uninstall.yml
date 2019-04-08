@@ -1,0 +1,9 @@
+---
+
+- name: delete the build pipeline
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ pipeline_buildconfig_name }}"
+    namespace: "{{ namespace_tools }}"
+    kind: bc
