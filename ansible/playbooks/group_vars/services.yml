@@ -3,3 +3,4 @@
 responder_service_application_name: responder-service
 
 incident_service_git_repo: https://github.com/NAPS-emergency-response-project/incident-service.git
+responder_service_git_repo: https://github.com/NAPS-emergency-response-project/responder-service.git
