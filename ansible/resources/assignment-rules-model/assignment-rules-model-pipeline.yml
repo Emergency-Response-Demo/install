@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  labels:
+    build: {{ pipeline_buildconfig_name }}
+  name: {{ pipeline_buildconfig_name }}
+  annotations:
+spec:
+  runPolicy: Serial
+  strategy:
+    jenkinsPipelineStrategy:
+      jenkinsfile: |-
+        def git_repo = "{{ assignment_rules_model_git_repo }}"
+        def version = ""
+        def groupId = ""
+        def artifactId = ""
+        def commitId = ""
+        def nexusUrl= "{{ nexus_url }}"
+        def nexus
+
+        node ('maven-with-nexus') {
+          stage ('Compile') {
+            echo "Starting build"
+            git url: "${git_repo}", branch: "master"
+            def pom = readMavenPom file: 'pom.xml'
+            version = pom.version
+            groupId = pom.groupId
+            artifactId = pom.artifactId
+            def commitIdFull = sh( script: 'git rev-parse HEAD', returnStdout: true )
+            commitId = commitIdFull[0..8]
+            echo "Building version ${version}, commitId ${commitId}"
+            sh "mvn clean compile -Dcom.redhat.xpaas.repo.redhatga=true"
+          }
+
+          stage ('Unit Tests') {
+            sh "mvn test -Dcom.redhat.xpaas.repo.redhatga=true"
+          }
+
+          stage ('Build Application') {
+            sh "mvn package -DskipTests=true -Dcom.redhat.xpaas.repo.redhatga=true"
+          }
+
+          stage ('Publish to Nexus') {
+            echo "adding server settings to ~/.m2/settings.xml"
+            def xml="    <servers><server><id>releases</id>" + 
+                "<username>deployment</username><password>deployment123</password>" + 
+                "</server><server><id>snapshots</id>" + 
+                "<username>deployment</username><password>deployment123</password>" +
+                "</server></servers>"
+            sh "sed -i 's|<proxies>||' /home/jenkins/.m2/settings.xml"
+            sh "sed -i 's|</proxies>||' /home/jenkins/.m2/settings.xml"
+            sh "sed -i 's|<!-- ### configured http proxy ### -->|${xml}|' /home/jenkins/.m2/settings.xml"
+            sh "cat /home/jenkins/.m2/settings.xml"
+
+            echo "publish version ${version}"
+            if (version.contains('SNAPSHOT')) {
+              sh "mvn deploy -DskipTests=true -Dcom.redhat.xpaas.repo.redhatga=true -DaltDeploymentRepository=snapshots::default::${nexusUrl}/content/repositories/snapshots"
+            } else {
+              sh "mvn deploy -DskipTests=true -Dcom.redhat.xpaas.repo.redhatga=true -DaltDeploymentRepository=releases::default::${nexusUrl}/content/repositories/releases"
+            }
+          }
+        }         
+    type: JenkinsPipeline
+  triggers:
+  - github:
+      secret: {{ github_secret }}
+    type: GitHub
+  - generic:
+      secret: {{ generic_secret }}
+    type: Generic

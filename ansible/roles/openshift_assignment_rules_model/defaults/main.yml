@@ -1,0 +1,10 @@
+---
+
+application_name: assignment-rules-model
+
+pipeline_buildconfig_name: "{{ application_name }}-pipeline"
+pipeline_buildconfig_template: assignment-rules-model-pipeline.yml
+
+nexus_service: "{{ nexus_service_name }}.{{ namespace_tools }}.svc"
+nexus_service_port: 8081
+nexus_url: "http://{{ nexus_service }}:{{ nexus_service_port }}"
