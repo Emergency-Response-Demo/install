@@ -1,0 +1,10 @@
+---
+
+application_name: incident-process
+
+pipeline_buildconfig_name: "{{ application_name }}-pipeline"
+pipeline_buildconfig_template: incident-process-pipeline.yml
+
+nexus_service: "{{ nexus_service_name }}.{{ namespace_tools }}.svc"
+nexus_service_port: 8081
+nexus_url: "http://{{ nexus_service }}:{{ nexus_service_port }}"

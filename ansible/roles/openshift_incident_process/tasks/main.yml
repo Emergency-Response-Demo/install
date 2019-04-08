@@ -1,0 +1,22 @@
+---
+
+- set_fact:
+    github_secret: "{{ lookup('password', work_dir + '/github chars=ascii_letters,digits length=8') }}"
+
+- set_fact:
+    generic_secret: "{{ lookup('password', work_dir + '/generic chars=ascii_letters,digits length=8') }}"    
+
+- name: copy pipeline template
+  template:
+    src: "{{ resources_dir }}/{{ pipeline_buildconfig_template }}"
+    dest: "{{ work_dir }}/{{ pipeline_buildconfig_template }}"
+
+- name: create the {{ pipeline_buildconfig_name }} pipeline in the {{ namespace_tools }} project
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ pipeline_buildconfig_name }}"
+    namespace: "{{ namespace_tools }}"
+    kind: bc
+    files:
+      - "{{ work_dir }}/{{ pipeline_buildconfig_template }}"
