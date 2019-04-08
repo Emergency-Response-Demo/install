@@ -21,6 +21,9 @@ buildconfig_template: incident-service-binary-buildconfig.yml
 imagestream_name: "{{ application_name }}"
 imagestream_template: incident-service-imagestream.yml
 
+pipeline_buildconfig_name: "{{ application_name }}-pipeline"
+pipeline_buildconfig_template: incident-service-pipeline.yml
+
 application_template: incident-service.yml
 
 kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
