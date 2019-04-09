@@ -41,6 +41,9 @@ service_account: process-service
 buildconfig_template: process-service-binary-buildconfig.yml
 buildconfig_name: "{{ application_name }}-binary"
 
+pipeline_buildconfig_name: "{{ application_name }}-pipeline"
+pipeline_buildconfig_template: process-service-pipeline.yml
+
 imagestream_template: process-service-imagestream.yml
 imagestream_name: "{{ application_name }}"
 

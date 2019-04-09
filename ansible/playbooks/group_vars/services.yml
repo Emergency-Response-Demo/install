@@ -7,3 +7,4 @@ responder_service_git_repo: https://github.com/NAPS-emergency-response-project/r
 incident_process_git_repo: https://github.com/NAPS-emergency-response-project/incident-process-kjar.git
 assignment_rules_git_repo: https://github.com/NAPS-emergency-response-project/cajun-navy-rules.git
 assignment_rules_model_git_repo: https://github.com/NAPS-emergency-response-project/cajun-navy-rules-model.git
+process_service_git_repo: https://github.com/NAPS-emergency-response-project/process-service.git
