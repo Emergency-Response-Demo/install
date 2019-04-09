@@ -8,3 +8,4 @@ incident_process_git_repo: https://github.com/NAPS-emergency-response-project/in
 assignment_rules_git_repo: https://github.com/NAPS-emergency-response-project/cajun-navy-rules.git
 assignment_rules_model_git_repo: https://github.com/NAPS-emergency-response-project/cajun-navy-rules-model.git
 process_service_git_repo: https://github.com/NAPS-emergency-response-project/process-service.git
+mission_service_git_repo: https://github.com/NAPS-emergency-response-project/mission-service.git

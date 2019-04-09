@@ -14,6 +14,9 @@ application_image_namespace: openshift
 buildconfig_name: "{{ application_name }}-binary"
 buildconfig_template: mission-service-binary-buildconfig.yml
 
+pipeline_buildconfig_name: "{{ application_name }}-pipeline"
+pipeline_buildconfig_template: mission-service-pipeline.yml
+
 imagestream_name: "{{ application_name }}"
 imagestream_template: mission-service-imagestream.yml
 
