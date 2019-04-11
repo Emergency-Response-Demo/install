@@ -1,91 +1,24 @@
 Ansible playbooks to provision the naps-emergency-response-project to OpenShift.
 
 Prerequisites:
-* You need to be logged in into the Openshift cluster with access to the project namespace
 * `oc` client on the PATH
+* logged in into the cluster with a user with cluster admin rights
 
-#### Global variables:
-* namespace: defaults to `naps-emergency-response`
+#### Installing the NAPS demo
 
-#### Postgresql
-
-To provision: 
+To provision all the components:
 ```
-$ ansible-playbook playbooks/postgresql
+$ ansible-playbook playbooks/install
 ```
+Notes:
+* The user currently logged in must have cluster admin rights
+* The user `developer` is given project admin ights to the  projects created by the playbook: `naps-emergency-response`, `tools-naps`.
+  If you want to substitute the `developer` user by another user, set the `cluster_provisioner` parameter when running the install playbook:
+  ```
+  $ ansible-playbook playbooks/install -e cluster_provisioner=user1
+  ```
 
-To unprovision:
+To uninstall:
 ```
-$ ansible-playbook playbooks/postgresql -e ACTION=uninstall"
-```
-
-Variables:
-* postgresql user: defaults to `naps`
-* postgresql password: defaults to `naps`
-* postgresql database: defaults to `naps_emergency_response`
-
-#### PgAdmin4
-
-PgAdmin4 is a web-based administration and development tool for Postgresql.
-
-PgAdmin4 is deployed in the `Tools` namespace.
-
-To provision: 
-```
-$ ansible-playbook playbooks/pgadmin4
-```
-
-To unprovision:
-```
-$ ansible-playbook playbooks/pgadmin4 -e ACTION=uninstall"
-```
-
-#### Responder service
-
-The playbook creates the following artifacts:
-* buildconfig for s2i build and binary builds
-* serviceaccount and rolebinding (cluster view access)
-* imagestream for images created by the build
-* configmap for application configuration properties
-* deploymentconfig, service and route for the application
-
-To provision:
-```
-$ ansible-playbook playbooks/responder-service
-```
-
-To unprovision:
-```
-$ ansible-playbook playbooks/responder-service -e ACTION=uninstall
-```
-
-To start a binary build (without using the fabric8 maven plugin):
-```
-$ mvn clean package
-$ oc start-build responder-service-s2i --target/responder-service-0.0.1-SNAPSHOT.jar
-```
-
-#### Incident service
-
-The playbook creates the following artifacts:
-* buildconfig for s2i build and binary builds
-* serviceaccount and rolebinding (cluster view access)
-* imagestream for images created by the build
-* configmap for application configuration properties
-* deploymentconfig, service and route for the application
-
-To provision:
-```
-$ ansible-playbook playbooks/incident-service
-```
-
-To unprovision:
-```
-$ ansible-playbook playbooks/incident-service -e ACTION=uninstall
-```
-
-To start a binary build (without using the fabric8 maven plugin):
-```
-$ mvn clean package
-$ oc start-build incident-service-s2i --target/incident-service-0.0.1-SNAPSHOT.jar
+$ ansible-playbook playbooks/install -e ACTION=uninstall
 ```
