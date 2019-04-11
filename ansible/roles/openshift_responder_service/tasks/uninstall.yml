@@ -12,7 +12,7 @@
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ _application_name }}"
+    name: "{{ application_name }}"
     namespace: "{{ namespace }}"
     kind: service
 
