@@ -13,8 +13,8 @@
 
   tasks:
     - set_fact:
-       resources_dir: "{{ resources_base_dir }}/incident-service"
-       work_dir_name: incident-service
+        resources_dir: "{{ resources_base_dir }}/incident-service"
+        work_dir_name: incident-service
     - include_role:
         name: ../roles/openshift_incident_service
       when: >

@@ -13,8 +13,8 @@
 
   tasks:
     - set_fact:
-       resources_dir: "{{ resources_base_dir }}/responder-service"
-       work_dir_name: responder-service
+        resources_dir: "{{ resources_base_dir }}/responder-service"
+        work_dir_name: responder-service
     - include_role:
         name: ../roles/openshift_responder_service
       when: >

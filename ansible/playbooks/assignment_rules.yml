@@ -11,8 +11,8 @@
 
   tasks:
     - set_fact:
-       resources_dir: "{{ resources_base_dir }}/assignment-rules"
-       work_dir_name: assignment-rules
+        resources_dir: "{{ resources_base_dir }}/assignment-rules"
+        work_dir_name: assignment-rules
     - include_role:
         name: ../roles/openshift_assignment_rules
       when: >

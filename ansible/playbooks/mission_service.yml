@@ -14,8 +14,8 @@
 
   tasks:
     - set_fact:
-       resources_dir: "{{ resources_base_dir }}/mission-service"
-       work_dir_name: mission-service
+        resources_dir: "{{ resources_base_dir }}/mission-service"
+        work_dir_name: mission-service
     - include_role:
         name: ../roles/openshift_mission_service
       when: >
