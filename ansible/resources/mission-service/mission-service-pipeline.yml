@@ -71,7 +71,7 @@ spec:
             openshift.withCluster() {
               openshift.withProject( "${namespace_app}") {  
                 openshift.tag("${namespace_jenkins}/${app_imagestream}:latest", "${namespace_app}/${app_imagestream}:latest")
-                openshift.tag("${namespace_jenkins}/${app_imagestream}:latest", "${namespace_app}/${app_imagestream}:${commitId}")
+                openshift.tag("${namespace_jenkins}/${app_imagestream}:latest", "${namespace_jenkins}/${app_imagestream}:${commitId}")
                 openshift.tag("${namespace_app}/${app_imagestream}:latest", "${namespace_app}/${app_imagestream}:${commitId}")
                 def dc_app = openshift.selector("dc", "${app_name}")
                 timeout (5) {
