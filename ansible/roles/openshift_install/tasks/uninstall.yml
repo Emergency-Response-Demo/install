@@ -200,3 +200,45 @@
     namespace: "{{ namespace_services }}"
     rolebinding_name: "{{ cluster_provisioner }}-admin"
     resource_name: admin
+
+- name: delete namespace services
+  oc_project:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ namespace_services }}"
+
+- name: delete namespace postgresql
+  oc_project:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ namespace_postgresql }}"
+
+- name: delete namespace tools
+  oc_project:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ namespace_tools }}"
+
+- name: delete namespace datagrid
+  oc_project:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ namespace_datagrid }}"
+
+- name: delete namespace kafka cluster
+  oc_project:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ namespace_kafka_cluster }}"
+
+- name: delete namespace sso
+  oc_project:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ namespace_sso }}"
+
+- name: delete namespace kafka operator
+  oc_project:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ namespace_strimzi_operator }}"
