@@ -1,6 +1,6 @@
 ---
 
-application_name: incident-process
+application_name: "{{ incident_process_application_name }}"
 
 pipeline_buildconfig_name: "{{ application_name }}-pipeline"
 pipeline_buildconfig_template: incident-process-pipeline.yml

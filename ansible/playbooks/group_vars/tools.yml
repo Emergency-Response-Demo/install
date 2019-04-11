@@ -1,5 +1,5 @@
 ---
 
-namespace_tools: tools
+namespace_tools: tools-naps
 
 nexus_service_name: nexus

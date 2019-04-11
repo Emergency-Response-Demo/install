@@ -5,7 +5,7 @@
   oc_obj:
     state: list
     oc_binary: "{{ openshift_cli }}"
-    name: "{{ postgresql_service_name }}"
+    name: "{{ process_service_postgresql_service_name }}"
     namespace: "{{ namespace }}"
     kind: dc
   register: result

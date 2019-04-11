@@ -1,0 +1,202 @@
+---
+
+- name: uninstall responder service
+  import_role:
+    name: openshift_responder_service
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/responder-service"
+    work_dir_name: responder-service
+
+- name: uninstall process service
+  import_role:
+    name: openshift_process_service
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/process-service"
+    work_dir_name: process-service
+
+- name: uninstall mission service
+  import_role:
+    name: openshift_mission_service
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/mission-service"
+    work_dir_name: mission-service
+
+- name: uninstall incident service
+  import_role:
+    name: openshift_incident_service
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/incident-service"
+    work_dir_name: incident-service
+
+- name: uninstall incident process
+  import_role:
+    name: openshift_incident_process
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/incident-process"
+    work_dir_name: incident-process
+
+- name: uninstall assignment rules
+  import_role:
+    name: openshift_assignment_rules
+    tasks_from: uninstall
+  vars:
+    resources_dir: "{{ resources_base_dir }}/assignment-rules"
+    work_dir_name: assignment-rules
+
+- name: uninstall assignment rules model
+  import_role:
+    name: openshift_assignment_rules_model
+    tasks_from: uninstall
+  vars:
+    resources_dir: "{{ resources_base_dir }}/assignment-rules-model"
+    work_dir_name: assignment-rules-model
+
+- name: uninstall datagrid
+  import_role:
+    name: openshift_datagrid
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_datagrid }}"
+    resources_dir: "{{ resources_base_dir }}/datagrid"
+    work_dir_name: datagrid
+
+- name: uninstall sso
+  import_role:
+    name: openshift_sso
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_sso }}"
+    resources_dir: "{{ resources_base_dir }}/sso"
+    work_dir_name: sso
+
+- name: uninstall postgresql
+  import_role:
+    name: openshift_postgresql
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_postgresql }}"
+    resources_dir: "{{ resources_base_dir }}/postgresql"
+    work_dir_name: postgresql
+
+- name: uninstalll pgadmin4
+  import_role:
+    name: openshift_pgadmin4
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_tools }}"
+    resources_dir: "{{ resources_base_dir }}/pgadmin4"
+    work_dir_name: pgadmin4
+
+- name: uninstall nexus
+  import_role:
+    name: openshift_nexus
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_tools }}"
+    resources_dir: "{{ resources_base_dir }}/nexus"
+    work_dir_name: nexus
+
+- name: uninstall jenkins
+  import_role:
+    name: openshift_jenkins
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_tools }}"
+    work_dir_name: jenkins
+    resources_dir: "{{ resources_base_dir }}/jenkins"
+
+- name: uninstall kafka topics
+  import_role:
+    name: openshift_kafka_topics
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_kafka_cluster }}"
+    resources_dir: "{{ resources_base_dir }}/strimzi"
+    work_dir_name: kafka-topics
+
+- name: uninstall kafka cluster
+  import_role:
+    name: openshift_kafka_cluster
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_kafka_cluster }}"
+    work_dir_name: kafka-cluster
+
+- name: uninstall kafka operator
+  import_role:
+    name: openshift_strimzi_operator
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_operator }}"
+    resources_dir: "{{ resources_base_dir }}/strimzi"
+    work_dir_name: strimzi-operator
+
+- name: remove user {{ cluster_provisioner }} as project admin in namespace kafka cluster
+  oc_adm_policy_user:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    resource_kind: role
+    user: "{{ cluster_provisioner }}"
+    namespace: "{{ namespace_kafka_cluster }}"
+    rolebinding_name: "{{ cluster_provisioner }}-admin"
+    resource_name: admin
+
+- name: remove user {{ cluster_provisioner }} as project admin in namespace tools
+  oc_adm_policy_user:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    resource_kind: role
+    user: "{{ cluster_provisioner }}"
+    namespace: "{{ namespace_tools }}"
+    rolebinding_name: "{{ cluster_provisioner }}-admin"
+    resource_name: admin
+
+- name: remove user {{ cluster_provisioner }} as project admin in namespace datagrid
+  oc_adm_policy_user:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    resource_kind: role
+    user: "{{ cluster_provisioner }}"
+    namespace: "{{ namespace_datagrid }}"
+    rolebinding_name: "{{ cluster_provisioner }}-admin"
+    resource_name: admin
+
+- name: remove user {{ cluster_provisioner }} as project admin in namespace sso
+  oc_adm_policy_user:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    resource_kind: role
+    user: "{{ cluster_provisioner }}"
+    namespace: "{{ namespace_sso }}"
+    rolebinding_name: "{{ cluster_provisioner }}-admin"
+    resource_name: admin
+
+- name: remove user {{ cluster_provisioner }} as project admin in namespace postgresql
+  oc_adm_policy_user:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    resource_kind: role
+    user: "{{ cluster_provisioner }}"
+    namespace: "{{ namespace_postgresql }}"
+    rolebinding_name: "{{ cluster_provisioner }}-admin"
+    resource_name: admin
+
+- name: reove user {{ cluster_provisioner }} as project admin in namespace services
+  oc_adm_policy_user:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    resource_kind: role
+    user: "{{ cluster_provisioner }}"
+    namespace: "{{ namespace_services }}"
+    rolebinding_name: "{{ cluster_provisioner }}-admin"
+    resource_name: admin

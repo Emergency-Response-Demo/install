@@ -10,8 +10,8 @@
 
   tasks:
     - set_fact:
-        work_dir_name: jenkins
         namespace: "{{ namespace_tools }}"
+        work_dir_name: jenkins
         resources_dir: "{{ resources_base_dir }}/jenkins"
     - include_role:
         name: openshift_jenkins

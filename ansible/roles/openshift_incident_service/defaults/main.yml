@@ -1,6 +1,6 @@
 ---
 
-application_name: incident-service
+application_name: "{{ incident_service_application_name }}"
 
 service_account: incident-service
 

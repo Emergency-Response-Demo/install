@@ -2,12 +2,10 @@
 
 cluster_provisioner: developer
 
-namespace_operator: kafka-operator
+namespace_operator: kafka-operator-naps
 namespace_kafka_cluster: "{{ project_name }}"
 
 strimzi_cluster_operator: strimzi-cluster-operator
-
-resources_dir: "{{ resources_base_dir }}/strimzi"
 
 uninstall_delete_project: false
 uninstall_cluster_resources: false

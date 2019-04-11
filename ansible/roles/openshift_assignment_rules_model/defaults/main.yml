@@ -1,6 +1,6 @@
 ---
 
-application_name: assignment-rules-model
+application_name: "{{ assignment_rules_model_application_name }}"
 
 pipeline_buildconfig_name: "{{ application_name }}-pipeline"
 pipeline_buildconfig_template: assignment-rules-model-pipeline.yml

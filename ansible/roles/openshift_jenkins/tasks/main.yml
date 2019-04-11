@@ -2,7 +2,7 @@
 
 - name: set nexus url fact
   set_fact: 
-    nexus_url: "http://{{ nexus_service}}:{{ nexus_service_port }}/content/groups/public"
+    nexus_url: "http://{{ nexus_service}}:{{ nexus_service_port }}"
   when: use_nexus|bool == true
 
 - name: copy template for {{ jenkins_maven_slave_configmap }} configmap
@@ -44,3 +44,13 @@
     resource: "{{ jenkins_service }}"
     resource_template: "{{ work_dir }}/{{ jenkins_template }}"
     resource_namespace: "{{ namespace }}"
+
+- name: wait until jenkins is up and running
+  shell: "{{ openshift_cli }} get dc {{ jenkins_service }} -o template --template={{ json_template }} -n {{ namespace }}"
+  vars:
+    json_template: '\{\{.status.readyReplicas\}\}'
+  register: result
+  until: result.stdout == "1"
+  retries: 20
+  delay: 30
+  changed_when: false

@@ -1,7 +1,7 @@
 ---
 
 # deploy datagrid
-- name: check if Datagrid is deployed
+- name: check if datagrid is deployed
   oc_obj:
     state: list
     oc_binary: "{{ openshift_cli }}"
@@ -10,7 +10,7 @@
     kind: statefulset
   register: result
 
-- name: deploy Datagrid
+- name: deploy datagrid
   shell: |
     {{ openshift_cli }} process -f {{ datagrid_template }} \
     -p APPLICATION_NAME={{ datagrid_application_name }} \

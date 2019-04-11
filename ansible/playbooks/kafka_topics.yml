@@ -10,6 +10,8 @@
 
   tasks:
     - set_fact:
+        namespace: "{{ namespace_kafka_cluster }}"
+        resources_dir: "{{ resources_base_dir }}/strimzi"
         work_dir_name: kafka-topics
     - include_role:
         name: ../roles/openshift_kafka_topics

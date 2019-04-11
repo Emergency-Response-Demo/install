@@ -1,6 +1,6 @@
 ---
 
-application_name: mission-service
+application_name: "{{ mission_service_application_name }}"
 
 service_account: mission-service
 

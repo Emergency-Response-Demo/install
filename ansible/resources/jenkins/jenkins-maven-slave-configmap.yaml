@@ -50,7 +50,7 @@ data:
 {% if use_nexus|bool == true %}
             <org.csanchez.jenkins.plugins.kubernetes.model.KeyValueEnvVar>
               <key>MAVEN_MIRROR_URL</key>
-              <value>{{ nexus_url }}</value>
+              <value>{{ nexus_url }}/content/groups/public</value>
             </org.csanchez.jenkins.plugins.kubernetes.model.KeyValueEnvVar>
 {% endif %}
           </envVars>

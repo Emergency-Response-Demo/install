@@ -1,5 +1,7 @@
 ---
 
+namespace_postgresql: "{{ project_name }}"
+
 postgresql_init_scripts:
   - https://raw.githubusercontent.com/NAPS-emergency-response-project/sql-scripts/master/naps_emergency_response_with_data.sql
 
@@ -8,5 +10,4 @@ postgresql_password: naps
 postgresql_database: naps_emergency_response
 
 postgresql_application_name: postgresql
-namespace_postgresql: "{{ namespace }}"
 postgresql_credentials_secret: "{{ postgresql_application_name }}-credentials"

@@ -13,6 +13,7 @@
 
   tasks:
     - set_fact:
+        namespace: "{{ namespace_services }}"
         resources_dir: "{{ resources_base_dir }}/responder-service"
         work_dir_name: responder-service
     - include_role:

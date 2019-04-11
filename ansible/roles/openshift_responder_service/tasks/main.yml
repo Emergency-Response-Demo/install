@@ -24,12 +24,12 @@
     namespace: "{{ namespace_postgresql }}"
     decode: true
     name: "{{ postgresql_credentials_secret }}"
-  register: postgresql_credentials_secret
+  register: postgresql_credentials
 
 - set_fact:
-    database_user: "{{ postgresql_credentials_secret.results.decoded[\"database-user\"] }}"
-    database_password: "{{ postgresql_credentials_secret.results.decoded[\"database-password\"] }}"
-    database_name: "{{ postgresql_credentials_secret.results.decoded[\"database-name\"] }}"
+    database_user: "{{ postgresql_credentials.results.decoded[\"database-user\"] }}"
+    database_password: "{{ postgresql_credentials.results.decoded[\"database-password\"] }}"
+    database_name: "{{ postgresql_credentials.results.decoded[\"database-name\"] }}"
 
 - name: copy application properties template
   template:

@@ -1,6 +1,6 @@
 ---
 
-application_name: process-service
+application_name: "{{ process_service_application_name }}"
 
 application_configmap: process-service
 logging_configmap: process-service-logging
@@ -19,16 +19,16 @@ kafka_responder_updated_event_topic: topic-responder-event
 kafka_update_incident_command_topic: topic-incident-command
 
 
-postgresql_template: "{{ resources_dir }}/postgresql-persistent-template.yaml"
-postgresql_service_name: process-service-postgresql
-postgresql_init_configmap: "{{ postgresql_service_name }}-init"
-postgresql_username: rhpam
-postgresql_password: rhpam
-postgresql_database: rhpam
-postgresql_max_connections: 100
-postgresql_max_prepared_transactions: 100
+process_service_postgresql_template: "{{ resources_dir }}/postgresql-persistent-template.yaml"
+process_service_postgresql_service_name: process-service-postgresql
+process_service_postgresql_init_configmap: "{{ process_service_postgresql_service_name }}-init"
+process_service_postgresql_username: rhpam
+process_service_postgresql_password: rhpam
+process_service_postgresql_database: rhpam
+process_service_postgresql_max_connections: 100
+process_service_postgresql_max_prepared_transactions: 100
 
-postgresql_host: "{{ postgresql_service_name }}"
+process_service_postgresql_host: "{{ process_service_postgresql_service_name }}"
 
 narayana_dbcp_max_total: 20
 
