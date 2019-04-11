@@ -20,11 +20,7 @@ kafka_update_incident_command_topic: topic-incident-command
 
 
 process_service_postgresql_template: "{{ resources_dir }}/postgresql-persistent-template.yaml"
-process_service_postgresql_service_name: process-service-postgresql
 process_service_postgresql_init_configmap: "{{ process_service_postgresql_service_name }}-init"
-process_service_postgresql_username: rhpam
-process_service_postgresql_password: rhpam
-process_service_postgresql_database: rhpam
 process_service_postgresql_max_connections: 100
 process_service_postgresql_max_prepared_transactions: 100
 

@@ -1,0 +1,32 @@
+---
+
+application_name: "{{ process_viewer_application_name }}"
+
+application_configmap: process-viewer
+logging_configmap: process-viewer-logging
+
+service_account: process-viewer
+
+application_properties: application-config.yaml
+
+application_image: redhat-openjdk18-openshift:1.4
+application_image_namespace: openshift
+
+buildconfig_name: "{{ application_name }}-binary"
+buildconfig_template: process-viewer-binary-buildconfig.yml
+
+imagestream_name: "{{ application_name }}"
+imagestream_template: process-viewer-imagestream.yml
+
+pipeline_buildconfig_name: "{{ application_name }}-pipeline"
+pipeline_buildconfig_template: process-viewer-pipeline.yml
+
+application_template: process-viewer.yml
+
+logging_style: dev
+
+postgresql_host: "{{ process_service_postgresql_service_name}}.{{ project_name }}.svc"
+postgresql_port: 5432
+postgresql_database: "{{ process_service_postgresql_database }}"
+postgresql_username: "{{ process_service_postgresql_username }}"
+postgresql_password: "{{ process_service_postgresql_password }}"
