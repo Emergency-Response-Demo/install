@@ -6,7 +6,7 @@
     resource_type: serviceaccount
     resource: "{{sa_cluster_operator }}"
     resource_template: "{{ resources_dir }}/cluster-operator/{{ sa_cluster_operator_template }}"
-    resource_namespace: "{{ namespace_operator }}"
+    resource_namespace: "{{ namespace_strimzi_operator }}"
 
 - import_role:
     name: openshift_apply_cluster_resource
@@ -166,4 +166,4 @@
     resource_type: deployment
     resource: "{{ deployment_cluster_operator }}"
     resource_template: "{{ work_dir }}/{{ deployment_cluster_operator_template }}"
-    resource_namespace: "{{ namespace_operator }}"
+    resource_namespace: "{{ namespace_strimzi_operator }}"

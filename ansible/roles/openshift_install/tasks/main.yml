@@ -4,7 +4,7 @@
   import_role:
     name: openshift_strimzi_operator
   vars:
-    namespace: "{{ namespace_operator }}"
+    namespace: "{{ namespace_strimzi_operator }}"
     resources_dir: "{{ resources_base_dir }}/strimzi"
     work_dir_name: strimzi-operator
 

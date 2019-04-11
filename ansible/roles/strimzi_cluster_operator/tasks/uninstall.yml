@@ -6,7 +6,7 @@
     oc_binary: "{{ openshift_cli }}"
     name: "{{ deployment_cluster_operator }}"
     kind: deployment
-    namespace: "{{ namespace_operator }}"
+    namespace: "{{ namespace_strimzi_operator }}"
 
 - name: remove crd {{ crd_kafka }}
   oc_obj:
@@ -92,7 +92,7 @@
   oc_obj:
     state: absent
     oc_binary: "{{ openshift_cli }}"
-    name: "{{ clusterrolebinding_cluster_operator_kafka }}-{{ namespace_operator }}"
+    name: "{{ clusterrolebinding_cluster_operator_kafka }}-{{ namespace_strimzi_operator }}"
     kind: clusterrolebinding
 
 - name: remove clusterrole {{ clusterrole_kafka_broker }}
@@ -107,7 +107,7 @@
   oc_obj:
     state: absent
     oc_binary: "{{ openshift_cli }}"
-    name: "{{ clusterrolebinding_cluster_operator }}-{{ namespace_operator }}"
+    name: "{{ clusterrolebinding_cluster_operator }}-{{ namespace_strimzi_operator }}"
     kind: clusterrolebinding
 
 - name: remove clusterrole {{ clusterrole_cluster_operator_role_global }}
@@ -140,4 +140,4 @@
     oc_binary: "{{ openshift_cli }}"
     name: "{{ sa_cluster_operator }}"
     kind: serviceaccount
-    namespace: "{{ namespace_operator }}"
+    namespace: "{{ namespace_strimzi_operator }}"

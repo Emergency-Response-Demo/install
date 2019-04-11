@@ -21,7 +21,7 @@
   oc_project:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ namespace_operator }}"
+    name: "{{ namespace_strimzi_operator }}"
   when: >
     uninstall_delete_project is defined and
     uninstall_delete_project|bool == True

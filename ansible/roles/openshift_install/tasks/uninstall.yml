@@ -137,7 +137,7 @@
     name: openshift_strimzi_operator
     tasks_from: uninstall
   vars:
-    namespace: "{{ namespace_operator }}"
+    namespace: "{{ namespace_strimzi_operator }}"
     resources_dir: "{{ resources_base_dir }}/strimzi"
     work_dir_name: strimzi-operator
 
@@ -191,7 +191,7 @@
     rolebinding_name: "{{ cluster_provisioner }}-admin"
     resource_name: admin
 
-- name: reove user {{ cluster_provisioner }} as project admin in namespace services
+- name: remove user {{ cluster_provisioner }} as project admin in namespace services
   oc_adm_policy_user:
     state: absent
     oc_binary: "{{ openshift_cli }}"

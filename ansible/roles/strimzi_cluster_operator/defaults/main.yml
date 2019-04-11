@@ -12,13 +12,13 @@ rolebinding_cluster_operator_template: 020-RoleBinding-strimzi-cluster-operator.
 clusterrole_cluster_operator_role_global: strimzi-cluster-operator-global
 clusterrole_cluster_operator_role_global_template: 021-ClusterRole-strimzi-cluster-operator-role.yaml
 
-clusterrolebinding_cluster_operator: "strimzi-cluster-operator-{{ namespace_operator }}"
+clusterrolebinding_cluster_operator: "strimzi-cluster-operator-{{ namespace_strimzi_operator }}"
 clusterrolebinding_cluster_operator_template: 021-ClusterRoleBinding-strimzi-cluster-operator.yaml
 
 clusterrole_kafka_broker: strimzi-kafka-broker
 clusterrole_kafka_broker_template: 030-ClusterRole-strimzi-kafka-broker.yaml
 
-clusterrolebinding_cluster_operator_kafka: "strimzi-cluster-operator-kafka-broker-delegation-{{ namespace_operator }}"
+clusterrolebinding_cluster_operator_kafka: "strimzi-cluster-operator-kafka-broker-delegation-{{ namespace_strimzi_operator }}"
 clusterrolebinding_cluster_operator_kafka_template: 030-ClusterRoleBinding-strimzi-cluster-operator-kafka-broker-delegation.yaml
 
 clusterrole_entity_operator: strimzi-entity-operator
