@@ -11,7 +11,7 @@ Prerequisites:
 
 To provision: 
 ```
-$ ansible-playbook playbooks/postgresql
+$ ansible-playbook playbooks/postgresql.yml
 ```
 
 To unprovision:
@@ -32,7 +32,7 @@ PgAdmin4 is deployed in the `Tools` namespace.
 
 To provision: 
 ```
-$ ansible-playbook playbooks/pgadmin4
+$ ansible-playbook playbooks/pgadmin4.yml
 ```
 
 To unprovision:
@@ -51,7 +51,7 @@ The playbook creates the following artifacts:
 
 To provision:
 ```
-$ ansible-playbook playbooks/responder-service
+$ ansible-playbook playbooks/responder-service.yml
 ```
 
 To unprovision:
@@ -76,7 +76,7 @@ The playbook creates the following artifacts:
 
 To provision:
 ```
-$ ansible-playbook playbooks/incident-service
+$ ansible-playbook playbooks/incident-service.yml
 ```
 
 To unprovision:
