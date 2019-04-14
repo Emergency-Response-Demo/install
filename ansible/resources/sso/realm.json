@@ -504,7 +504,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "https://emergency-console-naps-emergency-response.apps.753d.openshift.opentlc.com/*",
+        "https://{{ emergency_console_application_name }}-{{ namespace_services }}.{{ ocp_domain }}/*",
         "https://localhost:4200/*"
       ],
       "webOrigins": [

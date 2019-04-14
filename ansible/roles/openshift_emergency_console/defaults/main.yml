@@ -1,0 +1,26 @@
+---
+
+application_name: "{{ emergency_console_application_name }}"
+
+service_account: emergency-console
+
+application_image: nodejs:10
+application_image_namespace: openshift
+
+buildconfig_name: "{{ application_name }}"
+buildconfig_template: emergency-console-buildconfig.yml
+
+pipeline_buildconfig_name: "{{ application_name }}-pipeline"
+pipeline_buildconfig_template: emergency-console-pipeline.yml
+
+imagestream_name: "{{ application_name }}"
+imagestream_template: emergency-console-imagestream.yml
+
+application_template: emergency-console.yml
+
+git_url: "{{ emergency_console_git_repo }}"
+git_ref: master
+
+rhsso_config_configmap: "{{ sso_config_configmap }}"
+
+mb_token: "pk.eyJ1IjoibWVjaGV2YXJyaWEiLCJhIjoiY2pxbXNuMXF0MGwzNTQ5bzJwNGtyMTRqdyJ9.WZfALlPxuOveabQDrroLcQ"
