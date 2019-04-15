@@ -1,2 +1,6 @@
 http:
   port: 8080
+kafka:
+  bootstrap-servers: {{ kafka_bootstrap_address }}
+  group-id: {{ kafka_groupid }}
+  topic-incident-assignment-event: {{ kafka_incident_assignment_event_topic }}

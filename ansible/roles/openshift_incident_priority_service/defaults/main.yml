@@ -29,8 +29,8 @@ application_template: incident-priority-service.yml
 kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
 kafka_bootstrap_port: 9092
 kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
-kafka_groupid: incident-priority-service
+kafka_groupid: incident-priority
 
-kafka_incident_assigned_event_topic: topic-incident-event
+kafka_incident_assignment_event_topic: topic-incident-event
 
 logging_style: dev
