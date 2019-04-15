@@ -11,6 +11,7 @@ process_service_application_name: process-service
 responder_service_application_name: responder-service
 emergency_console_application_name: emergency-console
 process_viewer_application_name: process-viewer
+incident_priority_service_application_name: incident-priority-service
 
 incident_service_git_repo: https://github.com/NAPS-emergency-response-project/incident-service.git
 responder_service_git_repo: https://github.com/NAPS-emergency-response-project/responder-service.git
@@ -21,6 +22,7 @@ process_service_git_repo: https://github.com/NAPS-emergency-response-project/pro
 mission_service_git_repo: https://github.com/NAPS-emergency-response-project/mission-service.git
 emergency_console_git_repo: https://github.com/NAPS-emergency-response-project/emergency-console.git
 process_viewer_git_repo: https://github.com/NAPS-emergency-response-project/process-viewer.git
+incident_priority_service_git_repo: https://github.com/NAPS-emergency-response-project/incident-priority-service.git
 
 process_service_postgresql_username: rhpam
 process_service_postgresql_password: rhpam

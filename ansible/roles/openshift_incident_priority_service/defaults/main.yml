@@ -1,0 +1,36 @@
+---
+
+application_name: "{{ incident_priority_service_application_name }}"
+
+service_account: incident-priority-service
+
+application_configmap: incident-priority-service
+logging_configmap: incident-priority-service-logging
+
+application_properties: application-config.yaml
+
+git_url: https://github.com/NAPS-emergency-response-project/incident-priority-service.git
+git_ref: master
+
+application_image: redhat-openjdk18-openshift:1.4
+application_image_namespace: openshift
+
+buildconfig_name: "{{ application_name }}-binary"
+buildconfig_template: incident-priority-service-binary-buildconfig.yml
+
+imagestream_name: "{{ application_name }}"
+imagestream_template: incident-priority-service-imagestream.yml
+
+pipeline_buildconfig_name: "{{ application_name }}-pipeline"
+pipeline_buildconfig_template: incident-priority-service-pipeline.yml
+
+application_template: incident-priority-service.yml
+
+kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
+kafka_bootstrap_port: 9092
+kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
+kafka_groupid: incident-priority-service
+
+kafka_incident_assigned_event_topic: topic-incident-event
+
+logging_style: dev

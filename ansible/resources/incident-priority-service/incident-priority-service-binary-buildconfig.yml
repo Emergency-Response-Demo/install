@@ -1,0 +1,28 @@
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: {{ application_name }}
+  name: {{ buildconfig_name }}
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: {}
+  output:
+    to:
+      kind: ImageStreamTag
+      name: "{{ application_name }}:latest"
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    type: Binary
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: "{{ application_image }}"
+        namespace: "{{ application_image_namespace }}"
+    type: Source
+  successfulBuildsHistoryLimit: 5
+  triggers: []

@@ -1,0 +1,142 @@
+---
+kind: List
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: {{ application_name }}
+      expose: "true"
+    name: {{ application_name }}
+  spec:
+    ports:
+      - name: http
+        port: 8080
+        protocol: TCP
+        targetPort: 8080
+    selector:
+      app: {{ application_name }}
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: {{ application_name }}
+    name: {{ application_name }}
+  spec:
+    port:
+      targetPort: 8080
+    to:
+      kind: Service
+      name: {{ application_name }}
+      weight: 100
+    wildcardPolicy: None
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: {{ application_name }}
+    name: {{ application_name }}
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 2
+    selector:
+      app: {{ application_name }}
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 3600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: {{ application_name }}
+      spec:
+        containers:
+          - env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: JAVA_OPTIONS
+              value: >
+                -Dapplication.configmap={{ application_configmap }}
+                -Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory
+                -Dlogback.configurationFile=/app/logging/logback.xml
+            - name: AB_JOLOKIA_OFF
+              value: 'true'
+            imagePullPolicy: IfNotPresent
+            name: {{ application_name }}
+            ports:
+              - containerPort: 8080
+                name: http
+                protocol: TCP
+              - containerPort: 9779
+                name: prometheus
+                protocol: TCP
+              - containerPort: 8778
+                name: jolokia
+                protocol: TCP
+            livenessProbe:
+              failureThreshold: 3
+              httpGet:
+                path: /health
+                port: 8080
+                scheme: HTTP
+              initialDelaySeconds: 30
+              periodSeconds: 30
+              timeoutSeconds: 3
+            readinessProbe:
+              failureThreshold: 3
+              httpGet:
+                path: /health
+                port: 8080
+                scheme: HTTP
+              initialDelaySeconds: 10
+              periodSeconds: 30
+              timeoutSeconds: 3
+            resources:
+              limits:
+                cpu: 500m
+                memory: 500Mi
+              requests:
+                cpu: 100m
+                memory: 200Mi
+            securityContext:
+              privileged: false
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+              - mountPath: /app/logging
+                name: logging
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: {{ service_account }}
+        serviceAccountName: {{ service_account }}
+        terminationGracePeriodSeconds: 30
+        volumes:
+          - configMap:
+              defaultMode: 420
+              name: {{ logging_configmap }}
+            name: logging
+    triggers:
+      - type: ConfigChange
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+            - {{ application_name }}
+          from:
+            kind: ImageStreamTag
+            name: "{{ application_name }}:latest"
+            namespace: {{ namespace }}
+        type: ImageChange
