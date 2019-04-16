@@ -1,5 +1,23 @@
 ---
 
+- name: make sure we can pull from registry
+  shell: oc secrets link builder imagestreamsecret -n openshift
+
+- name: copy SSO imagestream template to work directory
+  template:
+    src: "{{ resources_dir }}/{{ sso_image_template }}"
+    dest: "{{ work_dir }}/{{ sso_image_template }}"
+
+- name: create SSO imagestream
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ theme_build_imagestream }}"
+    namespace: "{{ theme_build_imagestream_namespace }}"
+    kind: is
+    files:
+      - "{{ work_dir }}/{{ sso_image_template }}"
+
 - name: copy theme build template to work directory
   template:
     src: "{{ theme_build_template }}"

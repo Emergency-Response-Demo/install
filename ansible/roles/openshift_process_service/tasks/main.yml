@@ -87,6 +87,21 @@
     files:
       - "{{ work_dir }}/{{ buildconfig_template }}"
 
+- name: copy openjdk imagestream template to work directory
+  template:
+    src: "{{ resources_dir }}/{{ openjdk_template }}"
+    dest: "{{ work_dir }}/{{ openjdk_template }}"
+
+- name: create opensjdk imagestream
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ openjdk_imagestream_name }}"
+    namespace: "{{ application_image_namespace }}"
+    kind: is
+    files:
+      - "{{ work_dir }}/{{ openjdk_template }}"
+
 - name: copy imagestream template
   template:
     src: "{{ resources_dir }}/{{ imagestream_template }}"

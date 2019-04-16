@@ -47,6 +47,10 @@ imagestream_name: "{{ application_name }}"
 
 application_template: process-service.yml
 
+openjdk_template: openjdk-imagestream.yml
+openjdk_imagestream_name: openjdk18-openshift
+openjdk_imagestream_tag: 1.6
+
 application_image: openjdk18-openshift:1.6
 application_image_namespace: openshift
 

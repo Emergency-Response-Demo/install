@@ -1,0 +1,14 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: {{ openjdk_imagestream_name }}
+  namespace: {{ application_image_namespace }}
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+  - annotations:
+    from:
+      kind: DockerImage
+      name: registry.redhat.io/redhat-openjdk-18/openjdk18-openshift:{{ openjdk_imagestream_tag }}
+    name: "1.6"

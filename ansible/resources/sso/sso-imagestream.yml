@@ -1,0 +1,14 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: {{ theme_build_imagestream }}
+  namespace: {{ theme_build_imagestream_namespace }}
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+  - annotations:
+    from:
+      kind: DockerImage
+      name: registry.redhat.io/redhat-sso-7/sso73-openshift:{{ theme_build_imagestream_tag }}
+    name: "1.0"

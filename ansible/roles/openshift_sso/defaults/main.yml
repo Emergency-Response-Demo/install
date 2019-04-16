@@ -13,6 +13,8 @@ theme_build_imagestream: redhat-sso73-openshift
 theme_build_imagestream_tag: 1.0
 theme_build_imagestream_namespace: openshift
 
+sso_image_template: sso-imagestream.yml
+
 sso_application_name: sso
 sso_template: "{{ resources_dir}}/sso73-x509-postgresql-persistent.yml"
 
