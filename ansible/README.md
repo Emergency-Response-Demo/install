@@ -3,6 +3,7 @@ Ansible playbooks to provision the naps-emergency-response-project to OpenShift.
 Prerequisites:
 * `oc` client on the PATH
 * logged in into the cluster with a user with cluster admin rights
+* A Registry Credentials Secret with access to `registry.redhat.io` named `imagestreamsecret` should exist in the `openshift` Namespace. See https://access.redhat.com/RegistryAuthentication for more details.
 
 #### Installing the NAPS demo
 
