@@ -75,6 +75,7 @@ items:
                 -Dapplication.configmap={{ application_configmap }}
                 -Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory
                 -Dlogback.configurationFile=/app/logging/logback.xml
+                -Dvertx.metrics.options.enabled=true -Dvertx.metrics.options.registryName=prometheus
             - name: AB_JOLOKIA_OFF
               value: 'true'
             imagePullPolicy: IfNotPresent
