@@ -38,3 +38,6 @@ kafka_responder_command_topic: topic-responder-command
 kafka_responder_event_topic: topic-responder-event
 
 logging_style: dev
+
+prometheus_endpoint_path: "/actuator/prometheus"
+prometheus_endpoint_port: 8080

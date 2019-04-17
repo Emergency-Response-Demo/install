@@ -72,3 +72,6 @@ mission_assignment_rules_groupid: com.redhat.cajun.navy
 mission_assignment_rules_artifactid: cajun-navy-rules
 mission_assignment_rules_version: "0.0.1"
 mission_assignment_rules_scannerinterval: "600000"
+
+prometheus_endpoint_path: "/actuator/prometheus"
+prometheus_endpoint_port: 8080

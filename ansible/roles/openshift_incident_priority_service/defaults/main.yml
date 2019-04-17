@@ -34,3 +34,6 @@ kafka_groupid: incident-priority
 kafka_incident_assignment_event_topic: topic-incident-event
 
 logging_style: dev
+
+prometheus_endpoint_path: "/metrics"
+prometheus_endpoint_port: 8080

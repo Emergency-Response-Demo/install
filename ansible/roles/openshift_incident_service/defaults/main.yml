@@ -38,3 +38,6 @@ kafka_update_incident_command_topic: topic-incident-command
 narayana_pool_max_total: 20
 
 logging_style: dev
+
+prometheus_endpoint_path: "/actuator/prometheus"
+prometheus_endpoint_port: 8080
