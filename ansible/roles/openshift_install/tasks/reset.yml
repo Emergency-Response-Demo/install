@@ -64,6 +64,10 @@
 - name: scale down mission service
   shell: "{{ openshift_cli }} scale --replicas=0 dc {{ mission_service_application_name }} -n {{ namespace_services }}"
 
+# scale down incident priority service
+- name: scale down incident priority service
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ incident_priority_service_application_name }} -n {{ namespace_services }}"
+
 # install kafka
 - name: install kafka cluster
   import_role:
@@ -118,9 +122,13 @@
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ incident_service_application_name }} -n {{ namespace_services }}"
 
 # scale up responder service
-- name: scale down responder service
+- name: scale up responder service
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ responder_service_application_name }} -n {{ namespace_services }}"
 
 # scale up mission service
-- name: scale down mission service
+- name: scale up mission service
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ mission_service_application_name }} -n {{ namespace_services }}"
+
+# scale up incident priority service
+- name: scale up incident priority service 
+  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ incident_priority_service_application_name }} -n {{ namespace_services }}"
