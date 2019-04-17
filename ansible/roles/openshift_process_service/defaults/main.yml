@@ -64,6 +64,10 @@ responder_service_scheme: http
 responder_service_url: "{{ responder_service_application_name }}.{{ namespace }}.svc:8080"
 responder_service_available_responders_path: /responders/available
 
+incident_priority_service_scheme: http
+incident_priority_service_url: "{{ incident_priority_service_application_name }}.{{ namespace }}.svc:8080"
+incident_priority_service_incident_priority_path: "/priority/{incidentId}"
+
 mission_assignment_rules_groupid: com.redhat.cajun.navy
 mission_assignment_rules_artifactid: cajun-navy-rules
 mission_assignment_rules_version: "0.0.1"
