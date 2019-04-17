@@ -3,6 +3,9 @@
 - name: make sure we can pull from registry
   shell: oc secrets link builder imagestreamsecret -n openshift
 
+- name: ensure container registry credentials can be mounted in builds
+  shell: oc get secret imagestreamsecret -n openshift --export -o yaml | oc apply -n {{ namespace }} -f -
+
 - name: copy SSO imagestream template to work directory
   template:
     src: "{{ resources_dir }}/{{ sso_image_template }}"
@@ -78,7 +81,7 @@
     -p SSO_IMAGE_STREAM_TAG={{ theme_build_image_tag }} \
     -p SSO_IMAGE_STREAM_NAMESPACE={{ namespace }} \
     | {{ openshift_cli }} create -f - -n {{ namespace }}
-  when: result.results.stderr is defined and result.results.stderr != ""  
+  when: result.results.stderr is defined and result.results.stderr != ""
 
 - name: wait for rhsso to be ready
   shell: "{{ openshift_cli }} get dc {{ sso_application_name }} -o template --template={{ json_template }} -n {{ namespace }}"
@@ -139,7 +142,7 @@
   when: result.status == 404
 
 - name: get rhsso realm certs
-  uri: 
+  uri:
     url: "{{ sso_url }}/auth/realms/{{ sso_realm_id }}/protocol/openid-connect/certs"
     validate_certs: false
     return_content: true
@@ -148,13 +151,13 @@
 
 - name: extract sso realm cert modulus
   shell: echo "{{ sso_realm_certs.content|from_json|json_query(json_query) }}" | sed s/-/+/g | sed s/_/\\//g
-  vars: 
+  vars:
     json_query: keys[?kty=='RSA']|[0].n
   register: sso_realm_certs_modulus
 
 - name: extract sso realm cert exponent
   shell: echo "{{ sso_realm_certs.content|from_json|json_query(json_query) }}"
-  vars: 
+  vars:
     json_query: keys[?kty=='RSA']|[0].e
   register: sso_realm_certs_exponent
 
