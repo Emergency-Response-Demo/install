@@ -6,7 +6,7 @@
     state: absent
     name: "{{ nexus_service_name }}"
     namespace: "{{ namespace }}"
-    kind: deployment
+    kind: deploymentconfig
 
 - name: delete nexus route
   oc_obj:
