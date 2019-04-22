@@ -10,5 +10,5 @@ spec:
   - annotations:
     from:
       kind: DockerImage
-      name: registry.redhat.io/redhat-openjdk-18/openjdk18-openshift:{{ openjdk_imagestream_tag }}
+      name: quay.io/btison/openjdk18-openshift:{{ openjdk_imagestream_tag }}
     name: "1.6"

@@ -92,7 +92,7 @@
     src: "{{ resources_dir }}/{{ openjdk_template }}"
     dest: "{{ work_dir }}/{{ openjdk_template }}"
 
-- name: create opensjdk imagestream
+- name: create openjdk imagestream
   oc_obj:
     state: present
     oc_binary: "{{ openshift_cli }}"
