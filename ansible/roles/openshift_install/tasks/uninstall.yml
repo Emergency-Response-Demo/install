@@ -36,6 +36,15 @@
     resources_dir: "{{ resources_base_dir }}/incident-service"
     work_dir_name: incident-service
 
+- name: uninstall incident process viewer
+  import_role:
+    name: openshift_process_viewer
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/process-viewer"
+    work_dir_name: process-viewer
+
 - name: uninstall incident process
   import_role:
     name: openshift_incident_process

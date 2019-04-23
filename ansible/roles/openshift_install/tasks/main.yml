@@ -102,6 +102,14 @@
     resources_dir: "{{ resources_base_dir }}/incident-service"
     work_dir_name: incident-service
 
+- name: install process viewer
+  import_role:
+    name: openshift_process_viewer
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/process-viewer"
+    work_dir_name: process-viewer
+
 - name: install mission service
   import_role:
     name: openshift_mission_service
