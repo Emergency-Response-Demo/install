@@ -1,0 +1,3 @@
+[all:vars]
+# MapBox API token, see https://docs.mapbox.com/help/how-mapbox-works/access-tokens/
+map_token=replaceme

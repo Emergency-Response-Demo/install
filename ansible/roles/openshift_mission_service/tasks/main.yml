@@ -18,9 +18,9 @@
     rolebinding_name: "{{ service_account }}-view"
 
 - name: copy {{ application_configmap }} configmap template
-  template: 
+  template:
     src: "{{ resources_dir }}/application.properties"
-    dest: "{{ work_dir }}/application.properties"
+    dest: "{{ work_dir }}/app-config.properties"
 
 - name: create {{ application_configmap }} application configmap
   oc_configmap:
@@ -29,7 +29,7 @@
     name: "{{ application_configmap }}"
     namespace: "{{ namespace }}"
     from_file:
-      dir: "{{ work_dir }}/application.properties"
+      dir: "{{ work_dir }}/app-config.properties"
 
 # logging configmap
 - name: set logging template fact
@@ -43,8 +43,8 @@
     logging_style is defined and logging_style == "dev"
 
 - name: copy {{ logging_configmap }} configmap template
-  template: 
-    src: "{{ resources_dir }}/{{ logging_configmap_template }}" 
+  template:
+    src: "{{ resources_dir }}/{{ logging_configmap_template }}"
     dest: "{{ work_dir }}/logback.xml"
 
 - name: create {{ logging_configmap }} configmap
@@ -110,7 +110,7 @@
     github_secret: "{{ lookup('password', work_dir + '/github chars=ascii_letters,digits length=8') }}"
 
 - set_fact:
-    generic_secret: "{{ lookup('password', work_dir + '/generic chars=ascii_letters,digits length=8') }}"    
+    generic_secret: "{{ lookup('password', work_dir + '/generic chars=ascii_letters,digits length=8') }}"
 
 - name: copy pipeline template
   template:

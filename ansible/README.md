@@ -4,19 +4,27 @@ Prerequisites:
 * `oc` client on the PATH
 * logged in into the cluster with a user with cluster admin rights
 * A Registry Credentials Secret with access to `registry.redhat.io` named `imagestreamsecret` should exist in the `openshift` Namespace. See https://access.redhat.com/RegistryAuthentication for more details.
+* A MapBox access token. See https://docs.mapbox.com/help/how-mapbox-works/access-tokens/ for more details.
 
 #### Installing the NAPS demo
 
+Create a copy of the inventory template file:
+```
+$ cp inventories/inventory.template inventories/inventory
+```
+
+Replace the sample MapBox access token in the inventory file (`map_token`) with a real MapBox token.
+
 To provision all the components:
 ```
-$ ansible-playbook playbooks/install.yml
+$ ansible-playbook -i inventories/inventory playbooks/install.yml
 ```
 Notes:
 * The user currently logged in must have cluster admin rights
 * The user `developer` is given project admin ights to the  projects created by the playbook: `naps-emergency-response`, `tools-naps`.
   If you want to substitute the `developer` user by another user, set the `cluster_provisioner` parameter when running the install playbook:
   ```
-  $ ansible-playbook playbooks/install.yml -e cluster_provisioner=user1
+  $ ansible-playbook -i inventories/inventory playbooks/install.yml -e cluster_provisioner=user1
   ```
 
 To uninstall:

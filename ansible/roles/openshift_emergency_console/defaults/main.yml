@@ -21,6 +21,8 @@ application_template: emergency-console.yml
 git_url: "{{ emergency_console_git_repo }}"
 git_ref: master
 
+emergency_console_config_configmap: emergency-console-config
 rhsso_config_configmap: "{{ sso_config_configmap }}"
 
-mb_token: "pk.eyJ1IjoibWVjaGV2YXJyaWEiLCJhIjoiY2pxbXNuMXF0MGwzNTQ5bzJwNGtyMTRqdyJ9.WZfALlPxuOveabQDrroLcQ"
+emergency_console_config_map_token: "{{ map_token | default('') }}"
+emergency_console_config_polling: 10000

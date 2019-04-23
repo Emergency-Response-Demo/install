@@ -1,5 +1,11 @@
 ---
 
+- set_fact:
+    github_secret: "{{ lookup('password', work_dir + '/github chars=ascii_letters,digits length=8') }}"
+
+- set_fact:
+    generic_secret: "{{ lookup('password', work_dir + '/generic chars=ascii_letters,digits length=8') }}"
+
 - name: make sure we can pull from registry
   shell: oc secrets link builder imagestreamsecret -n openshift
 

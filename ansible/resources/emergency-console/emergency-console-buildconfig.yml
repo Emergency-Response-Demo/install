@@ -6,6 +6,9 @@ metadata:
     app: {{ application_name }}
   name: {{ buildconfig_name }}
 spec:
+  resources:
+    limits:
+      memory: 3Gi
   failedBuildsHistoryLimit: 5
   nodeSelector: {}
   output:
@@ -13,7 +16,6 @@ spec:
       kind: ImageStreamTag
       name: "{{ application_name }}:latest"
   postCommit: {}
-  resources: {}
   runPolicy: Serial
   source:
     git:
@@ -28,4 +30,12 @@ spec:
         namespace: "{{ application_image_namespace }}"
     type: Source
   successfulBuildsHistoryLimit: 5
-  triggers: []
+  triggers:
+    - github:
+        secret: {{ github_secret }}
+      type: GitHub
+    - generic:
+        secret: {{ generic_secret }}
+      type: Generic
+    - type: ConfigChange
+    - type: ImageChange
