@@ -8,7 +8,7 @@ application_configmap: mission-service
 application_configmap_key: app-config.properties
 logging_configmap: mission-service-logging
 
-application_image: redhat-openjdk18-openshift:1.5
+application_image: redhat-openjdk18-openshift:1.4
 application_image_namespace: openshift
 
 buildconfig_name: "{{ application_name }}-binary"
@@ -33,6 +33,6 @@ kafka_mission_updated_event_topic: topic-mission-event
 datagrid_service: "{{ datagrid_application_name }}.{{ namespace_datagrid }}.svc"
 datagrid_port: 11222
 
-map_token: pk.eyJ1IjoibWVjaGV2YXJyaWEiLCJhIjoiY2pxbXNuMXF0MGwzNTQ5bzJwNGtyMTRqdyJ9.WZfALlPxuOveabQDrroLcQ
+map_token: ""
 
 logging_style: dev

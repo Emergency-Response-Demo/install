@@ -1,5 +1,11 @@
 ---
 
+- set_fact:
+    github_secret: "{{ lookup('password', work_dir + '/github chars=ascii_letters,digits length=8') }}"
+
+- set_fact:
+    generic_secret: "{{ lookup('password', work_dir + '/generic chars=ascii_letters,digits length=8') }}"
+
 - name: create {{ service_account }} service account for {{ application_name }} application
   oc_serviceaccount:
     oc_binary: "{{ openshift_cli }}"
@@ -16,7 +22,7 @@
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: present
-    namespace: "{{ namespace_tools }}"
+    namespace: "{{ namespace }}"
     kind: buildconfig
     name: "{{ buildconfig_name }}"
     files:
@@ -57,18 +63,12 @@
     user: "system:serviceaccount:{{ namespace_tools }}:jenkins"
     resource_name: edit
 
-- set_fact:
-    github_secret: "{{ lookup('password', work_dir + '/github chars=ascii_letters,digits length=8') }}"
-
-- set_fact:
-    generic_secret: "{{ lookup('password', work_dir + '/generic chars=ascii_letters,digits length=8') }}"    
-
 - name: copy pipeline template
   template:
     src: "{{ resources_dir }}/{{ pipeline_buildconfig_template }}"
     dest: "{{ work_dir }}/{{ pipeline_buildconfig_template }}"
 
-- name: create the {{ pipeline_buildconfig_name }} pipeline in the {{ namespace_tools }} project
+- name: create the {{ pipeline_buildconfig_name }} pipeline in the {{ namespace }} project
   oc_obj:
     state: present
     oc_binary: "{{ openshift_cli }}"
@@ -77,6 +77,16 @@
     kind: bc
     files:
       - "{{ work_dir }}/{{ pipeline_buildconfig_template }}"
+
+- name: create {{ emergency_console_config_configmap }} configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    name: "{{ emergency_console_config_configmap }}"
+    from_literal:
+      TOKEN: "{{ emergency_console_config_map_token }}"
+      POLLING: "{{ emergency_console_config_polling }}"
 
 - name: copy application template
   template:

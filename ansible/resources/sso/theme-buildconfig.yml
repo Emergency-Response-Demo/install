@@ -30,10 +30,10 @@ spec:
   successfulBuildsHistoryLimit: 5
   triggers:
     - github:
-        secret: kcDo2wWoTadyoq2IKfM6
+        secret: {{ github_secret }}
       type: GitHub
     - generic:
-        secret: P9RpbU_lXUGj8XzN2AQY
+        secret: {{ generic_secret }}
       type: Generic
     - type: ConfigChange
     - type: ImageChange

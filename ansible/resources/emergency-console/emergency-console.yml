@@ -84,7 +84,15 @@ items:
                   key: PUBLIC_KEY
                   name: {{ rhsso_config_configmap }}
             - name: TOKEN
-              value: {{ mb_token }}
+              valueFrom:
+                configMapKeyRef:
+                  key: TOKEN
+                  name: {{ emergency_console_config_configmap }}
+            - name: POLLING
+              valueFrom:
+                configMapKeyRef:
+                  key: POLLING
+                  name: {{ emergency_console_config_configmap }}
             imagePullPolicy: IfNotPresent
             name: {{ application_name }}
             ports:
