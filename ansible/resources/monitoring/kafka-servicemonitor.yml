@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: prometheus
+    monitoring-key: middleware
+  name: metrics-monitor-kafka
+  namespace: {{ project_name }}
+spec:
+  endpoints:
+    - interval: 5s
+      port: metrics
+  selector:
+    matchLabels:
+      strimzi.io/kind: Kafka

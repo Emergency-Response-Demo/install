@@ -1,0 +1,33 @@
+---
+
+application_name: "{{ responder_simulator_service_application_name }}"
+
+service_account: responder-simulator-service
+
+application_configmap: responder-simulator
+application_configmap_key: app-config.properties
+logging_configmap: responder-simulator-service-logging
+
+application_image: redhat-openjdk18-openshift:1.4
+application_image_namespace: openshift
+
+buildconfig_name: "{{ application_name }}-binary"
+buildconfig_template: responder-simulator-service-binary-buildconfig.yml
+
+pipeline_buildconfig_name: "{{ application_name }}-pipeline"
+pipeline_buildconfig_template: responder-simulator-service-pipeline.yml
+
+imagestream_name: "{{ application_name }}"
+imagestream_template: responder-simulator-service-imagestream.yml
+
+application_template: responder-simulator-service.yml
+
+kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
+kafka_bootstrap_port: 9092
+kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
+kafka_groupid: responder-sim
+
+kafka_mission_event_topic: topic-mission-event
+kafka_responder_update_topic: topic-responder-location-update
+
+logging_style: dev
