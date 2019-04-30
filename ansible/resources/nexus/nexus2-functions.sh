@@ -52,6 +52,20 @@ EOM
 }
 
 #
+# set_nexus2_repo_write_policy [repo-id] [current-policy] [new-policy] [nexus-username] [nexus-password] [nexus-url]
+#
+function set_nexus2_repo_write_policy() {
+  local _REPO_ID=$1
+  local _POLICY_ID=$2
+  local _NEW_POLICY_ID=$3
+  local _NEXUS_USER=$4
+  local _NEXUS_PWD=$5
+  local _NEXUS_URL=$6
+
+  curl $_NEXUS_URL/service/local/repositories/$_REPO_ID | sed "s/$_POLICY_ID/$_NEW_POLICY_ID/g" | curl -X PUT -u "$_NEXUS_USER:$_NEXUS_PWD"  $_NEXUS_URL/service/local/repositories/$_REPO_ID -i -H 'Content-Type: application/xml' -d @-
+}
+
+#
 # add_nexus2_group_repo [repo-id] [group-id] [nexus-username] [nexus-password] [nexus-url]
 #
 function add_nexus2_group_repo() {
