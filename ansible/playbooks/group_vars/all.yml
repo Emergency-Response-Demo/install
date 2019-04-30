@@ -9,3 +9,5 @@ resources_base_dir: "{{ home_dir }}/resources"
 openshift_cli: oc
 
 project_name: naps-emergency-response
+
+monitoring_label: prometheus

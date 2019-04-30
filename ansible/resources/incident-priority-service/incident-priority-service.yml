@@ -8,6 +8,7 @@ items:
     labels:
       app: {{ application_name }}
       expose: "true"
+      monitoring: prometheus
     annotations:
       prometheus.io/path: "{{ prometheus_endpoint_path }}"
       prometheus.io/port: "{{ prometheus_endpoint_port }}"

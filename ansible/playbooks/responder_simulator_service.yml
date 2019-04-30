@@ -1,36 +1,31 @@
 ---
 
-- name: Deploy NAPS Demo application
+- name: Deploy Responder Simulator Service
   hosts: localhost
   connection: local
   gather_facts: false
   run_once: true
   vars_files:
     - group_vars/services.yml
+    - group_vars/postgresql.yml
     - group_vars/kafka_cluster.yml
     - group_vars/tools.yml
-    - group_vars/datagrid.yml
-    - group_vars/postgresql.yml
-    - group_vars/sso.yml
-    - group_vars/monitoring.yml
 
   tasks:
+    - set_fact:
+        namespace: "{{ namespace_services }}"
+        resources_dir: "{{ resources_base_dir }}/responder-simulator-service"
+        work_dir_name: responder-simulator-service
     - include_role:
-        name: ../roles/openshift_install
+        name: ../roles/openshift_responder_simulator_service
       when: >
         ACTION is not defined or
         ACTION is none or
         ACTION|trim() == "" or
         ACTION|trim() == "install"
     - include_role:
-        name: ../roles/openshift_install
+        name: ../roles/openshift_responder_simulator_service
         tasks_from: uninstall
       when: >
         ACTION is defined and
         ACTION|trim() == "uninstall"
-    - include_role:
-        name: ../roles/openshift_install
-        tasks_from: reset
-      when: >
-        ACTION is defined and
-        ACTION|trim() == "reset"

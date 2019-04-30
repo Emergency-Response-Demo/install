@@ -1,0 +1,61 @@
+---
+
+- name: Update namespace with monitoring label
+  shell: oc label namespace {{ namespace }} monitoring-key=middleware --overwrite
+
+- name: Copy Kafka ServiceMonitor template
+  template:
+    src: "{{ resources_dir }}/kafka-servicemonitor.yml"
+    dest: "{{ work_dir }}/kafka-servicemonitor.yml"
+
+- name: Copy application ServiceMonitor template
+  template:
+    src: "{{ resources_dir }}/application-servicemonitor.yml"
+    dest: "{{ work_dir }}/application-servicemonitor.yml"
+
+- name: Copy actuator endpoint ServiceMonitor template
+  template:
+    src: "{{ resources_dir }}/application-actuator-servicemonitor.yml"
+    dest: "{{ work_dir }}/application-actuator-servicemonitor.yml"
+
+- name: Copy application GrafanaDashboard template
+  template:
+    src: "{{ resources_dir }}/application-grafanadashboard.yml"
+    dest: "{{ work_dir }}/application-grafanadashboard.yml"
+
+- oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: metrics-monitor-kafka
+    namespace: "{{ namespace }}"
+    kind: ServiceMonitor
+    files:
+      - "{{ work_dir }}/kafka-servicemonitor.yml"
+
+- oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: metrics-monitor-services
+    namespace: "{{ namespace }}"
+    kind: ServiceMonitor
+    files:
+      - "{{ work_dir }}/application-servicemonitor.yml"
+
+
+- oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: emergency-services-actuator-monitor-services
+    namespace: "{{ namespace }}"
+    kind: ServiceMonitor
+    files:
+      - "{{ work_dir }}/application-actuator-servicemonitor.yml"
+
+- oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: emergency-response-dashboard
+    namespace: "{{ namespace }}"
+    kind: GrafanaDashboard
+    files:
+      - "{{ work_dir }}/application-grafanadashboard.yml"

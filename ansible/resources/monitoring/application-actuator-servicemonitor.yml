@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: prometheus
+    monitoring-key: middleware
+  name: emergency-services-actuator-monitor-services
+  namespace: "{{ project_name }}"
+spec:
+  endpoints:
+    - interval: 5s
+      path: /actuator/prometheus
+      port: http
+  selector:
+    matchLabels:
+      monitoring: prometheus-actuator

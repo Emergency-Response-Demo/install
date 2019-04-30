@@ -142,6 +142,30 @@
     resources_dir: "{{ resources_base_dir }}/responder-service"
     work_dir_name: responder-service
 
+- name: install incident priority service
+  import_role:
+    name: openshift_incident_priority_service
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/incident-priority-service"
+    work_dir_name: incident-priority-service
+
+- name: install responder simulator service
+  import_role:
+    name: openshift_responder_simulator_service
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/responder-simulator-service"
+    work_dir_name: responder-simulator-service
+
+- name: install disaster simulator service
+  import_role:
+    name: openshift_disaster_simulator_service
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/disaster-simulator-service"
+    work_dir_name: disaster-simulator-service
+
 - name: install emergency console
   import_role:
     name: openshift_emergency_console
@@ -260,3 +284,20 @@
 
 - name: start pipeline process service
   shell: "{{ openshift_cli }} start-build {{ process_service_application_name }}-pipeline -n {{ namespace_tools }}"
+
+- name: start pipeline incident priority service
+  shell: "{{ openshift_cli }} start-build {{ incident_priority_service_application_name }}-pipeline -n {{ namespace_tools }}"
+
+- name: start pipeline responder simulator service
+  shell: "{{ openshift_cli }} start-build {{ responder_simulator_service_application_name }}-pipeline -n {{ namespace_tools }}"
+
+- name: start pipeline disaster simulator service
+  shell: "{{ openshift_cli }} start-build {{ disaster_simulator_service_application_name }}-pipeline -n {{ namespace_tools }}"
+
+- name: install monitoring configuration
+  import_role:
+    name: monitoring
+  vars:
+    namespace: "{{ namespace_monitoring }}"
+    resources_dir: "{{ resources_base_dir }}/monitoring"
+    work_dir_name: monitoring
