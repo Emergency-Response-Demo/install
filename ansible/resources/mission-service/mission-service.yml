@@ -114,11 +114,11 @@ items:
               timeoutSeconds: 1
             resources:
               limits:
+                cpu: '1'
+                memory: 1Gi
+              requests:
                 cpu: 500m
                 memory: 500Mi
-              requests:
-                cpu: 100m
-                memory: 200Mi
             securityContext:
               privileged: false
             terminationMessagePath: /dev/termination-log

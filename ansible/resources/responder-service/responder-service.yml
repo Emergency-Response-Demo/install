@@ -107,10 +107,10 @@ items:
             resources:
               limits:
                 cpu: 500m
-                memory: 500Mi
+                memory: 1536Mi
               requests:
                 cpu: 100m
-                memory: 200Mi
+                memory: 256Mi
             securityContext:
               privileged: false
             terminationMessagePath: /dev/termination-log
