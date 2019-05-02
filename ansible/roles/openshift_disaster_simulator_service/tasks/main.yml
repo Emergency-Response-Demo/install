@@ -19,7 +19,7 @@
 
 - name: copy {{ application_configmap }} application properties
   template:
-    src: "{{ resources_dir }}/application.properties"
+    src: "{{ resources_dir }}/app-config.properties"
     dest: "{{ work_dir }}/app-config.properties"
 
 - name: copy {{ application_configmap }} last names
@@ -39,9 +39,9 @@
     name: "{{ application_configmap }}"
     namespace: "{{ namespace }}"
     from_file:
-      dir: "{{ work_dir }}/app-config.properties"
-      "LNames.txt": "{{ work_dir }}/LNames.txt"
-      "FNames.txt": "{{ work_dir }}/FNames.txt"
+      app-config.properties: "{{ work_dir }}/app-config.properties"
+      LNames.txt: "{{ work_dir }}/LNames.txt"
+      FNames.txt: "{{ work_dir }}/FNames.txt"
 
 - name: copy build config template
   template:
