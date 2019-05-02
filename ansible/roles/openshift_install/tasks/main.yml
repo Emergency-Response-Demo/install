@@ -294,6 +294,9 @@
 - name: start pipeline disaster simulator service
   shell: "{{ openshift_cli }} start-build {{ disaster_simulator_service_application_name }}-pipeline -n {{ namespace_tools }}"
 
+- name: start pipeline process viewer service
+  shell: "{{ openshift_cli }} start-build {{ process_viewer_application_name }}-pipeline -n {{ namespace_tools }}"  
+
 - name: install monitoring configuration
   import_role:
     name: monitoring
