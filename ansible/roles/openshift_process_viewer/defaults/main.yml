@@ -25,8 +25,8 @@ application_template: process-viewer.yml
 
 logging_style: dev
 
-postgresql_host: "{{ process_service_postgresql_service_name}}.{{ project_name }}.svc"
-postgresql_port: 5432
-postgresql_database: "{{ process_service_postgresql_database }}"
-postgresql_username: "{{ process_service_postgresql_username }}"
-postgresql_password: "{{ process_service_postgresql_password }}"
+process_viewer_postgresql_host: "{{ process_service_postgresql_service_name}}.{{ project_name }}.svc"
+process_viewer_postgresql_port: 5432
+process_viewer_postgresql_database: "{{ process_service_postgresql_database }}"
+process_viewer_postgresql_username: "{{ process_service_postgresql_username }}"
+process_viewer_postgresql_password: "{{ process_service_postgresql_password }}"
