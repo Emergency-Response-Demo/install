@@ -5,6 +5,6 @@ datasource:
   maxSize: 15
   initialSize: 1
   driverClassName: org.postgresql.Driver
-  jdbcUrl: jdbc:postgresql://{{ postgresql_host}}:{{ postgresql_port }}/{{ postgresql_database }}
-  principal: {{ postgresql_username }}
-  credential: {{ postgresql_password }}
+  jdbcUrl: jdbc:postgresql://{{ postgresql_host}}:{{ postgresql_port }}/{{ process_service_postgresql_database }}
+  principal: {{ process_service_postgresql_username }}
+  credential: {{ process_service_postgresql_password }}
