@@ -1,5 +1,37 @@
 ---
 
+# scale down process service
+- name: scale down process service
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ process_service_application_name }} -n {{ namespace_services }}"
+
+# scale down incident service
+- name: scale down incident service
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ incident_service_application_name }} -n {{ namespace_services }}"
+
+# scale down responder service
+- name: scale down responder service
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ responder_service_application_name }} -n {{ namespace_services }}"
+
+# scale down mission service
+- name: scale down mission service
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ mission_service_application_name }} -n {{ namespace_services }}"
+
+# scale down incident priority service
+- name: scale down incident priority service
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ incident_priority_service_application_name }} -n {{ namespace_services }}"
+
+# scale down responder simulator service
+- name: scale down responder simulator service
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ responder_simulator_service_application_name }} -n {{ namespace_services }}"
+
+# scale down emergency console
+- name: scale down emergency console
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ emergency_console_application_name }} -n {{ namespace_services }}"
+
+# scale down process viewer
+- name: scale down process viewer
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ process_viewer_application_name }} -n {{ namespace_services }}"  
+
 # uninstall kafka
 - name: uninstall kafka topics
   import_role:
@@ -48,25 +80,15 @@
     resources_dir: "{{ resources_base_dir }}/process-service"
     work_dir_name: process-service
 
-# scale down process service
-- name: scale down process service
-  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ process_service_application_name }} -n {{ namespace_services }}"
-
-# scale down incident service
-- name: scale down incident service
-  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ incident_service_application_name }} -n {{ namespace_services }}"
-
-# scale down responder service
-- name: scale down responder service
-  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ responder_service_application_name }} -n {{ namespace_services }}"
-
-# scale down mission service
-- name: scale down mission service
-  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ mission_service_application_name }} -n {{ namespace_services }}"
-
-# scale down incident priority service
-- name: scale down incident priority service
-  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ incident_priority_service_application_name }} -n {{ namespace_services }}"
+# Recreate the SSO Realm
+- name: recreate the SSO realm
+  import_role:
+    name: openshift_sso
+    tasks_from: reset
+  vars:
+    namespace: "{{ namespace_sso }}"
+    resources_dir: "{{ resources_base_dir }}/sso"
+    work_dir_name: sso
 
 # install kafka
 - name: install kafka cluster
@@ -132,3 +154,15 @@
 # scale up incident priority service
 - name: scale up incident priority service 
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ incident_priority_service_application_name }} -n {{ namespace_services }}"
+
+# scale up responder simulator service
+- name: scale down responder simulator service
+  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ responder_simulator_service_application_name }} -n {{ namespace_services }}"
+
+  # scale up emergency console
+- name: scale up emergency console
+  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ emergency_console_application_name }} -n {{ namespace_services }}"
+
+# scale up process viewer
+- name: scale up process viewer
+  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ process_viewer_application_name }} -n {{ namespace_services }}"  
