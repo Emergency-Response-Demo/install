@@ -44,6 +44,240 @@ spec:
                 "current": false,
                 "max": false,
                 "min": false,
+                "show": false,
+                "total": false,
+                "values": false
+              },
+              "lines": true,
+              "linewidth": 1,
+              "links": [],
+              "nullPointMode": "null",
+              "percentage": false,
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "spaceLength": 10,
+              "span": 4,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "expr": "sum(process_instances)",
+                  "format": "time_series",
+                  "intervalFactor": 2,
+                  "refId": "A"
+                }
+              ],
+              "thresholds": [],
+              "timeFrom": null,
+              "timeShift": null,
+              "title": "Total processes",
+              "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+              },
+              "type": "graph",
+              "xaxis": {
+                "buckets": null,
+                "mode": "time",
+                "name": null,
+                "show": true,
+                "values": []
+              },
+              "yaxes": [
+                {
+                  "format": "short",
+                  "label": null,
+                  "logBase": 1,
+                  "max": null,
+                  "min": null,
+                  "show": true
+                },
+                {
+                  "format": "short",
+                  "label": null,
+                  "logBase": 1,
+                  "max": null,
+                  "min": null,
+                  "show": true
+                }
+              ]
+            },
+            {
+              "aliasColors": {},
+              "bars": false,
+              "dashLength": 10,
+              "dashes": false,
+              "datasource": "Prometheus",
+              "fill": 1,
+              "id": 2,
+              "legend": {
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "show": false,
+                "total": false,
+                "values": false
+              },
+              "lines": true,
+              "linewidth": 1,
+              "links": [],
+              "nullPointMode": "null",
+              "percentage": false,
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "spaceLength": 10,
+              "span": 4,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "expr": "sum(process_instances_active)",
+                  "format": "time_series",
+                  "intervalFactor": 2,
+                  "refId": "A"
+                }
+              ],
+              "thresholds": [],
+              "timeFrom": null,
+              "timeShift": null,
+              "title": "Active processes",
+              "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+              },
+              "type": "graph",
+              "xaxis": {
+                "buckets": null,
+                "mode": "time",
+                "name": null,
+                "show": true,
+                "values": []
+              },
+              "yaxes": [
+                {
+                  "format": "short",
+                  "label": null,
+                  "logBase": 1,
+                  "max": null,
+                  "min": null,
+                  "show": true
+                },
+                {
+                  "format": "short",
+                  "label": null,
+                  "logBase": 1,
+                  "max": null,
+                  "min": null,
+                  "show": true
+                }
+              ]
+            },
+            {
+              "aliasColors": {},
+              "bars": false,
+              "dashLength": 10,
+              "dashes": false,
+              "datasource": "Prometheus",
+              "fill": 1,
+              "id": 3,
+              "legend": {
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "show": false,
+                "total": false,
+                "values": false
+              },
+              "lines": true,
+              "linewidth": 1,
+              "links": [],
+              "nullPointMode": "null",
+              "percentage": false,
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "spaceLength": 10,
+              "span": 4,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "expr": "sum(process_instances_completed)",
+                  "format": "time_series",
+                  "intervalFactor": 2,
+                  "refId": "A"
+                }
+              ],
+              "thresholds": [],
+              "timeFrom": null,
+              "timeShift": null,
+              "title": "Completed processes",
+              "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+              },
+              "type": "graph",
+              "xaxis": {
+                "buckets": null,
+                "mode": "time",
+                "name": null,
+                "show": true,
+                "values": []
+              },
+              "yaxes": [
+                {
+                  "format": "short",
+                  "label": null,
+                  "logBase": 1,
+                  "max": null,
+                  "min": null,
+                  "show": true
+                },
+                {
+                  "format": "short",
+                  "label": null,
+                  "logBase": 1,
+                  "max": null,
+                  "min": null,
+                  "show": true
+                }
+              ]
+            }
+          ],
+          "repeat": null,
+          "repeatIteration": null,
+          "repeatRowId": null,
+          "showTitle": false,
+          "title": "Vertx Service Monitoring",
+          "titleSize": "h2"
+        },
+        {
+          "collapse": false,
+          "height": 250,
+          "panels": [
+            {
+              "aliasColors": {},
+              "bars": false,
+              "dashLength": 10,
+              "dashes": false,
+              "datasource": "Prometheus",
+              "fill": 1,
+              "id": 4,
+              "legend": {
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
                 "show": true,
                 "total": false,
                 "values": false
@@ -113,7 +347,7 @@ spec:
               "dashes": false,
               "datasource": "Prometheus",
               "fill": 1,
-              "id": 2,
+              "id": 5,
               "legend": {
                 "avg": false,
                 "current": false,
@@ -187,7 +421,7 @@ spec:
               "dashes": false,
               "datasource": "Prometheus",
               "fill": 1,
-              "id": 3,
+              "id": 6,
               "legend": {
                 "avg": false,
                 "current": false,
@@ -273,7 +507,7 @@ spec:
               "dashes": false,
               "datasource": "Prometheus",
               "fill": 1,
-              "id": 4,
+              "id": 7,
               "legend": {
                 "avg": false,
                 "current": false,
@@ -369,7 +603,7 @@ spec:
               "dashes": false,
               "datasource": "Prometheus",
               "fill": 1,
-              "id": 5,
+              "id": 8,
               "legend": {
                 "avg": false,
                 "current": false,
@@ -470,7 +704,7 @@ spec:
               "dashes": false,
               "datasource": "Prometheus",
               "fill": 1,
-              "id": 6,
+              "id": 9,
               "legend": {
                 "avg": false,
                 "current": false,
@@ -571,7 +805,7 @@ spec:
               "dashes": false,
               "datasource": "Prometheus",
               "fill": 1,
-              "id": 7,
+              "id": 10,
               "legend": {
                 "avg": false,
                 "current": false,
@@ -684,7 +918,7 @@ spec:
               "dashes": false,
               "datasource": "Prometheus",
               "fill": 1,
-              "id": 8,
+              "id": 11,
               "legend": {
                 "avg": false,
                 "current": false,
@@ -760,7 +994,7 @@ spec:
               "datasource": "Prometheus",
               "description": "",
               "fill": 1,
-              "id": 9,
+              "id": 12,
               "legend": {
                 "avg": false,
                 "current": false,
@@ -835,7 +1069,7 @@ spec:
               "dashes": false,
               "datasource": "Prometheus",
               "fill": 1,
-              "id": 10,
+              "id": 13,
               "legend": {
                 "avg": false,
                 "current": false,
@@ -924,7 +1158,7 @@ spec:
               "dashes": false,
               "datasource": "Prometheus",
               "fill": 1,
-              "id": 11,
+              "id": 14,
               "legend": {
                 "avg": false,
                 "current": false,
@@ -1025,7 +1259,7 @@ spec:
               "dashes": false,
               "datasource": "Prometheus",
               "fill": 1,
-              "id": 12,
+              "id": 15,
               "legend": {
                 "avg": false,
                 "current": false,
@@ -1121,7 +1355,7 @@ spec:
               "dashes": false,
               "datasource": "Prometheus",
               "fill": 1,
-              "id": 13,
+              "id": 16,
               "legend": {
                 "avg": false,
                 "current": false,
@@ -1241,7 +1475,7 @@ spec:
                 "x": 0,
                 "y": 22
               },
-              "id": 14,
+              "id": 17,
               "legend": {
                 "alignAsTable": true,
                 "avg": false,
@@ -1337,7 +1571,7 @@ spec:
                 "x": 13,
                 "y": 22
               },
-              "id": 15,
+              "id": 18,
               "span": 6,
               "legend": {
                 "alignAsTable": true,
@@ -1443,7 +1677,7 @@ spec:
                 "x": 0,
                 "y": 28
               },
-              "id": 16,
+              "id": 19,
               "span": 6,
               "isNew": true,
               "legend": {
@@ -1537,7 +1771,7 @@ spec:
                 "x": 8,
                 "y": 28
               },
-              "id": 17,
+              "id": 20,
               "span": 6,
               "isNew": true,
               "legend": {
@@ -1642,7 +1876,7 @@ spec:
                 "x": 16,
                 "y": 28
               },
-              "id": 18,
+              "id": 21,
               "span": 6,
               "isNew": true,
               "legend": {
@@ -1734,7 +1968,7 @@ spec:
                 "x": 0,
                 "y": 34
               },
-              "id": 19,
+              "id": 22,
               "span": 6,
               "isNew": true,
               "legend": {
@@ -1843,7 +2077,7 @@ spec:
                 "x": 8,
                 "y": 34
               },
-              "id": 20,
+              "id": 23,
               "span": 6,
               "isNew": true,
               "legend": {
@@ -1938,7 +2172,7 @@ spec:
                 "x": 16,
                 "y": 34
               },
-              "id": 21,
+              "id": 24,
               "span": 6,
               "isNew": true,
               "legend": {
@@ -2043,7 +2277,7 @@ spec:
                 "x": 0,
                 "y": 40
               },
-              "id": 22,
+              "id": 25,
               "span": 6,
               "legend": {
                 "alignAsTable": false,
@@ -2131,7 +2365,7 @@ spec:
                 "x": 8,
                 "y": 40
               },
-              "id": 23,
+              "id": 26,
               "span": 6,
               "legend": {
                 "alignAsTable": false,
@@ -2140,7 +2374,7 @@ spec:
                 "max": false,
                 "min": false,
                 "rightSide": false,
-                "show": true,
+                "show": false,
                 "sort": "max",
                 "sortDesc": true,
                 "total": false,
@@ -2231,7 +2465,7 @@ spec:
                 "x": 16,
                 "y": 40
               },
-              "id": 24,
+              "id": 27,
               "span": 12,
               "legend": {
                 "alignAsTable": false,
@@ -2240,7 +2474,7 @@ spec:
                 "max": false,
                 "min": false,
                 "rightSide": false,
-                "show": true,
+                "show": false,
                 "total": false,
                 "values": true
               },
