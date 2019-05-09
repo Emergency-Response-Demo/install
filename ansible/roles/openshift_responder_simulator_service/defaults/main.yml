@@ -30,4 +30,8 @@ kafka_groupid: responder-sim
 kafka_mission_event_topic: topic-mission-event
 kafka_responder_update_topic: topic-responder-location-update
 
+responder_service_url: "{{ responder_service_application_name }}.{{ namespace }}.svc"
+responder_service_port: 8080
+responder_service_get_responder_path: "/responder/"
+
 logging_style: dev
