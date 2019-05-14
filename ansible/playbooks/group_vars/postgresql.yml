@@ -3,7 +3,7 @@
 namespace_postgresql: "{{ project_name }}"
 
 postgresql_init_scripts:
-  - https://raw.githubusercontent.com/NAPS-emergency-response-project/sql-scripts/master/naps_emergency_response_ddl.sql
+  - https://raw.githubusercontent.com/NAPS-emergency-response-project/sql-scripts/summit/naps_emergency_response_ddl.sql
 
 postgresql_username: naps
 postgresql_password: naps

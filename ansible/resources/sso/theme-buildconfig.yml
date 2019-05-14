@@ -17,6 +17,7 @@ spec:
   source:
     git:
       uri: '{{ theme_build_source }}'
+      ref: '{{ theme_build_source_ref }}'
     type: Git
   strategy:
     sourceStrategy:

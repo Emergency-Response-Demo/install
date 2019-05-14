@@ -16,17 +16,46 @@ incident_priority_service_application_name: incident-priority-service
 disaster_simulator_service_application_name: disaster-simulator
 
 incident_service_git_repo: https://github.com/NAPS-emergency-response-project/incident-service.git
+incident_service_git_branch: summit-checkpoint
+
 responder_simulator_service_git_repo: https://github.com/NAPS-emergency-response-project/responder-simulator.git
+responder_simulator_service_git_branch: summit-checkpoint
+
 responder_service_git_repo: https://github.com/NAPS-emergency-response-project/responder-service.git
+responder_service_git_branch: summit-checkpoint
+
 incident_process_git_repo: https://github.com/NAPS-emergency-response-project/incident-process-kjar.git
+incident_process_git_branch: summit-checkpoint
+
 assignment_rules_git_repo: https://github.com/NAPS-emergency-response-project/cajun-navy-rules.git
+assignment_rules_git_branch: summit-checkpoint
+
 assignment_rules_model_git_repo: https://github.com/NAPS-emergency-response-project/cajun-navy-rules-model.git
+assignment_rules_model_git_branch: summit-checkpoint
+
 process_service_git_repo: https://github.com/NAPS-emergency-response-project/process-service.git
+process_service_git_branch: summit-checkpoint
+
 mission_service_git_repo: https://github.com/NAPS-emergency-response-project/mission-service.git
+mission_service_git_branch: summit-checkpoint
+
 emergency_console_git_repo: https://github.com/NAPS-emergency-response-project/emergency-console.git
+emergency_console_git_branch: summit-checkpoint
+
 process_viewer_git_repo: https://github.com/NAPS-emergency-response-project/process-viewer.git
+process_viewer_git_repo: summit-checkpoint
+
 incident_priority_service_git_repo: https://github.com/NAPS-emergency-response-project/incident-priority-service.git
+incident_priority_service_git_branch: summit-checkpoint
+
 disaster_simulator_service_git_repo: https://github.com/NAPS-emergency-response-project/disaster-simulator.git
+disaster_simulator_service_git_branch: summit-checkpoint
+
+process_viewer_git_repo: https://github.com/NAPS-emergency-response-project/process-viewer.git
+process_viewer_git_branch: summit-checkpoint
+
+sso_theme_git_repo: https://github.com/NAPS-emergency-response-project/emergency-sso
+sso_theme_git_branch: summit-checkpoint
 
 process_service_postgresql_username: rhpam
 process_service_postgresql_password: rhpam

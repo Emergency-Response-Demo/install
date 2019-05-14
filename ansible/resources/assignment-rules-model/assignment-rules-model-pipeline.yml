@@ -11,6 +11,7 @@ spec:
     jenkinsPipelineStrategy:
       jenkinsfile: |-
         def git_repo = "{{ assignment_rules_model_git_repo }}"
+        def git_branch = "{{ assignment_rules_model_git_branch }}"
         def version = ""
         def groupId = ""
         def artifactId = ""
@@ -21,7 +22,7 @@ spec:
         node ('maven-with-nexus') {
           stage ('Compile') {
             echo "Starting build"
-            git url: "${git_repo}", branch: "master"
+            git url: "${git_repo}", branch: "${git_branch}"
             def pom = readMavenPom file: 'pom.xml'
             version = pom.version
             groupId = pom.groupId
@@ -42,9 +43,9 @@ spec:
 
           stage ('Publish to Nexus') {
             echo "adding server settings to ~/.m2/settings.xml"
-            def xml="    <servers><server><id>releases</id>" + 
-                "<username>deployment</username><password>deployment123</password>" + 
-                "</server><server><id>snapshots</id>" + 
+            def xml="    <servers><server><id>releases</id>" +
+                "<username>deployment</username><password>deployment123</password>" +
+                "</server><server><id>snapshots</id>" +
                 "<username>deployment</username><password>deployment123</password>" +
                 "</server></servers>"
             sh "sed -i 's|<proxies>||' /home/jenkins/.m2/settings.xml"
@@ -59,7 +60,7 @@ spec:
               sh "mvn deploy -DskipTests=true -Dcom.redhat.xpaas.repo.redhatga=true -DaltDeploymentRepository=releases::default::${nexusUrl}/content/repositories/releases"
             }
           }
-        }         
+        }
     type: JenkinsPipeline
   triggers:
   - github:

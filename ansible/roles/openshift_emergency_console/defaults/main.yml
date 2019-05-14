@@ -19,7 +19,7 @@ imagestream_template: emergency-console-imagestream.yml
 application_template: emergency-console.yml
 
 git_url: "{{ emergency_console_git_repo }}"
-git_ref: master
+git_ref: "{{ emergency_console_git_branch }}"
 
 emergency_console_config_configmap: emergency-console-config
 rhsso_config_configmap: "{{ sso_config_configmap }}"

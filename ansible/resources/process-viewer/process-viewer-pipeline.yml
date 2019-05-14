@@ -11,6 +11,7 @@ spec:
     jenkinsPipelineStrategy:
       jenkinsfile: |-
         def git_repo = "{{ process_viewer_git_repo }}"
+        def git_branch = "{{ process_viewer_git_branch }}"
         def version = ""
         def groupId = ""
         def artifactId = ""
@@ -24,7 +25,7 @@ spec:
         node ('maven-with-nexus') {
           stage ('Compile') {
             echo "Starting build"
-            git url: "${git_repo}", branch: "master"
+            git url: "${git_repo}", branch: "${git_branch}"
             def pom = readMavenPom file: 'pom.xml'
             version = pom.version
             groupId = pom.groupId
@@ -62,14 +63,14 @@ spec:
                 }
                 builds.untilEach(1) {
                   return it.object().status.phase == "Complete"
-                }         
+                }
               }
             }
           }
 
           stage ('Deploy') {
             openshift.withCluster() {
-              openshift.withProject( "${namespace_app}") {  
+              openshift.withProject( "${namespace_app}") {
                 openshift.tag("${namespace_jenkins}/${app_imagestream}:latest", "${namespace_app}/${app_imagestream}:latest")
                 openshift.tag("${namespace_jenkins}/${app_imagestream}:latest", "${namespace_jenkins}/${app_imagestream}:${commitId}")
                 openshift.tag("${namespace_app}/${app_imagestream}:latest", "${namespace_app}/${app_imagestream}:${commitId}")
@@ -79,10 +80,10 @@ spec:
                     return it.object().status.readyReplicas == 1
                   }
                 }
-              }    
+              }
             }
           }
-        }         
+        }
     type: JenkinsPipeline
   triggers:
   - github:

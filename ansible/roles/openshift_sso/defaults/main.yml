@@ -7,7 +7,8 @@ theme_build_imagestream_template: "{{ resources_dir }}/theme-imagestream.yml"
 theme_build_image: redhat-sso73-openshift-theme
 theme_build_image_tag: 1.0
 
-theme_build_source: https://github.com/NAPS-emergency-response-project/emergency-sso
+theme_build_source: "{{ sso_theme_git_repo }}"
+theme_build_source_ref: "{{ sso_theme_git_branch }}"
 
 theme_build_imagestream: redhat-sso73-openshift
 theme_build_imagestream_tag: 1.0

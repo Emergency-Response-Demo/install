@@ -11,6 +11,7 @@ spec:
     jenkinsPipelineStrategy:
       jenkinsfile: |-
         def git_repo = "{{ incident_service_git_repo }}"
+        def git_branch = "{{ incident_service_git_branch }}"
         def namespace_jenkins = "{{ namespace_tools }}"
         def namespace_app = "{{ namespace }}"
         def app_build = "{{ buildconfig_name }}"
@@ -33,14 +34,14 @@ spec:
                 }
                 builds.untilEach(1) {
                   return it.object().status.phase == "Complete"
-                }         
+                }
               }
             }
           }
 
           stage ('Deploy') {
             openshift.withCluster() {
-              openshift.withProject( "${namespace_app}") {  
+              openshift.withProject( "${namespace_app}") {
                 openshift.tag("${namespace_jenkins}/${app_imagestream}:latest", "${namespace_app}/${app_imagestream}:latest")
                 def dc_app = openshift.selector("dc", "${app_name}")
                 timeout (5) {
@@ -48,10 +49,10 @@ spec:
                     return it.object().status.readyReplicas == 1
                   }
                 }
-              }    
+              }
             }
           }
-        }         
+        }
     type: JenkinsPipeline
   triggers:
   - github:
