@@ -164,9 +164,12 @@ objects:
           - name: POSTGRESQL_MAX_CONNECTIONS
             value: ${POSTGRESQL_MAX_CONNECTIONS}
           resources:
+            requests:
+              cpu: "${POSTGRESQL_REQUEST_CPU}"
+              memory: "${POSTGRESQL_REQUEST_MEMORY}"
             limits:
-              cpu: 500m
-              memory: "${MEMORY_LIMIT}"
+              cpu: "${POSTGRESQL_LIMIT_CPU}"
+              memory: "${POSTGRESQL_LIMIT_MEMORY}"
           volumeMounts:
           - name: "${DATABASE_SERVICE_NAME}-data"
             mountPath: "/var/lib/pgsql/data"
@@ -190,11 +193,6 @@ objects:
         dnsPolicy: ClusterFirst
   status: {}
 parameters:
-- name: MEMORY_LIMIT
-  displayName: Memory Limit
-  description: Maximum amount of memory the container can use.
-  value: 512Mi
-  required: true
 - name: NAMESPACE
   displayName: Namespace
   description: The OpenShift Namespace where the ImageStream resides.
@@ -235,3 +233,7 @@ parameters:
   required: true
 - name: POSTGRESQL_MAX_PREPARED_TRANSACTIONS
 - name: POSTGRESQL_MAX_CONNECTIONS
+- name: POSTGRESQL_REQUEST_CPU
+- name: POSTGRESQL_REQUEST_MEMORY
+- name: POSTGRESQL_LIMIT_CPU
+- name: POSTGRESQL_LIMIT_MEMORY

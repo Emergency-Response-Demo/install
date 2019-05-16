@@ -34,6 +34,10 @@
         --param=POSTGRESQL_DATABASE={{ process_service_postgresql_database }} \
         --param=POSTGRESQL_MAX_CONNECTIONS={{ process_service_postgresql_max_connections }} \
         --param=POSTGRESQL_MAX_PREPARED_TRANSACTIONS={{ process_service_postgresql_max_prepared_transactions }} \
+        --param=POSTGRESQL_REQUEST_CPU={{ process_service_postgresql_resources_requests_cpu }} \
+        --param=POSTGRESQL_REQUEST_MEMORY={{ process_service_postgresql_resources_requests_memory }} \
+        --param=POSTGRESQL_LIMIT_CPU={{ process_service_postgresql_resources_limits_cpu }} \
+        --param=POSTGRESQL_LIMIT_MEMORY={{ process_service_postgresql_resources_limits_memory }} \
         -n {{ namespace }}
 
 - name: wait until postgresql database is up and running
