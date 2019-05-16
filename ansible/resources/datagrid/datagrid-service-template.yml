@@ -148,10 +148,11 @@ objects:
                 timeoutSeconds: 10
               resources:
                 limits:
+                  cpu: ${TOTAL_CONTAINER_CPU}m
                   memory: '${TOTAL_CONTAINER_MEM}Mi'
                 requests:
-                  cpu: '0.5'
-                  memory: '${TOTAL_CONTAINER_MEM}Mi'
+                  cpu: ${CONTAINER_CPU_REQUEST}m
+                  memory: '${CONTAINER_MEM_REQUEST}Mi'
               volumeMounts:
                 - mountPath: /opt/datagrid/standalone/data
                   name: srv-data
@@ -196,6 +197,18 @@ parameters:
     displayName: Total Memory
     name: TOTAL_CONTAINER_MEM
     value: '512'
+  - description: 'Sets the total memory, in MiB, requested for the application.'
+    displayName: Memory Request
+    name: CONTAINER_MEM_REQUEST
+    value: '512'
+  - description: 'Sets the total cpu, in millicore, available to the application.'
+    displayName: Total CPU
+    name: TOTAL_CONTAINER_CPU
+    value: '1000'
+  - description: 'Sets the cpu request, in millicore, available to the application.'
+    displayName: CPU_Request
+    name: CONTAINER_CPU_REQUEST
+    value: '500'
   - description: 'Sets the storage capacity, in GiB, of the persistence volume.'
     displayName: Storage Capacity
     name: TOTAL_CONTAINER_STORAGE

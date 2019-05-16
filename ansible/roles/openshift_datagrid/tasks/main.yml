@@ -17,6 +17,9 @@
     -p IMAGE={{ datagrid_image }} \
     -p NUMBER_OF_INSTANCES={{ number_of_instances }} \
     -p TOTAL_CONTAINER_MEM={{ total_container_memory }} \
+    -p TOTAL_CONTAINER_CPU={{ total_container_cpu }} \
+    -p CONTAINER_MEM_REQUEST={{ container_memory_request }} \
+    -p CONTAINER_CPU_REQUEST={{ container_cpu_request }} \
     -p TOTAL_CONTAINER_STORAGE={{ total_container_storage }} \
     -p APPLICATION_USER={{ datagrid_application_user }} \
     -p APPLICATION_PASSWORD={{ datagrid_application_password }} \
