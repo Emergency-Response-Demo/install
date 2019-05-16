@@ -2,6 +2,11 @@
 
 application_name: "{{ process_viewer_application_name }}"
 
+resources_limits_cpu: 500m
+resources_limits_memory: 500Mi
+resources_requests_cpu: 100m
+resources_requests_memory: 200Mi
+
 application_configmap: process-viewer
 logging_configmap: process-viewer-logging
 
