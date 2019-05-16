@@ -17,6 +17,8 @@
     -p VOLUME_CAPACITY={{ nexus_pv_capacity }} \
     -p MAX_CPU={{ nexus_max_cpu }} \
     -p MAX_MEMORY={{ nexus_max_memory }} \
+    -p REQUESTED_MEMORY={{ nexus_requested_memory }} \
+    -p REQUESTED_CPU={{ nexus_requested_cpu }} \
     | {{ openshift_cli }} create -f - -n {{ namespace }}
   when: result.results.stderr is defined and result.results.stderr != ""
 
