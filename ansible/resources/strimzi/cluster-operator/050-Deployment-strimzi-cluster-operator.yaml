@@ -71,10 +71,10 @@ spec:
           periodSeconds: 30
         resources:
           limits:
-            cpu: 1000m
-            memory: 256Mi
+            cpu: '{{ cluster_operator_resources_cpu_limit }}'
+            memory: '{{ cluster_operator_resources_memory_limit }}'
           requests:
-            cpu: 200m
-            memory: 256Mi
+            cpu: '{{ cluster_operator_resources_cpu_request }}'
+            memory: '{{ cluster_operator_resources_memory_request }}'
   strategy:
     type: Recreate
