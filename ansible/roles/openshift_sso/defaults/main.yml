@@ -19,6 +19,9 @@ sso_application_name: sso
 sso_template: "{{ resources_dir}}/sso73-x509-postgresql-persistent.yml"
 
 sso_memory_limit: 1Gi
+sso_cpu_limit: 500m
+sso_memory_request: 500Mi
+sso_cpu_request: 250m
 
 sso_admin_username: admin
 sso_admin_password: r3dh4t1!
@@ -33,6 +36,10 @@ postgresql_password: rhsso
 postgresql_database: rhsso
 postgresql_max_connections: 100
 postgresql_shared_buffers: 32MB
+postgresql_memory_limit: 512Mi
+postgresql_cpu_limit: 500m
+postgresql_memory_request: 256Mi
+postgresql_cpu_request: 100m
 postgresql_pv_capacity: 1Gi
 
 sso_realm_id: emergency-realm
