@@ -65,11 +65,11 @@ items:
             name: http
           resources:
             limits:
-              cpu: 100m
-              memory: 200Mi
+              cpu: '{{ resources_limits_cpu }}'
+              memory: '{{ resources_limits_memory }}'
             requests:
-              cpu: 50m
-              memory: 100Mi
+              cpu: '{{ resources_requests_cpu }}'
+              memory: '{{ resources_requests_memory }}'
           volumeMounts:
           - mountPath: /var/lib/pgadmin
             name: pgadmin4-persistence
