@@ -89,10 +89,10 @@ items:
                 timeoutSeconds: 240
               resources:
                 requests:
-                  cpu: 200m
-                  memory: 512Mi
+                  cpu: '{{ jenkins_cpu_request }}'
+                  memory: '{{ jenkins_memory_request }}'
                 limits:
-                  cpu: {{ jenkins_cpu_limit }}
+                  cpu: '{{ jenkins_cpu_limit }}'
                   memory: '{{ jenkins_memory_limit }}'
               securityContext:
                 capabilities: {}
