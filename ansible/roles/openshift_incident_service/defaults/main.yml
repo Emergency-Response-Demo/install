@@ -9,9 +9,6 @@ logging_configmap: incident-service-logging
 
 application_properties: application.properties
 
-git_url: https://github.com/NAPS-emergency-response-project/incident-service.git
-git_ref: master
-
 application_image: redhat-openjdk18-openshift:1.4
 application_image_namespace: openshift
 
