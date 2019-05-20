@@ -22,6 +22,8 @@ spec:
     readinessProbe:
       initialDelaySeconds: {{ kafka_readiness_probe_initial_delay_seconds }}
       timeoutSeconds: {{ kafka_readiness_probe_timeout_seconds }}
+    jvmOptions:
+      gcLoggingEnabled: false
 {% if enable_metrics|bool == true %}
     metrics:
       # Inspired by config from Kafka 2.0.0 example rules:
