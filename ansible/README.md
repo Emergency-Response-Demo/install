@@ -1,4 +1,7 @@
-Ansible playbooks to provision the naps-emergency-response-project to OpenShift.
+# Emergency Response - Installer
+
+A set of Ansible roles and playbooks that install the Emergency Response
+project in an OpenShift cluster.
 
 Prerequisites:
 * `oc` client on the PATH
@@ -6,7 +9,7 @@ Prerequisites:
 * A Registry Credentials Secret with access to `registry.redhat.io` named `imagestreamsecret` should exist in the `openshift` Namespace. See https://access.redhat.com/RegistryAuthentication for more details.
 * A MapBox access token. See https://docs.mapbox.com/help/how-mapbox-works/access-tokens/ for more details.
 
-#### Installing the NAPS demo
+## Installing
 
 Create a copy of the inventory template file:
 ```
@@ -19,18 +22,12 @@ To provision all the components:
 ```
 $ ansible-playbook -i inventories/inventory playbooks/install.yml
 ```
-Notes:
-* The user currently logged in must have cluster admin rights
-* The user `developer` is given project admin ights to the  projects created by the playbook: `naps-emergency-response`, `tools-naps`.
-  If you want to substitute the `developer` user by another user, set the `cluster_provisioner` parameter when running the install playbook:
-  ```
-  $ ansible-playbook -i inventories/inventory playbooks/install.yml -e cluster_provisioner=user1
-  ```
 
-To uninstall:
-```
-$ ansible-playbook playbooks/install.yml -e ACTION=uninstall
-```
+This will take about 30 minutes to complete.
+
+By default, the `developer` user will be given project admin permissions for
+the Emergency Response projects. To give these permissions to another user,
+override the `cluster_provisioner` variable during provisioning.
 
 Individual components can be installed by the executing the corresponding playbook. For example, to install only the Kafka cluster:
 ```
@@ -40,3 +37,10 @@ $ ansible-playbook playbooks/kafka_topics.yml
 ```
 
 Apart from the `strimzi_operator` playbook, none of the playbooks require cluster admin rights.
+
+## Uninstalling
+
+To uninstall:
+```
+$ ansible-playbook playbooks/install.yml -e ACTION=uninstall
+```
