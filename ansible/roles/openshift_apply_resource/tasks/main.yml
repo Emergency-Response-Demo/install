@@ -16,4 +16,4 @@
     namespace: "{{ resource_namespace }}"
     files:
       - "{{ resource_template }}"
-  when: result.results.stderr is defined and result.results.stderr != ""
+  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""

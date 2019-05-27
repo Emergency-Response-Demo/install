@@ -132,7 +132,7 @@ class OCObject(OpenShiftCLI):
         if state == 'list':
             if api_rval['returncode'] != 0:
                 return {'changed': False, 'failed': True, 'msg': api_rval}
-            return {'changed': False, 'results': api_rval, 'state': state}
+            return {'changed': False, 'ansible_module_results': api_rval, 'state': state}
 
         ########
         # Delete
@@ -153,7 +153,7 @@ class OCObject(OpenShiftCLI):
             if api_rval['returncode'] != 0:
                 return {'failed': True, 'msg': api_rval}
 
-            return {'changed': True, 'results': api_rval, 'state': state}
+            return {'changed': True, 'ansible_module_results': api_rval, 'state': state}
 
         # create/update: Must define a name beyond this point
         if not params['name']:
@@ -183,7 +183,7 @@ class OCObject(OpenShiftCLI):
                 if params['files'] and params['delete_after']:
                     Utils.cleanup(params['files'])
 
-                return {'changed': True, 'results': api_rval, 'state': state}
+                return {'changed': True, 'ansible_module_results': api_rval, 'state': state}
 
             ########
             # Update
@@ -194,7 +194,7 @@ class OCObject(OpenShiftCLI):
                 if params['files'] and params['delete_after']:
                     Utils.cleanup(params['files'])
 
-                return {'changed': False, 'results': api_rval['results'][0], 'state': state}
+                return {'changed': False, 'ansible_module_results': api_rval['results'][0], 'state': state}
             
             # if a file path is passed, use it.
             needs_update = ocobj.needs_update(params['files'], params['content'])
@@ -206,7 +206,7 @@ class OCObject(OpenShiftCLI):
                 if params['files'] and params['delete_after']:
                     Utils.cleanup(params['files'])
 
-                return {'changed': False, 'results': api_rval['results'][0], 'state': state}
+                return {'changed': False, 'ansible_module_results': api_rval['results'][0], 'state': state}
 
             if check_mode:
                 return {'changed': True, 'msg': 'CHECK_MODE: Would have performed an update.'}
@@ -225,7 +225,7 @@ class OCObject(OpenShiftCLI):
             if api_rval['returncode'] != 0:
                 return {'failed': True, 'msg': api_rval}
 
-            return {'changed': True, 'results': api_rval, 'state': state}
+            return {'changed': True, 'ansible_module_results': api_rval, 'state': state}
 
 def main():
     '''

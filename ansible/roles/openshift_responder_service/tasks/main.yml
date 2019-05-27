@@ -27,9 +27,9 @@
   register: postgresql_credentials
 
 - set_fact:
-    database_user: "{{ postgresql_credentials.results.decoded[\"database-user\"] }}"
-    database_password: "{{ postgresql_credentials.results.decoded[\"database-password\"] }}"
-    database_name: "{{ postgresql_credentials.results.decoded[\"database-name\"] }}"
+    database_user: "{{ postgresql_credentials.ansible_module_results.decoded[\"database-user\"] }}"
+    database_password: "{{ postgresql_credentials.ansible_module_results.decoded[\"database-password\"] }}"
+    database_name: "{{ postgresql_credentials.ansible_module_results.decoded[\"database-name\"] }}"
 
 - name: copy application properties template
   template:
@@ -162,4 +162,4 @@
     namespace: "{{ namespace }}"
     files:
       - "{{ work_dir }}/{{ application_template }}"
-  when: result.results.stderr is defined and result.results.stderr != ""
+  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""

@@ -20,7 +20,7 @@
     -p REQUESTED_MEMORY={{ nexus_requested_memory }} \
     -p REQUESTED_CPU={{ nexus_requested_cpu }} \
     | {{ openshift_cli }} create -f - -n {{ namespace }}
-  when: result.results.stderr is defined and result.results.stderr != ""
+  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
 
 - name: wait until nexus is up and running
   shell: "{{ openshift_cli }} get dc {{ nexus_service_name }} -o template --template={{ json_template }} -n {{ namespace }}"

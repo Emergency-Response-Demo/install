@@ -133,7 +133,7 @@ class OCConfigMap(OpenShiftCLI):
         # Get
         #####
         if state == 'list':
-            return {'changed': False, 'results': api_rval, 'state': state}
+            return {'changed': False, 'ansible_module_results': api_rval, 'state': state}
 
         if not params['name']:
             return {'failed': True,
@@ -154,7 +154,7 @@ class OCConfigMap(OpenShiftCLI):
             if api_rval['returncode'] != 0:
                 return {'failed': True, 'msg': api_rval}
 
-            return {'changed': True, 'results': api_rval, 'state': state}
+            return {'changed': True, 'ansible_module_results': api_rval, 'state': state}
 
         ########
         # Create
@@ -175,7 +175,7 @@ class OCConfigMap(OpenShiftCLI):
                 if api_rval['returncode'] != 0:
                     return {'failed': True, 'msg': api_rval}
 
-                return {'changed': True, 'results': api_rval, 'state': state}
+                return {'changed': True, 'ansible_module_results': api_rval, 'state': state}
 
             ########
             # Update
@@ -183,7 +183,7 @@ class OCConfigMap(OpenShiftCLI):
             # if update is set to false, return
             update = params['update']
             if not update:
-                return {'changed': False, 'results': api_rval, 'state': state}
+                return {'changed': False, 'ansible_module_results': api_rval, 'state': state}
             
             if oc_cm.needs_update():
 
@@ -197,9 +197,9 @@ class OCConfigMap(OpenShiftCLI):
                 if api_rval['returncode'] != 0:
                     return {'failed': True, 'msg': api_rval}
 
-                return {'changed': True, 'results': api_rval, 'state': state}
+                return {'changed': True, 'ansible_module_results': api_rval, 'state': state}
 
-            return {'changed': False, 'results': api_rval, 'state': state}
+            return {'changed': False, 'ansible_module_results': api_rval, 'state': state}
 
         return {'failed': True, 'msg': 'Unknown state passed. {}'.format(state)}
 

@@ -284,7 +284,7 @@ class OCRoute(OpenShiftCLI):
         #####
         if state == 'list':
             return {'changed': False,
-                    'results': api_rval['results'],
+                    'ansible_module_results': api_rval['results'],
                     'state': 'list'}
 
         ########
@@ -298,7 +298,7 @@ class OCRoute(OpenShiftCLI):
 
                 api_rval = oc_route.delete()
 
-                return {'changed': True, 'results': api_rval, 'state': "absent"}  # noqa: E501
+                return {'changed': True, 'ansible_module_results': api_rval, 'state': "absent"}  # noqa: E501
             return {'changed': False, 'state': 'absent'}
 
         if state == 'present':
@@ -322,7 +322,7 @@ class OCRoute(OpenShiftCLI):
                 if api_rval['returncode'] != 0:
                     return {'failed': True, 'msg': api_rval, 'state': "present"}  # noqa: E501
 
-                return {'changed': True, 'results': api_rval, 'state': "present"}  # noqa: E501
+                return {'changed': True, 'ansible_module_results': api_rval, 'state': "present"}  # noqa: E501
 
             ########
             # Update
@@ -330,7 +330,7 @@ class OCRoute(OpenShiftCLI):
             # if update is set to false, return
             update = params['update']
             if not update:
-                return {'changed': False, 'results': api_rval, 'state': state}
+                return {'changed': False, 'ansible_module_results': api_rval, 'state': state}
 
             if oc_route.needs_update():
 
@@ -348,9 +348,9 @@ class OCRoute(OpenShiftCLI):
                 if api_rval['returncode'] != 0:
                     return {'failed': True, 'msg': api_rval, 'state': "present"}  # noqa: E501
 
-                return {'changed': True, 'results': api_rval, 'state': "present"}  # noqa: E501
+                return {'changed': True, 'ansible_module_results': api_rval, 'state': "present"}  # noqa: E501
 
-            return {'changed': False, 'results': api_rval, 'state': "present"}
+            return {'changed': False, 'ansible_module_results': api_rval, 'state': "present"}
 
         # catch all
         return {'failed': True, 'msg': "Unknown State passed"}

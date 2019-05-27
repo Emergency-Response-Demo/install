@@ -132,7 +132,7 @@ class OCList(OpenShiftCLI):
             if params['files'] and params['delete_after']:
                 Utils.cleanup(params['files'])
 
-            return {'changed': True, 'results': api_rval, 'state': state}
+            return {'changed': True, 'ansible_module_results': api_rval, 'state': state}
 
         # catch all
         return {'failed': True, 'msg': "Unknown State passed"}

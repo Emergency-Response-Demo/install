@@ -24,7 +24,7 @@
     -p APPLICATION_USER={{ datagrid_application_user }} \
     -p APPLICATION_PASSWORD={{ datagrid_application_password }} \
     | {{ openshift_cli }} create -f - -n {{ namespace }}
-  when: result.results.stderr is defined and result.results.stderr != ""
+  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
 
 - name: wait until datagrid is up and running
   shell: "{{ openshift_cli }} get statefulset {{ datagrid_application_name }} -o template --template={{ json_template }} -n {{ namespace }}"

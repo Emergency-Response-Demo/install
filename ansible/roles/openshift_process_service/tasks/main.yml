@@ -17,7 +17,7 @@
   register: result
 
 - import_tasks: deploy_postgresql.yml
-  when: result.results.stderr is defined and result.results.stderr != ""
+  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
 
 # application configmap
 - name: copy configmap files from template
@@ -185,4 +185,4 @@
     namespace: "{{ namespace }}"
     files:
       - "{{ work_dir }}/{{ application_template }}"
-  when: result.results.stderr is defined and result.results.stderr != ""
+  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""

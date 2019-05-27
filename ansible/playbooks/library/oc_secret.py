@@ -128,7 +128,7 @@ class OCSecret(OpenShiftCLI):
         # Get
         #####
         if state == 'list':
-            return {'changed': False, 'results': api_rval, state: 'list'}
+            return {'changed': False, 'ansible_module_results': api_rval, state: 'list'}
 
         if not params['name']:
             return {'failed': True,
@@ -145,7 +145,7 @@ class OCSecret(OpenShiftCLI):
                 return {'changed': True, 'msg': 'Would have performed a delete.'}
 
             api_rval = ocsecret.delete()
-            return {'changed': True, 'results': api_rval, 'state': 'absent'}
+            return {'changed': True, 'ansible_module_results': api_rval, 'state': 'absent'}
 
         if state == 'present':
             if params['files']:
@@ -175,7 +175,7 @@ class OCSecret(OpenShiftCLI):
                             'msg': api_rval}
 
                 return {'changed': True,
-                        'results': api_rval,
+                        'ansible_module_results': api_rval,
                         'state': 'present'}
 
             ########
@@ -184,7 +184,7 @@ class OCSecret(OpenShiftCLI):
             # if update is set to false, return
             update = params['update']
             if not update:
-                return {'changed': False, 'results': api_rval, 'state': state}
+                return {'changed': False, 'ansible_module_results': api_rval, 'state': state}
 
             secret = ocsecret.prep_secret(params['files'], params['contents'], force=params['force'])
 
@@ -198,7 +198,7 @@ class OCSecret(OpenShiftCLI):
                     Utils.cleanup([ftmp['path'] for ftmp in files])
 
                 return {'changed': False,
-                        'results': secret['results'],
+                        'ansible_module_results': secret['results'],
                         'state': 'present'}
 
             if check_mode:
@@ -216,7 +216,7 @@ class OCSecret(OpenShiftCLI):
                         'msg': api_rval}
 
             return {'changed': True,
-                    'results': api_rval,
+                    'ansible_module_results': api_rval,
                     'state': 'present'}
 
         return {'failed': True,
