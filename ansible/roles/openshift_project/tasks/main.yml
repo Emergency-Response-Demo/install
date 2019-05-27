@@ -5,7 +5,7 @@
 - name: create project {{ namespace }}
   oc_project:
     state: present
-    oc_binary: "{{ openshift_cli }}"    
+    oc_binary: "{{ openshift_cli }}"
     name: "{{ namespace }}"
 
 - name: assign user {{ project_admin }} as project admin in {{ namespace }}

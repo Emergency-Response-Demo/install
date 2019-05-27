@@ -1,92 +1,62 @@
 ---
 
-- name: delete {{ sso_application_name }} route
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ sso_application_name }}"
-    namespace: "{{ namespace }}"
-    kind: route
+- name: retrieve sso route
+  shell: oc get route sso -o jsonpath='{.spec.host}' -n {{ sso_namespace }}
+  register: sso_route_cmd
 
-- name: delete {{ sso_application_name }} service
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ sso_application_name }}"
-    namespace: "{{ namespace }}"
-    kind: service
+- name: retrieve sso admin password
+  shell: oc get dc/sso -o jsonpath='{.spec.template.spec.containers[?(@.name=="sso")].env[?(@.name=="SSO_ADMIN_PASSWORD")].value}' -n {{ sso_namespace }}
+  register: sso_admin_password_cmd
 
-- name: delete {{ sso_application_name }}-ping service
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ sso_application_name }}-ping"
-    namespace: "{{ namespace }}"
-    kind: service
+- name: retrieve sso admin username
+  shell: oc get dc/sso -o jsonpath='{.spec.template.spec.containers[?(@.name=="sso")].env[?(@.name=="SSO_ADMIN_USERNAME")].value}' -n {{ sso_namespace }}
+  register: sso_admin_user_cmd
 
-- name: delete {{ sso_application_name }} dc
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ sso_application_name }}"
-    namespace: "{{ namespace }}"
-    kind: dc
+- set_fact:
+    sso_url: "https://{{ sso_route_cmd.stdout }}"
+    sso_admin_password: "{{ sso_admin_password_cmd.stdout }}"
+    sso_admin_user: "{{ sso_admin_user_cmd.stdout }}"
 
-- name: delete {{ sso_application_name }}-postgresql service
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ sso_application_name }}-postgresql"
-    namespace: "{{ namespace }}"
-    kind: service
+- name: get admin token
+  uri:
+    url: "{{ sso_url }}/auth/realms/master/protocol/openid-connect/token"
+    method: POST
+    headers:
+      Content-Type: application/x-www-form-urlencoded
+    body: "username={{ sso_admin_user }}&password={{ sso_admin_password }}&grant_type=password&client_id=admin-cli"
+    status_code: 200
+    validate_certs: no
+  register: admin_token_result
 
-- name: delete {{ sso_application_name }}-postgresql dc
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ sso_application_name }}-postgresql"
-    namespace: "{{ namespace }}"
-    kind: dc
+- name: set admin token fact
+  set_fact:
+    admin_token: "{{ admin_token_result | json_query('json.access_token') }}"
 
-- name: delete {{ sso_application_name }}-postgresql-claim pvc
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ sso_application_name }}-postgresql-claim"
-    namespace: "{{ namespace }}"
-    kind: pvc
+- name: copy realm template
+  template:
+    src: "{{ sso_realm_template }}"
+    dest: "{{ work_dir }}/{{ sso_realm_id }}.json"
 
-- name: delete {{ theme_build_name }} bc
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ theme_build_name }}"
-    namespace: "{{ namespace }}"
-    kind: bc
+- name: check if {{ sso_realm_id }} exists
+  uri:
+    url: "{{ sso_url }}/auth/admin/realms/{{ sso_realm_id }}"
+    method: GET
+    headers:
+      Authorization: Bearer {{ admin_token }}
+    status_code: 200,404
+    validate_certs: no
+  register: result
+  changed_when: false
 
-- name: delete {{ theme_build_image }} is
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ theme_build_image }}"
-    namespace: "{{ namespace }}"
-    kind: is
-
-- name: delete {{sso_application_name }}-x509-https-secret secret
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{sso_application_name }}-x509-https-secret"
-    namespace: "{{ namespace }}"
-    kind: secret
-
-- name: delete {{sso_application_name }}-x509-jgroups-secret secret
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{sso_application_name }}-x509-jgroups-secret"
-    namespace: "{{ namespace }}"
-    kind: secret
+- name: delete {{ sso_realm_id }} realm
+  uri:
+    url: "{{ sso_url }}/auth/admin/realms/{{ sso_realm_id }}"
+    method: DELETE
+    headers:
+      Authorization: Bearer {{ admin_token }}
+    status_code: 204
+    validate_certs: no
+  when: result.status == 200
 
 - name: delete client configmap
   oc_obj:

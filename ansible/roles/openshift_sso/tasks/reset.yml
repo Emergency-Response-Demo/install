@@ -1,8 +1,21 @@
 ---
 
-- name: set rhsso route
-  set_fact:
-    sso_url: https://{{ sso_application_name }}-{{ namespace }}.{{ ocp_domain }}
+- name: retrieve sso route
+  shell: oc get route sso -o jsonpath='{.spec.host}' -n {{ sso_namespace }}
+  register: sso_route_cmd
+
+- name: retrieve sso admin password
+  shell: oc get dc/sso -o jsonpath='{.spec.template.spec.containers[?(@.name=="sso")].env[?(@.name=="SSO_ADMIN_PASSWORD")].value}' -n {{ sso_namespace }}
+  register: sso_admin_password_cmd
+
+- name: retrieve sso admin username
+  shell: oc get dc/sso -o jsonpath='{.spec.template.spec.containers[?(@.name=="sso")].env[?(@.name=="SSO_ADMIN_USERNAME")].value}' -n {{ sso_namespace }}
+  register: sso_admin_user_cmd
+
+- set_fact:
+    sso_url: "https://{{ sso_route_cmd.stdout }}"
+    sso_admin_password: "{{ sso_admin_password_cmd.stdout }}"
+    sso_admin_user: "{{ sso_admin_user_cmd.stdout }}"
 
 - name: get admin token
   uri:
@@ -10,7 +23,7 @@
     method: POST
     headers:
       Content-Type: application/x-www-form-urlencoded
-    body: "username={{ sso_admin_username }}&password={{ sso_admin_password }}&grant_type=password&client_id=admin-cli"
+    body: "username={{ sso_admin_user }}&password={{ sso_admin_password }}&grant_type=password&client_id=admin-cli"
     status_code: 200
     validate_certs: no
   register: admin_token_result
