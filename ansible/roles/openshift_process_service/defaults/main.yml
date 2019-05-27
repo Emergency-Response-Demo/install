@@ -5,6 +5,11 @@ application_name: "{{ process_service_application_name }}"
 application_configmap: process-service
 logging_configmap: process-service-logging
 
+resources_limits_cpu: 1000m
+resources_limits_memory: 1Gi
+resources_requests_cpu: 250m
+resources_requests_memory: 500Mi
+
 kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
 kafka_bootstrap_port: 9092
 kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
@@ -19,11 +24,14 @@ kafka_responder_updated_event_topic: topic-responder-event
 kafka_update_incident_command_topic: topic-incident-command
 kafka_incident_assignment_event_topic: topic-incident-event
 
-
 process_service_postgresql_template: "{{ resources_dir }}/postgresql-persistent-template.yaml"
 process_service_postgresql_init_configmap: "{{ process_service_postgresql_service_name }}-init"
 process_service_postgresql_max_connections: 100
 process_service_postgresql_max_prepared_transactions: 100
+process_service_postgresql_resources_requests_cpu: 100m
+process_service_postgresql_resources_requests_memory: 256Mi
+process_service_postgresql_resources_limits_cpu: 500m
+process_service_postgresql_resources_limits_memory: 512Mi
 
 process_service_postgresql_host: "{{ process_service_postgresql_service_name }}"
 

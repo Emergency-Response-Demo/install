@@ -4,13 +4,15 @@ application_name: "{{ incident_priority_service_application_name }}"
 
 service_account: incident-priority-service
 
+resources_limits_cpu: 500m
+resources_limits_memory: 500Mi
+resources_requests_cpu: 200m
+resources_requests_memory: 200Mi
+
 application_configmap: incident-priority-service
 logging_configmap: incident-priority-service-logging
 
 application_properties: application-config.yaml
-
-git_url: https://github.com/NAPS-emergency-response-project/incident-priority-service.git
-git_ref: master
 
 application_image: redhat-openjdk18-openshift:1.4
 application_image_namespace: openshift

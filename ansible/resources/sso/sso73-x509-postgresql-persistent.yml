@@ -189,7 +189,11 @@ objects:
                     - '-c'
                     - /opt/eap/bin/readinessProbe.sh
               resources:
+                requests:
+                  cpu: '${CPU_REQUEST}'
+                  memory: '${MEMORY_REQUEST}'
                 limits:
+                  cpu: '${CPU_LIMIT}'
                   memory: '${MEMORY_LIMIT}'
               volumeMounts:
                 - mountPath: /etc/x509/https
@@ -272,6 +276,13 @@ objects:
                       $POSTGRESQL_DATABASE -c 'SELECT 1'
                 initialDelaySeconds: 5
                 timeoutSeconds: 1
+              resources:
+                requests:
+                  cpu: "${POSTGRESQL_CPU_REQUEST}"
+                  memory: "${POSTGRESQL_MEMORY_REQUEST}"
+                limits:
+                  cpu: "${POSTGRESQL_CPU_LIMIT}"
+                  memory: "${POSTGRESQL_MEMORY_LIMIT}"
               volumeMounts:
                 - mountPath: /var/lib/pgsql/data
                   name: '${APPLICATION_NAME}-postgresql-pvol'
@@ -410,3 +421,10 @@ parameters:
     description: namespace for the SSO image
   - name: SSO_IMAGE_STREAM
   - name: SSO_IMAGE_STREAM_TAG
+  - name: CPU_LIMIT
+  - name: CPU_REQUEST
+  - name: MEMORY_REQUEST
+  - name: POSTGRESQL_MEMORY_LIMIT
+  - name: POSTGRESQL_CPU_LIMIT
+  - name: POSTGRESQL_MEMORY_REQUEST
+  - name: POSTGRESQL_CPU_REQUEST

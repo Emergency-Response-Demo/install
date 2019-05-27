@@ -4,6 +4,11 @@ application_name: "{{ emergency_console_application_name }}"
 
 service_account: emergency-console
 
+resources_limits_cpu: 500m
+resources_limits_memory: 300Mi
+resources_requests_cpu: 200m
+resources_requests_memory: 100Mi
+
 application_image: nodejs:10
 application_image_namespace: openshift
 

@@ -71,8 +71,8 @@ objects:
               memory: ${MAX_MEMORY}
               cpu: ${MAX_CPU}
             requests:
-              memory: 500Mi
-              cpu: 250m
+              memory: ${REQUESTED_MEMORY}
+              cpu: ${REQUESTED_CPU}
           terminationMessagePath: /dev/termination-log
           volumeMounts:
           - mountPath: /sonatype-work
@@ -159,7 +159,17 @@ parameters:
   required: true
   value: 1Gi
 - description: Max cpu allocated to the Nexus pod
-  displayName: Max Memory
+  displayName: Max Cpu
   name: MAX_CPU
   required: true
   value: 500m
+- description: Memory requested by the Nexus pod
+  displayName: Requested Memory
+  name: REQUESTED_MEMORY
+  required: true
+  value: 500Mi
+- description: Cpu requested by he Nexus pod
+  displayName: Requested Cpu
+  name: REQUESTED_CPU
+  required: true
+  value: 250m

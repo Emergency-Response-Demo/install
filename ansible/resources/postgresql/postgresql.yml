@@ -123,8 +123,12 @@ items:
           - name: POSTGRESQL_MAX_CONNECTIONS
             value: "{{ postgresql_max_connections }}"
           resources:
+            requests:
+              cpu: '{{ postgresql_cpu_request }}'
+              memory: '{{ postgresql_memory_request }}'
             limits:
-              memory: {{ postgresql_memory_limit }}
+              cpu: '{{ postgresql_cpu_limit }}'
+              memory: '{{ postgresql_memory_limit }}'
           volumeMounts:
           - name: "{{ postgresql_application_name }}-data"
             mountPath: "/var/lib/pgsql/data"

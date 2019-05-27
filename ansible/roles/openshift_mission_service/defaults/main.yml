@@ -4,6 +4,11 @@ application_name: "{{ mission_service_application_name }}"
 
 service_account: mission-service
 
+resources_limits_cpu: 1000m
+resources_limits_memory: 1Gi
+resources_requests_cpu: 250m
+resources_requests_memory: 250Mi
+
 application_configmap: mission-service
 application_configmap_key: app-config.properties
 logging_configmap: mission-service-logging

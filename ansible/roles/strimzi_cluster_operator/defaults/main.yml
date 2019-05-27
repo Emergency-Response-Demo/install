@@ -53,3 +53,8 @@ crd_kafka_mirror_maker_template: 045-Crd-kafkamirrormaker.yaml
 
 deployment_cluster_operator: "{{ strimzi_cluster_operator }}"
 deployment_cluster_operator_template: 050-Deployment-strimzi-cluster-operator.yaml
+
+cluster_operator_resources_memory_limit: 256Mi
+cluster_operator_resources_cpu_limit: 1000m
+cluster_operator_resources_memory_request: 256Mi
+cluster_operator_resources_cpu_request: 200m

@@ -83,6 +83,13 @@
     -p SSO_ADMIN_PASSWORD={{ sso_admin_password }} \
     -p POSTGRESQL_IMAGE_STREAM_TAG={{ postgresql_version }} \
     -p MEMORY_LIMIT={{ sso_memory_limit }} \
+    -p CPU_LIMIT={{ sso_cpu_limit }} \
+    -p MEMORY_REQUEST={{ sso_memory_request }} \
+    -p CPU_REQUEST={{ sso_cpu_request }} \
+    -p POSTGRESQL_MEMORY_LIMIT={{ postgresql_memory_limit }} \
+    -p POSTGRESQL_CPU_LIMIT={{ postgresql_cpu_limit }} \
+    -p POSTGRESQL_MEMORY_REQUEST={{ postgresql_memory_request }} \
+    -p POSTGRESQL_CPU_REQUEST={{ postgresql_cpu_request }} \
     -p SSO_IMAGE_STREAM={{ theme_build_image }} \
     -p SSO_IMAGE_STREAM_TAG={{ theme_build_image_tag }} \
     -p SSO_IMAGE_STREAM_NAMESPACE={{ namespace }} \

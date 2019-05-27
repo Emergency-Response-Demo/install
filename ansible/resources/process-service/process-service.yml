@@ -92,11 +92,11 @@ items:
               timeoutSeconds: 3
             resources:
               limits:
-                cpu: 1000m
-                memory: 1Gi
+                cpu: '{{ resources_limits_cpu }}'
+                memory: '{{ resources_limits_memory }}'
               requests:
-                cpu: 500m
-                memory: 500Mi
+                cpu: '{{ resources_requests_cpu }}'
+                memory: '{{ resources_requests_memory }}'
             securityContext:
               privileged: false
             terminationMessagePath: /dev/termination-log

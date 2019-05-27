@@ -3,6 +3,9 @@
 jenkins_service: jenkins
 jenkins_jnlp_service: jenkins-jnlp
 jenkins_enable_oauth: "true"
+
+jenkins_memory_request: 512Mi
+jenkins_cpu_request: 200m
 jenkins_memory_limit: 1Gi
 jenkins_cpu_limit: 1000m
 jenkins_volume_capacity: 1Gi
