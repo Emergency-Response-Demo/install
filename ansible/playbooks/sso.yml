@@ -27,3 +27,9 @@
       when: >
         ACTION is defined and
         ACTION|trim() == "uninstall"
+    - include_role:
+        name: ../roles/openshift_sso
+        tasks_from: reset
+      when: >
+        ACTION is defined and
+        ACTION|trim() == "reset"

@@ -1,46 +1,7 @@
 ---
-
-theme_build_template: "{{ resources_dir }}/theme-buildconfig.yml"
-theme_build_name: redhat-sso73-openshift-theme
-
-theme_build_imagestream_template: "{{ resources_dir }}/theme-imagestream.yml"
-theme_build_image: redhat-sso73-openshift-theme
-theme_build_image_tag: 1.0
-
-theme_build_source: https://github.com/NAPS-emergency-response-project/emergency-sso
-
-theme_build_imagestream: redhat-sso73-openshift
-theme_build_imagestream_tag: 1.0
-theme_build_imagestream_namespace: openshift
-
-sso_image_template: sso-imagestream.yml
-
-sso_application_name: sso
-sso_template: "{{ resources_dir}}/sso73-x509-postgresql-persistent.yml"
-
-sso_memory_limit: 1Gi
-sso_cpu_limit: 500m
-sso_memory_request: 500Mi
-sso_cpu_request: 250m
-
-sso_admin_username: admin
-sso_admin_password: r3dh4t1!
-
-postgresql_version: 9.5
-postgresql_is_namespace: openshift
-
-postgresql_min_pool_size: 0
-postgresql_max_pool_size: 20
-postgresql_user: rhsso
-postgresql_password: rhsso
-postgresql_database: rhsso
-postgresql_max_connections: 100
-postgresql_shared_buffers: 32MB
-postgresql_memory_limit: 512Mi
-postgresql_cpu_limit: 500m
-postgresql_memory_request: 256Mi
-postgresql_cpu_request: 100m
-postgresql_pv_capacity: 1Gi
-
 sso_realm_id: emergency-realm
 sso_realm_template: "{{ resources_dir }}/realm.json"
+
+sso_theme_path: /opt/eap/themes
+sso_theme_directory: "{{ resources_dir }}/themes/coreui"
+sso_namespace: sso
