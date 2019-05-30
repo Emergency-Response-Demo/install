@@ -49,7 +49,7 @@ items:
             command: 
             - /bin/bash
             - /tmp/init-files/wait_for_postgresql.sh
-            - /tmp/init-files/create_naps_database.sh
+            - /tmp/init-files/create_erd_database.sh
             containerName: postgresql
             volumes:
             - init-volume

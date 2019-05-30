@@ -8,7 +8,7 @@ pushd "$(dirname "$(readlink -f "$BASH_SOURCE")")" > /dev/null && {
     popd > /dev/null
 }   
 
-echo "creating naps database"
+echo "creating emergency response demo database"
 
 psql -h $POSTGRESQL_SERVICE -d $POSTGRESQL_DATABASE -U $POSTGRESQL_USER -w -c "grant all privileges on database ${POSTGRESQL_DATABASE} to ${POSTGRESQL_USER};"
-psql -h $POSTGRESQL_SERVICE -d $POSTGRESQL_DATABASE -U $POSTGRESQL_USER -w < ${SCRIPT_DIR}/naps_emergency_response_ddl.sql
+psql -h $POSTGRESQL_SERVICE -d $POSTGRESQL_DATABASE -U $POSTGRESQL_USER -w < ${SCRIPT_DIR}/emergency_response_demo_ddl.sql

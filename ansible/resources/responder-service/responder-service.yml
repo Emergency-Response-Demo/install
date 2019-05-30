@@ -21,7 +21,7 @@ items:
         protocol: TCP
         targetPort: 8080
     selector:
-      group: naps-services
+      group: erd-services
       app: {{ application_name }}
     sessionAffinity: None
     type: ClusterIP
@@ -49,7 +49,7 @@ items:
     replicas: 1
     revisionHistoryLimit: 2
     selector:
-      group: naps-services
+      group: erd-services
       app: {{ application_name }}
     strategy:
       activeDeadlineSeconds: 21600
@@ -64,7 +64,7 @@ items:
     template:
       metadata:
         labels:
-          group: naps-services
+          group: erd-services
           app: {{ application_name }}
       spec:
         containers:

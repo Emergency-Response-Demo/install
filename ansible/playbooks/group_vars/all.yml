@@ -8,6 +8,6 @@ resources_base_dir: "{{ home_dir }}/resources"
 # oc executable
 openshift_cli: oc
 
-project_name: naps-emergency-response
+project_name: emergency-response-demo
 
 monitoring_label: prometheus
