@@ -1,6 +1,6 @@
 ---
 
-- name: Deploy NAPS Demo application
+- name: Deploy Emergency Response Demo application
   hosts: localhost
   connection: local
   gather_facts: false
