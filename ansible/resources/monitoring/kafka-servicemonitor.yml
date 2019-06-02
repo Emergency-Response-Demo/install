@@ -3,9 +3,8 @@ kind: ServiceMonitor
 metadata:
   labels:
     k8s-app: prometheus
-    monitoring-key: middleware
+    monitoring-key: "{{ application_monitoring_label_value }}"
   name: metrics-monitor-kafka
-  namespace: {{ project_name }}
 spec:
   endpoints:
     - interval: 5s

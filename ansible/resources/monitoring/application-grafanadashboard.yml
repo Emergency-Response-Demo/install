@@ -2,7 +2,6 @@ apiVersion: integreatly.org/v1alpha1
 kind: GrafanaDashboard
 metadata:
   name: emergency-response-dashboard
-  namespace: "{{ namespace }}"
 spec:
   json: |
     {

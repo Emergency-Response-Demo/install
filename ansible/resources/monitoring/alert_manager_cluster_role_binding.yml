@@ -1,0 +1,13 @@
+apiVersion: authorization.openshift.io/v1
+groupNames: null
+kind: ClusterRoleBinding
+metadata:
+  name: emergency-response-alertmanager-application-monitoring
+roleRef:
+  name: alertmanager-application-monitoring
+subjects:
+- kind: ServiceAccount
+  name: alertmanager
+  namespace: "{{ application_monitoring_namespace }}"
+userNames:
+- system:serviceaccount:{{ application_monitoring_namespace }}:alertmanager
