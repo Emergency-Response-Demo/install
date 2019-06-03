@@ -31,3 +31,13 @@ rhsso_config_configmap: "{{ sso_config_configmap }}"
 
 emergency_console_config_map_token: "{{ map_token | default('') }}"
 emergency_console_config_polling: 10000
+kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
+kafka_bootstrap_port: 9092
+kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
+kafka_groupid: emergency-console-group
+kafka_topic_mission_event: topic-mission-event
+kafka_topic_responder_location_update: topic-responder-location-update
+kafka_topic_incident_event: topic-incident-event
+kafka_topic_incident_command: topic-incident-command
+kafka_topic_responder_event: topic-responder-event
+kafka_topic_responder_command: topic-responder-command
