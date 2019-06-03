@@ -93,6 +93,46 @@ items:
                 configMapKeyRef:
                   key: POLLING
                   name: {{ emergency_console_config_configmap }}
+            - name: KAFKA_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: KAFKA_HOST
+                  name: {{ emergency_console_config_configmap }}
+            - name: KAFKA_GROUP_ID
+              valueFrom:
+                configMapKeyRef:
+                  key: KAFKA_GROUP_ID
+                  name: {{ emergency_console_config_configmap }}
+            - name: KAFKA_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  key: KAFKA_TOPIC
+                  name: {{ emergency_console_config_configmap }}
+            - name: INCIDENT
+              valueFrom:
+                configMapKeyRef:
+                  key: INCIDENT
+                  name: {{ emergency_console_config_configmap }}
+            - name: MISSION
+              valueFrom:
+                configMapKeyRef:
+                  key: MISSION
+                  name: {{ emergency_console_config_configmap }}
+            - name: PROCESS_VIEWER
+              valueFrom:
+                configMapKeyRef:
+                  key: PROCESS_VIEWER
+                  name: {{ emergency_console_config_configmap }}
+            - name: RESPONDER
+              valueFrom:
+                configMapKeyRef:
+                  key: RESPONDER
+                  name: {{ emergency_console_config_configmap }}
+            - name: RESPONDER_SIMULATOR
+              valueFrom:
+                configMapKeyRef:
+                  key: RESPONDER_SIMULATOR
+                  name: {{ emergency_console_config_configmap }}
             imagePullPolicy: IfNotPresent
             name: {{ application_name }}
             ports:
