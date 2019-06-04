@@ -11,7 +11,8 @@
 
   tasks:
     - set_fact:
-        namespace: "{{ namespace_services }}"
+        namespace: "{{ namespace_monitoring }}"
+        monitor_namespace: "{{ namespace_services }}"
         resources_dir: "{{ resources_base_dir }}/monitoring"
         work_dir_name: monitoring
     - include_role:

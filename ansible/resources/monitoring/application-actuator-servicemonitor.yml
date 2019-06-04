@@ -3,9 +3,8 @@ kind: ServiceMonitor
 metadata:
   labels:
     k8s-app: prometheus
-    monitoring-key: middleware
+    monitoring-key: "{{ application_monitoring_label_value }}"
   name: emergency-services-actuator-monitor-services
-  namespace: "{{ project_name }}"
 spec:
   endpoints:
     - interval: 5s

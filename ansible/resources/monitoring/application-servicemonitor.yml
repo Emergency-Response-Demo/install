@@ -4,9 +4,8 @@ metadata:
   generation: 1
   labels:
     k8s-app: prometheus
-    monitoring-key: middleware
+    monitoring-key: "{{ application_monitoring_label_value }}"
   name: metrics-monitor-services
-  namespace: {{ project_name }}
 spec:
   endpoints:
     - interval: 5s
