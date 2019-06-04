@@ -13,6 +13,7 @@
     - group_vars/postgresql.yml
     - group_vars/sso.yml
     - group_vars/monitoring.yml
+    - group_vars/3scale.yml
 
   tasks:
     - include_role:

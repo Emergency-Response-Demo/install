@@ -1,0 +1,10 @@
+---
+threescale_enable: true
+threescale_namespace: 3scale
+
+threescale_apicast_staging_svc: apicast-staging
+threescale_apicast_prod_svc: apicast-production
+
+threescale_apicast_token: '12345'
+
+threescale_config_deployment: emergency-console
