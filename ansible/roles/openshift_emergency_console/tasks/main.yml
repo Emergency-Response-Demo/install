@@ -18,7 +18,7 @@
     src: "{{ resources_dir }}/{{ buildconfig_template }}"
     dest: "{{ work_dir }}/{{ buildconfig_template }}"
 
-- name: create build config in the tools namespace
+- name: create build config in the {{ namespace }} namespace
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: present
