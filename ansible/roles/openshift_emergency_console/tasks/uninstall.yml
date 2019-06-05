@@ -29,7 +29,7 @@
     oc_binary: "{{ openshift_cli }}"
     state: absent
     name: "{{ buildconfig_name }}"
-    namespace: "{{ namespace_tools }}"
+    namespace: "{{ namespace }}"
     kind: buildconfig
 
 - name: delete the build pipeline
@@ -55,6 +55,14 @@
     name: "{{ application_name }}"
     namespace: "{{ namespace }}"
     kind: imagestream
+
+- name: delete configmap
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ emergency_console_config_configmap }}"
+    namespace: "{{ namespace }}"
+    kind: configmap
 
 - name: delete service account
   oc_obj:
