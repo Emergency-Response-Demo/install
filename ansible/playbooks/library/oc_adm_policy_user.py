@@ -168,7 +168,7 @@ class PolicyUser(OpenShiftCLI):
             if api_rval['returncode'] != 0:
                 return {'msg': api_rval}
 
-            return {'changed': True, 'results' : api_rval, state:'absent'}
+            return {'changed': True, 'ansible_module_results' : api_rval, state:'absent'}
 
         if state == 'present':
             ########
@@ -188,11 +188,11 @@ class PolicyUser(OpenShiftCLI):
                 if api_rval['returncode'] != 0:
                     return {'msg': api_rval}
 
-                return {'changed': True, 'results': api_rval, state: 'present'}
+                return {'changed': True, 'ansible_module_results': api_rval, state: 'present'}
 
             return {'changed': False, state: 'present'}
 
-        return {'failed': True, 'changed': False, 'results': 'Unknown state passed. %s' % state, state: 'unknown'}
+        return {'failed': True, 'changed': False, 'ansible_module_results': 'Unknown state passed. %s' % state, state: 'unknown'}
 
 def main():
     '''
