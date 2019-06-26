@@ -9,6 +9,7 @@ spec:
   resources:
     limits:
       memory: 3Gi
+      cpu: 1
   failedBuildsHistoryLimit: 5
   nodeSelector: {}
   output:
