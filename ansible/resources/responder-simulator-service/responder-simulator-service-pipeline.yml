@@ -60,8 +60,9 @@ spec:
                   echo "Detected new builds created by buildconfig: ${it.names()}"
                   return true
                 }
-                builds.untilEach(1) {
-                  return it.object().status.phase == "Complete"
+                while (builds.object().status.phase != "Complete") {
+                  echo "${builds.names()} ;  status = ${builds.object().status.phase}"
+                  sleep 5
                 }
               }
             }
