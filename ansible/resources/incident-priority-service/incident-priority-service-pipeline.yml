@@ -60,16 +60,17 @@ spec:
                   echo "Detected new builds created by buildconfig: ${it.names()}"
                   return true
                 }
-                builds.untilEach(1) {
-                  return it.object().status.phase == "Complete"
-                }         
+                while (builds.object().status.phase != "Complete") {
+                  echo "${builds.names()} ;  status = ${builds.object().status.phase}"
+                  sleep 5
+                }
               }
             }
           }
 
           stage ('Deploy') {
             openshift.withCluster() {
-              openshift.withProject( "${namespace_app}") {  
+              openshift.withProject( "${namespace_app}") {
                 openshift.tag("${namespace_jenkins}/${app_imagestream}:latest", "${namespace_app}/${app_imagestream}:latest")
                 openshift.tag("${namespace_jenkins}/${app_imagestream}:latest", "${namespace_jenkins}/${app_imagestream}:${commitId}")
                 openshift.tag("${namespace_app}/${app_imagestream}:latest", "${namespace_app}/${app_imagestream}:${commitId}")
@@ -79,10 +80,10 @@ spec:
                     return it.object().status.readyReplicas == 1
                   }
                 }
-              }    
+              }
             }
           }
-        }         
+        }
     type: JenkinsPipeline
   triggers:
   - github:
