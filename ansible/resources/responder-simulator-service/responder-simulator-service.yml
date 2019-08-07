@@ -30,6 +30,7 @@ items:
       monitoring: prometheus
     name: {{ application_name }}
   spec:
+    host: responder-simulator.{{ ocp_domain }}
     port:
       targetPort: http
     to:
