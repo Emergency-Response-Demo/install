@@ -28,7 +28,7 @@ items:
       app: {{ application_name }}
     name: {{ application_name }}
   spec:
-    host: disaster-simulator.{{ ocp_domain }}
+    host: {{ disaster_simulator_service_application_name }}.{{ ocp_domain }}
     port:
       targetPort: 8080
     to:
