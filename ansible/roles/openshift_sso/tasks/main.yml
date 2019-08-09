@@ -1,24 +1,43 @@
 ---
 # NOTE: Move this to the user-facing SSO when 1.4 releases.
 
-- name: Determine whether themes pvc claim exists
-  shell: "{{ openshift_cli }} get pvc sso-themes-claim -n {{ sso_namespace }} -o jsonpath='{.status.phase}'"
-  register: sso_themes_claim_exists
-  ignore_errors: true
+- name: check whether themes pvc claim exists
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    namespace: "{{ sso_namespace }}"
+    name: "{{ sso_theme_pvc }}"
+    kind: pvc
+  register: result
 
 - block:
+    - name: copy the pvc template
+      template:
+        src: "{{ resources_dir }}/{{ sso_theme_template }}"
+        dest: "{{ work_dir }}/{{ sso_theme_template }}" 
+
     - name: copy the coreui theme to the host
       copy:
         src: "{{ sso_theme_directory }}"
         dest: "{{work_dir}}/themes"
   
-    - name: create themes PVC and volume
-      shell: "cat {{ resources_dir }}/themes-pvc.json | {{ openshift_cli }} apply -n {{ sso_namespace }} -f -"
-    - shell: "{{ openshift_cli }} set volume dc/sso --add --name=themes-vol -t persistentVolumeClaim --claim-name=sso-themes-claim -m /opt/eap/themes/coreui --sub-path=coreui -n {{ sso_namespace }}"
-    - name: pause for a few to allow new SSO RC to be created
-      pause:
-        seconds: 10 
+    - name: create themes PVC
+      oc_obj:
+        oc_binary: "{{ openshift_cli }}"
+        state: present
+        namespace: "{{ sso_namespace }}"
+        name: "{{ sso_theme_pvc }}"
+        kind: pvc
+        files:
+          - "{{ work_dir }}/{{ sso_theme_template }}"        
+
+    - name: create theme volume
+      shell: "{{ openshift_cli }} set volume dc/sso --add --name=themes-vol -t persistentVolumeClaim --claim-name={{ sso_theme_pvc }} -m /opt/eap/themes/coreui --sub-path=coreui -n {{ sso_namespace }}" 
   
+    - name: pause for a few seconds to allow new SSO RC to be created
+      pause:
+        seconds: 10
+
     - name: wait until new SSO pod is started
       shell: "{{ openshift_cli }} get dc/sso  -o template --template={{ json_template }} -n {{ sso_namespace }}"
       vars:
@@ -35,13 +54,10 @@
   
     - name: copy emergency response themes to new PVC
       shell: "{{ openshift_cli }} cp {{work_dir}}/themes/coreui/account {{ sso_pod_name.stdout }}:{{ sso_theme_path }}/coreui -n {{ sso_namespace }}"
-    - shell: "{{ openshift_cli }} cp {{work_dir}}/themes/coreui/login {{ sso_pod_name.stdout }}:{{ sso_theme_path }}/coreui -n {{ sso_namespace }}"
+    - name: copy emergency response themes to new PVC
+      shell: "{{ openshift_cli }} cp {{work_dir}}/themes/coreui/login {{ sso_pod_name.stdout }}:{{ sso_theme_path }}/coreui -n {{ sso_namespace }}"
 
-  when: sso_themes_claim_exists.stdout == ""
-
-- name: get sso pod name
-  shell: oc get pods --selector deploymentConfig=sso -o jsonpath='{.items[0].metadata.name}' -n {{ sso_namespace }}
-  register: sso_pod_name
+  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
 
 - name: retrieve sso route
   shell: oc get route sso -o jsonpath='{.spec.host}' -n {{ sso_namespace }}
