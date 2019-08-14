@@ -1,0 +1,168 @@
+---
+- name: Copy staging route template
+  template:
+    src: "{{ resources_dir }}/route.yml"
+    dest: "{{ work_dir }}/route.yml"
+  vars:
+    name: "{{ service_name }}-staging"
+    apicast_service: "{{ threescale_apicast_staging_svc }}"
+
+- name: Create staging route
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ service_name }}-staging"
+    kind: route
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/route.yml"
+
+- name: Get staging route
+  shell: oc get route {{ service_name }}-staging -n {{ namespace }} -o jsonpath='{.spec.host}'
+  register: staging_route_result
+
+- set_fact:
+    staging_route: "https://{{ staging_route_result.stdout }}"
+
+- name: Copy production route template
+  template:
+    src: "{{ resources_dir }}/route.yml"
+    dest: "{{ work_dir }}/route.yml"
+  vars:
+    name: "{{ service_name }}-production"
+    apicast_service: "{{ threescale_apicast_prod_svc }}"
+
+- name: Create production route
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ service_name }}-production"
+    kind: route
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/route.yml"
+
+- name: Get production route
+  shell: oc get route {{ service_name }}-production -n {{ namespace }} -o jsonpath='{.spec.host}'
+  register: production_route_result
+
+- set_fact:
+    production_route: "https://{{ production_route_result.stdout }}"
+
+- name: Create service
+  uri:
+    url: "{{ admin_route }}/admin/api/services.xml"
+    method: POST
+    return_content: yes
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    body: "access_token={{ admin_token }}&name={{ service_name | urlencode }}&deployment_option=hosted&backend_version={{ '1' if backend_version == 'oidc' else backend_version }}&system_name={{ service_name }}"
+    validate_certs: no
+    status_code: [201, 422]
+  register: create_svc_result
+
+- name: Get all services
+  uri:
+    url: "{{ admin_route }}/admin/api/services.xml?access_token={{ admin_token }}"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    status_code: 200
+  register: list_svc_result
+
+- name: Get service Id
+  xml:
+    xmlstring: '{{ list_svc_result.content }}'
+    xpath: //services//service//system_name[.='{{ service_name }}']/parent::service/id
+    content: text
+  register: xmlstring
+
+- debug: var=xmlstring.matches[0].id
+
+- set_fact: id={{ xmlstring.matches[0].id }}
+
+- name: Config backend service proxy
+  uri:
+    url: "{{ admin_route }}/admin/api/services/{{ id }}/proxy.xml"
+    method: PATCH
+    return_content: yes
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    body: "access_token={{ admin_token }}&endpoint={{ production_route | urlencode }}&credentials_location=headers\
+    &sandbox_endpoint={{ staging_route | urlencode }}\
+    &api_backend={{ backend_endpoint | urlencode }}"
+    validate_certs: no
+
+- name: Create application plan
+  uri:
+    url: "{{ admin_route }}/admin/api/services/{{ id }}/application_plans.xml"
+    method: POST
+    return_content: yes
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    body: "access_token={{ admin_token }}&name={{ display_name | urlencode }}&system_name={{ service_name }}&state=published"
+    validate_certs: no
+    status_code: [201, 422]
+  register: create_plan_result
+
+- name: Get all application plans
+  uri:
+    url: "{{ admin_route }}/admin/api/services/{{ id }}/application_plans.xml?access_token={{ admin_token }}"
+    method: GET
+    return_content: yes
+    validate_certs: no
+    status_code: 200
+  register: list_app_plans_result
+
+- name: Get plan Id
+  xml:
+    xmlstring: '{{ list_app_plans_result.content }}'
+    xpath: //plans//plan//service_id[.='{{ id }}']/parent::plan/id
+    content: text
+  register: xmlstring
+
+- debug: var=xmlstring.matches[0].id
+
+- set_fact: plan_id={{ xmlstring.matches[0].id }}
+
+- set_fact: redirect_uri={{ ( app_config.redirect_uri is defined ) | ternary('&redirect_url=' + ( app_config.redirect_uri | default('') | urlencode ), '') }}
+  when: app_config is defined
+
+- debug: var=redirect_uri
+
+- name: Create application
+  uri:
+    url: "{{ admin_route }}/admin/api/accounts/{{ account_id }}/applications.xml"
+    method: POST
+    return_content: yes
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    body: "access_token={{ admin_token }}&plan_id={{ plan_id }}&name={{ service_name }}\
+    &description={{ display_name }}&application_id={{ service_name }}\
+    &user_key=12345{{ redirect_uri }}"
+    validate_certs: no
+    status_code: [201, 422]
+  register: create_app_result
+  when: app_config is defined
+
+- name: Get policy chain template
+  shell: 'cat {{ resources_dir }}/policy-config.json'
+  register: get_policies
+
+- name: Enable CORS
+  uri:
+    url: "{{ admin_route }}/admin/api/services/{{ id }}/proxy/policies.json"
+    method: PUT
+    return_content: yes
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    body: "access_token={{ admin_token }}&policies_config={{ get_policies.stdout | urlencode }}"
+    validate_certs: no
+    status_code: 200
+  register: update_policies_result
+
+- set_fact:
+    config_key: "APICAST_{{ service_name | replace('-', '_') | upper }}"
+
+- name: Set config
+  shell: oc set env dc/{{ config_deployment_name }} -n {{ config_deployment_namespace }} {{ config_key }}={{ production_route }}

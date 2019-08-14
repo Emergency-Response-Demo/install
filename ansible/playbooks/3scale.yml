@@ -1,0 +1,30 @@
+---
+
+- name: Configure 3scale Service
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  run_once: true
+  vars_files:
+    - group_vars/services.yml
+    - group_vars/3scale.yml
+  tasks:
+    - set_fact:
+        namespace: "{{ threescale_namespace }}"
+        config_deployment_name: "{{ threescale_config_deployment }}"
+        config_deployment_namespace: "{{ project_name }}"
+        resources_dir: "{{ resources_base_dir }}/3scale"
+        work_dir_name: 3scale
+    - include_role:
+        name: ../roles/3scale
+      when: >
+        ACTION is not defined or
+        ACTION is none or
+        ACTION|trim() == "" or
+        ACTION|trim() == "install"
+    - include_role:
+        name: ../roles/3scale
+        tasks_from: uninstall
+      when: >
+        ACTION is defined and
+        ACTION|trim() == "uninstall"

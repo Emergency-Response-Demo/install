@@ -1,0 +1,61 @@
+---
+- name: Get 3scale admin token
+  shell: oc get secret {{ threescale_admin_secret }} -n {{ threescale_namespace }} -o jsonpath='{.data.ADMIN_ACCESS_TOKEN}' | base64 --decode
+  register: admin_token_cmd
+
+- name: Get 3scale admin route
+  shell: oc get route {{ threescale_admin_route }} -n {{ threescale_namespace }} -o jsonpath="{.spec.host}"
+  register: admin_route_cmd
+
+- set_fact:
+    threescale_admin_route: 'https://{{ admin_route_cmd.stdout }}'
+    threescale_admin_token: "{{ admin_token_cmd.stdout }}"
+    ocp_apps_domain: "{{ admin_route_cmd.stdout | replace('3scale-admin.', '') }}"
+
+- name: Create responder simulator 3scale service
+  include_tasks: ./create-service.yml
+  vars:
+    admin_route: '{{ threescale_admin_route }}'
+    admin_token: '{{ threescale_admin_token }}'
+    apicast_token: '{{ threescale_apicast_token }}'
+    account_id: '3'
+    service_name: responder-simulator-5
+    backend_version: '1'
+    backend_endpoint: http://responder-simulator.{{ emergency_response_namespace }}.svc:8080
+
+- name: Create responder service 3scale service
+  include_tasks: ./create-service.yml
+  vars:
+    admin_route: '{{ threescale_admin_route }}'
+    admin_token: '{{ threescale_admin_token }}'
+    apicast_token: '{{ threescale_apicast_token }}'
+    account_id: '3'
+    service_name: responder-service-5
+    backend_version: '1'
+    backend_endpoint: http://responder-service.{{ emergency_response_namespace }}.svc:8080
+
+- name: Create incident service 3scale service
+  include_tasks: ./create-service.yml
+  vars:
+    admin_route: '{{ threescale_admin_route }}'
+    admin_token: '{{ threescale_admin_token }}'
+    apicast_token: '{{ threescale_apicast_token }}'
+    account_id: '3'
+    service_name: incident-service-5
+    backend_version: '1'
+    backend_endpoint: http://incident-service.{{ emergency_response_namespace }}.svc:8080
+
+- name: Create mission service 3scale service
+  include_tasks: ./create-service.yml
+  vars:
+    admin_route: '{{ threescale_admin_route }}'
+    admin_token: '{{ threescale_admin_token }}'
+    apicast_token: '{{ threescale_apicast_token }}'
+    account_id: '3'
+    display_name: Mission Service
+    service_name: mission-service-5
+    backend_version: '1'
+    backend_endpoint: http://mission-service.{{ emergency_response_namespace }}.svc:8080
+
+- name: Set config
+  shell: oc set env dc/{{ config_deployment_name }} -n {{ config_deployment_namespace }} APICAST_ENABLED=true APICAST_TOKEN={{ threescale_apicast_token }}

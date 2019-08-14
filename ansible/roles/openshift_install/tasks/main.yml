@@ -305,3 +305,14 @@
     monitor_namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/monitoring"
     work_dir_name: monitoring
+
+- name: setup 3scale with demo services
+  import_role:
+    name: 3scale
+  vars:
+    namespace: "{{ threescale_namespace }}"
+    config_deployment_name: "{{ threescale_config_deployment }}"
+    config_deployment_namespace: "{{ project_name }}"
+    resources_dir: "{{ resources_base_dir }}/3scale"
+    work_dir_name: 3scale
+  when: threescale_enable | default(true) | bool

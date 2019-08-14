@@ -1,0 +1,6 @@
+---
+threescale_namespace: 3scale
+threescale_admin_route: system-provider-admin
+threescale_admin_secret: system-seed
+
+emergency_response_namespace: emergency-response-demo
