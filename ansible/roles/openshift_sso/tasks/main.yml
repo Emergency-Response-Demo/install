@@ -42,8 +42,8 @@
       shell: "{{ openshift_cli }} get dc/sso  -o template --template={{ json_template }} -n {{ sso_namespace }}"
       vars:
         json_template: '\{\{.status.readyReplicas\}\}'
-      register: result
-      until: result.stdout == "1"
+      register: started_result
+      until: started_result.stdout == "1"
       retries: 10
       delay: 30
       changed_when: false
