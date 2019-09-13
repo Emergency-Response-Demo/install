@@ -115,6 +115,13 @@
     resource: "{{ crd_kafka_mirror_maker }}"
     resource_template: "{{ resources_dir }}/cluster-operator/{{ crd_kafka_mirror_maker_template }}"
 
+- import_role:
+    name: openshift_apply_cluster_resource
+  vars:
+    resource_type: crd
+    resource: "{{ crd_kafka_bridge }}"
+    resource_template: "{{ resources_dir }}/cluster-operator/{{ crd_kafka_bridge_template }}"
+
 # kafka cluster project
 - name: create project {{ namespace_kafka_cluster }}
   oc_project:
