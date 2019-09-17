@@ -32,11 +32,6 @@
   set_fact:
     admin_token: "{{ admin_token_result | json_query('json.access_token') }}"
 
-- name: copy realm template
-  template:
-    src: "{{ sso_realm_template }}"
-    dest: "{{ work_dir }}/{{ sso_realm_id }}.json"
-
 - name: check if {{ sso_realm_id }} exists
   uri:
     url: "{{ sso_url }}/auth/admin/realms/{{ sso_realm_id }}"
