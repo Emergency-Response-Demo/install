@@ -23,6 +23,9 @@ buildconfig_template: process-viewer-binary-buildconfig.yml
 imagestream_name: "{{ application_name }}"
 imagestream_template: process-viewer-imagestream.yml
 
+image_imagestream_name: "{{ application_name }}"
+image_imagestream_template: process-viewer-image-is.yml
+
 pipeline_buildconfig_name: "{{ application_name }}-pipeline"
 pipeline_buildconfig_template: process-viewer-pipeline.yml
 
