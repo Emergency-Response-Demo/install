@@ -26,6 +26,9 @@ pipeline_buildconfig_template: responder-service-pipeline.yml
 imagestream_name: "{{ application_name }}"
 imagestream_template: responder-service-imagestream.yml
 
+image_imagestream_name: "{{ application_name }}"
+image_imagestream_template: responder-service-image-is.yml
+
 application_template: responder-service.yml
 
 narayana_pool_max_total: 20
