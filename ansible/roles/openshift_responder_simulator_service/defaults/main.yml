@@ -25,6 +25,9 @@ pipeline_buildconfig_template: responder-simulator-service-pipeline.yml
 imagestream_name: "{{ application_name }}"
 imagestream_template: responder-simulator-service-imagestream.yml
 
+image_imagestream_name: "{{ application_name }}"
+image_imagestream_template: responder-simulator-service-image-is.yml
+
 application_template: responder-simulator-service.yml
 
 kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
