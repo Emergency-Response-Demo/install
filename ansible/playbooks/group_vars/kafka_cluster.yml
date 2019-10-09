@@ -1,7 +1,5 @@
 ---
 
-cluster_provisioner: developer
-
 namespace_strimzi_operator: kafka-operator-erd
 namespace_kafka_cluster: "{{ project_name }}"
 

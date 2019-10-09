@@ -2,6 +2,9 @@
 # MapBox API token, see https://docs.mapbox.com/help/how-mapbox-works/access-tokens/
 map_token=replaceme
 
+# Non-admin user with project admin permissions for the Emergency Response projects
+cluster_provisioner=developer
+
 # valid choices: image, source
 deploy_from=image
 
