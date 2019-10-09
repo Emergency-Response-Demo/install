@@ -5,6 +5,7 @@ map_token=replaceme
 # valid choices: image, source
 deploy_from=image
 
+# images
 incident_service_image=quay.io/emergencyresponsedemo/incident-service
 incident_service_image_tag=1.0.0.Final
 
@@ -31,3 +32,40 @@ responder_simulator_image_tag=1.0.0
 
 emergency_console_image=quay.io/emergencyresponsedemo/emergency-console
 emergency_console_image_tag=1.0.0
+
+# source repos
+incident_service_git_repo=https://github.com/Emergency-Response-Demo/incident-service.git
+incident_service_git_branch=master
+
+responder_simulator_service_git_repo=https://github.com/Emergency-Response-Demo/responder-simulator.git
+responder_simulator_service_git_branch=master
+
+responder_service_git_repo=https://github.com/Emergency-Response-Demo/responder-service.git
+responder_service_git_branch=master
+
+incident_process_git_repo=https://github.com/Emergency-Response-Demo/incident-process-kjar.git
+incident_process_git_branch=master
+
+assignment_rules_git_repo=https://github.com/Emergency-Response-Demo/cajun-navy-rules.git
+assignment_rules_git_branch=master
+
+assignment_rules_model_git_repo=https://github.com/Emergency-Response-Demo/cajun-navy-rules-model.git
+assignment_rules_model_git_branch=master
+
+process_service_git_repo=https://github.com/Emergency-Response-Demo/process-service.git
+process_service_git_branch=master
+
+mission_service_git_repo=https://github.com/Emergency-Response-Demo/mission-service.git
+mission_service_git_branch=master
+
+emergency_console_git_repo=https://github.com/Emergency-Response-Demo/emergency-console.git
+emergency_console_git_branch=master
+
+process_viewer_git_repo=https://github.com/Emergency-Response-Demo/process-viewer.git
+process_viewer_git_branch=master
+
+incident_priority_service_git_repo=https://github.com/Emergency-Response-Demo/incident-priority-service.git
+incident_priority_service_git_branch=master
+
+disaster_simulator_service_git_repo=https://github.com/Emergency-Response-Demo/disaster-simulator.git
+disaster_simulator_service_git_branch=master

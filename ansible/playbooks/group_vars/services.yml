@@ -15,19 +15,6 @@ process_viewer_application_name: process-viewer
 incident_priority_service_application_name: incident-priority-service
 disaster_simulator_service_application_name: disaster-simulator
 
-incident_service_git_repo: https://github.com/Emergency-Response-Demo/incident-service.git
-responder_simulator_service_git_repo: https://github.com/Emergency-Response-Demo/responder-simulator.git
-responder_service_git_repo: https://github.com/Emergency-Response-Demo/responder-service.git
-incident_process_git_repo: https://github.com/Emergency-Response-Demo/incident-process-kjar.git
-assignment_rules_git_repo: https://github.com/Emergency-Response-Demo/cajun-navy-rules.git
-assignment_rules_model_git_repo: https://github.com/Emergency-Response-Demo/cajun-navy-rules-model.git
-process_service_git_repo: https://github.com/Emergency-Response-Demo/process-service.git
-mission_service_git_repo: https://github.com/Emergency-Response-Demo/mission-service.git
-emergency_console_git_repo: https://github.com/Emergency-Response-Demo/emergency-console.git
-process_viewer_git_repo: https://github.com/Emergency-Response-Demo/process-viewer.git
-incident_priority_service_git_repo: https://github.com/Emergency-Response-Demo/incident-priority-service.git
-disaster_simulator_service_git_repo: https://github.com/Emergency-Response-Demo/disaster-simulator.git
-
 process_service_postgresql_username: rhpam
 process_service_postgresql_password: rhpam
 process_service_postgresql_database: rhpam
