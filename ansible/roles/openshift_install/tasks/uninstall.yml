@@ -1,5 +1,32 @@
 ---
 
+- name: uninstall responder simulator service
+  import_role:
+    name: openshift_responder_simulator_service
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/responder-simulator-service"
+    work_dir_name: responder-simulator-service
+
+- name: uninstall disaster simulator service
+  import_role:
+    name: openshift_disaster_simulator_service
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/disaster-simulator-service"
+    work_dir_name: disaster-simulator-service
+
+- name: install emergency console
+  import_role:
+    name: openshift_emergency_console
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/emergency-console"
+    work_dir_name: emergency-console
+
 - name: uninstall responder service
   import_role:
     name: openshift_responder_service
