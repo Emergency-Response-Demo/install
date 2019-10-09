@@ -28,3 +28,6 @@ mission_service_image_tag=1.0.0
 
 responder_simulator_image=quay.io/emergencyresponsedemo/responder-simulator
 responder_simulator_image_tag=1.0.0
+
+emergency_console_image=quay.io/emergencyresponsedemo/emergency-console
+emergency_console_image_tag=1.0.0
