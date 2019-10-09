@@ -54,6 +54,9 @@ pipeline_buildconfig_template: process-service-pipeline.yml
 imagestream_template: process-service-imagestream.yml
 imagestream_name: "{{ application_name }}"
 
+image_imagestream_name: "{{ application_name }}"
+image_imagestream_template: process-service-image-is.yml
+
 application_template: process-service.yml
 
 openjdk_template: openjdk-imagestream.yml
