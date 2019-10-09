@@ -25,6 +25,9 @@ pipeline_buildconfig_template: mission-service-pipeline.yml
 imagestream_name: "{{ application_name }}"
 imagestream_template: mission-service-imagestream.yml
 
+image_imagestream_name: "{{ application_name }}"
+image_imagestream_template: mission-service-image-is.yml
+
 application_template: mission-service.yml
 
 kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
