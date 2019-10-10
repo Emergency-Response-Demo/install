@@ -184,6 +184,6 @@ items:
             - {{ application_name }}
           from:
             kind: ImageStreamTag
-            name: "{{ application_name }}:latest"
+            name: "{{ application_name }}:{{ application_image_tag }}"
             namespace: {{ namespace }}
         type: ImageChange

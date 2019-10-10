@@ -31,6 +31,7 @@
     namespace: "{{ namespace_tools }}"
     work_dir_name: jenkins
     resources_dir: "{{ resources_base_dir }}/jenkins"
+  when: deploy_from is defined and deploy_from == "source"
 
 - name: install nexus
   import_role:
@@ -78,6 +79,7 @@
   vars:
     resources_dir: "{{ resources_base_dir }}/assignment-rules-model"
     work_dir_name: assignment-rules-model
+  when: deploy_from is defined and deploy_from == "source"
 
 - name: install assignment rules
   import_role:
@@ -85,6 +87,7 @@
   vars:
     resources_dir: "{{ resources_base_dir }}/assignment-rules"
     work_dir_name: assignment-rules
+  when: deploy_from is defined and deploy_from == "source"
 
 - name: install incident process
   import_role:
@@ -234,69 +237,6 @@
     rolebinding_name: "{{ cluster_provisioner }}-admin"
     resource_name: admin
 
-- name: start pipeline incident service
-  shell: "{{ openshift_cli }} start-build {{ incident_service_application_name }}-pipeline -n {{ namespace_tools }}"
-
-- name: start pipeline mission service
-  shell: "{{ openshift_cli }} start-build {{ mission_service_application_name }}-pipeline -n {{ namespace_tools }}"
-
-- name: start pipeline responder service
-  shell: "{{ openshift_cli }} start-build {{ responder_service_application_name }}-pipeline -n {{ namespace_tools }}"
-
-- name: start pipeline assignment rules model
-  shell: "{{ openshift_cli }} start-build {{ assignment_rules_model_application_name }}-pipeline -n {{ namespace_tools }}"
-
-- name: wait until build assignment rules model is finished
-  shell: "{{ openshift_cli }} get build {{ assignment_rules_model_application_name }}-pipeline-1 -o template --template={{ json_template }} -n {{ namespace_tools }}"
-  vars:
-    json_template: '\{\{.status.phase\}\}'
-  register: result
-  until: result.stdout == "Complete"
-  retries: 40
-  delay: 30
-  changed_when: false
-
-- name: start pipeline assignment rules
-  shell: "{{ openshift_cli }} start-build {{ assignment_rules_application_name }}-pipeline -n {{ namespace_tools }}"
-
-- name: wait until build assignment rules is finished
-  shell: "{{ openshift_cli }} get build {{ assignment_rules_application_name }}-pipeline-1 -o template --template={{ json_template }} -n {{ namespace_tools }}"
-  vars:
-    json_template: '\{\{.status.phase\}\}'
-  register: result
-  until: result.stdout == "Complete"
-  retries: 40
-  delay: 30
-  changed_when: false
-
-- name: start pipeline incident process
-  shell: "{{ openshift_cli }} start-build {{ incident_process_application_name }}-pipeline -n {{ namespace_tools }}"
-
-- name: wait until build incident process is finished
-  shell: "{{ openshift_cli }} get build {{ incident_process_application_name }}-pipeline-1 -o template --template={{ json_template }} -n {{ namespace_tools }}"
-  vars:
-    json_template: '\{\{.status.phase\}\}'
-  register: result
-  until: result.stdout == "Complete"
-  retries: 40
-  delay: 30
-  changed_when: false
-
-- name: start pipeline process service
-  shell: "{{ openshift_cli }} start-build {{ process_service_application_name }}-pipeline -n {{ namespace_tools }}"
-
-- name: start pipeline incident priority service
-  shell: "{{ openshift_cli }} start-build {{ incident_priority_service_application_name }}-pipeline -n {{ namespace_tools }}"
-
-- name: start pipeline responder simulator service
-  shell: "{{ openshift_cli }} start-build {{ responder_simulator_service_application_name }}-pipeline -n {{ namespace_tools }}"
-
-- name: start pipeline disaster simulator service
-  shell: "{{ openshift_cli }} start-build {{ disaster_simulator_service_application_name }}-pipeline -n {{ namespace_tools }}"
-
-- name: start pipeline process viewer service
-  shell: "{{ openshift_cli }} start-build {{ process_viewer_application_name }}-pipeline -n {{ namespace_tools }}"
-
 - name: install monitoring configuration
   import_role:
     name: monitoring
@@ -305,3 +245,69 @@
     monitor_namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/monitoring"
     work_dir_name: monitoring
+
+- block:
+  - name: start pipeline incident service
+    shell: "{{ openshift_cli }} start-build {{ incident_service_application_name }}-pipeline -n {{ namespace_tools }}"
+
+  - name: start pipeline mission service
+    shell: "{{ openshift_cli }} start-build {{ mission_service_application_name }}-pipeline -n {{ namespace_tools }}"
+
+  - name: start pipeline responder service
+    shell: "{{ openshift_cli }} start-build {{ responder_service_application_name }}-pipeline -n {{ namespace_tools }}"
+
+  - name: start pipeline assignment rules model
+    shell: "{{ openshift_cli }} start-build {{ assignment_rules_model_application_name }}-pipeline -n {{ namespace_tools }}"
+
+  - name: wait until build assignment rules model is finished
+    shell: "{{ openshift_cli }} get build {{ assignment_rules_model_application_name }}-pipeline-1 -o template --template={{ json_template }} -n {{ namespace_tools }}"
+    vars:
+      json_template: '\{\{.status.phase\}\}'
+    register: result
+    until: result.stdout == "Complete"
+    retries: 40
+    delay: 30
+    changed_when: false
+
+  - name: start pipeline assignment rules
+    shell: "{{ openshift_cli }} start-build {{ assignment_rules_application_name }}-pipeline -n {{ namespace_tools }}"
+
+  - name: wait until build assignment rules is finished
+    shell: "{{ openshift_cli }} get build {{ assignment_rules_application_name }}-pipeline-1 -o template --template={{ json_template }} -n {{ namespace_tools }}"
+    vars:
+      json_template: '\{\{.status.phase\}\}'
+    register: result
+    until: result.stdout == "Complete"
+    retries: 40
+    delay: 30
+    changed_when: false
+
+  - name: start pipeline incident process
+    shell: "{{ openshift_cli }} start-build {{ incident_process_application_name }}-pipeline -n {{ namespace_tools }}"
+
+  - name: wait until build incident process is finished
+    shell: "{{ openshift_cli }} get build {{ incident_process_application_name }}-pipeline-1 -o template --template={{ json_template }} -n {{ namespace_tools }}"
+    vars:
+      json_template: '\{\{.status.phase\}\}'
+    register: result
+    until: result.stdout == "Complete"
+    retries: 40
+    delay: 30
+    changed_when: false
+
+  - name: start pipeline process service
+    shell: "{{ openshift_cli }} start-build {{ process_service_application_name }}-pipeline -n {{ namespace_tools }}"
+
+  - name: start pipeline incident priority service
+    shell: "{{ openshift_cli }} start-build {{ incident_priority_service_application_name }}-pipeline -n {{ namespace_tools }}"
+
+  - name: start pipeline responder simulator service
+    shell: "{{ openshift_cli }} start-build {{ responder_simulator_service_application_name }}-pipeline -n {{ namespace_tools }}"
+
+  - name: start pipeline disaster simulator service
+    shell: "{{ openshift_cli }} start-build {{ disaster_simulator_service_application_name }}-pipeline -n {{ namespace_tools }}"
+
+  - name: start pipeline process viewer service
+    shell: "{{ openshift_cli }} start-build {{ process_viewer_application_name }}-pipeline -n {{ namespace_tools }}"
+
+  when: deploy_from is defined and deploy_from == "source"

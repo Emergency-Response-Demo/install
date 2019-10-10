@@ -54,6 +54,9 @@ pipeline_buildconfig_template: process-service-pipeline.yml
 imagestream_template: process-service-imagestream.yml
 imagestream_name: "{{ application_name }}"
 
+image_imagestream_name: "{{ application_name }}"
+image_imagestream_template: process-service-image-is.yml
+
 application_template: process-service.yml
 
 openjdk_template: openjdk-imagestream.yml
@@ -75,11 +78,6 @@ responder_service_available_responders_path: /responders/available
 incident_priority_service_scheme: http
 incident_priority_service_url: "{{ incident_priority_service_application_name }}.{{ namespace }}.svc:8080"
 incident_priority_service_incident_priority_path: "/priority/{incidentId}"
-
-mission_assignment_rules_groupid: com.redhat.cajun.navy
-mission_assignment_rules_artifactid: cajun-navy-rules
-mission_assignment_rules_version: "0.0.1"
-mission_assignment_rules_scannerinterval: "600000"
 
 prometheus_endpoint_path: "/actuator/prometheus"
 prometheus_endpoint_port: 8080

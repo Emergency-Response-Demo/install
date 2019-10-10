@@ -11,6 +11,7 @@ spec:
     jenkinsPipelineStrategy:
       jenkinsfile: |-
         def git_repo = "{{ responder_service_git_repo }}"
+        def git_branch = "{{ responder_service_git_branch }}"
         def version = ""
         def groupId = ""
         def artifactId = ""
@@ -24,7 +25,7 @@ spec:
         node ('maven-with-nexus') {
           stage ('Compile') {
             echo "Starting build"
-            git url: "${git_repo}", branch: "master"
+            git url: "${git_repo}", branch: "${git_branch}"
             def pom = readMavenPom file: 'pom.xml'
             version = pom.version
             groupId = pom.groupId

@@ -28,6 +28,9 @@ pipeline_buildconfig_template: disaster-simulator-service-pipeline.yml
 imagestream_name: "{{ application_name }}"
 imagestream_template: disaster-simulator-service-imagestream.yml
 
+image_imagestream_name: "{{ application_name }}"
+image_imagestream_template: disaster-simulator-service-image-is.yml
+
 application_template: disaster-simulator-service.yml
 
 kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
