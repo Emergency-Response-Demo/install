@@ -265,7 +265,7 @@
       json_template: '\{\{.status.phase\}\}'
     register: result
     until: result.stdout == "Complete"
-    retries: 40
+    retries: 80
     delay: 30
     changed_when: false
 
@@ -278,7 +278,7 @@
       json_template: '\{\{.status.phase\}\}'
     register: result
     until: result.stdout == "Complete"
-    retries: 40
+    retries: 80
     delay: 30
     changed_when: false
 
@@ -291,7 +291,7 @@
       json_template: '\{\{.status.phase\}\}'
     register: result
     until: result.stdout == "Complete"
-    retries: 40
+    retries: 80
     delay: 30
     changed_when: false
 
