@@ -1,11 +1,5 @@
 ---
 
-- name: make sure we can pull from registry
-  shell: "{{ openshift_cli }} secrets link builder imagestreamsecret -n openshift"
-
-- name: ensure container registry credentials can be mounted in builds
-  shell: "{{ openshift_cli }} get secret imagestreamsecret -n openshift --export -o yaml | {{ openshift_cli }} apply -n {{ namespace_strimzi_operator }} -f -"
-
 - import_role:
     name: openshift_apply_resource
   vars:
@@ -128,9 +122,6 @@
     state: present
     oc_binary: "{{ openshift_cli }}"
     name: "{{ namespace_kafka_cluster }}"
-
-- name: ensure container registry credentials can be mounted in builds
-  shell: "{{ openshift_cli }} get secret imagestreamsecret -n openshift --export -o yaml | {{ openshift_cli }} apply -n {{ namespace_kafka_cluster }} -f -"
 
 - name: copy rolebinding template to work directory
   template:
