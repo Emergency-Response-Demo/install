@@ -1,11 +1,5 @@
 ---
 
-- name: make sure we can pull from registry
-  shell: "{{ openshift_cli }} secrets link builder imagestreamsecret -n openshift"
-
-- name: ensure container registry credentials can be mounted in builds
-  shell: "{{ openshift_cli }} get secret imagestreamsecret -n openshift --export -o yaml | {{ openshift_cli }} apply -n {{ namespace_tools }} -f -"
-
 # deploy postgresql
 - name: check if postgresql is deployed
   oc_obj:
