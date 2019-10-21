@@ -1,108 +1,5 @@
 ---
 
-- template:
-    src: "{{ resources_dir }}/{{ monitoring_prom_crb }}"
-    dest: "{{ work_dir }}/{{ monitoring_prom_crb }}"
-
-- oc_obj:
-    state: present
-    kind: ClusterRoleBinding
-    name: emergency-response-prometheus-application-monitoring
-    oc_binary: "{{ openshift_cli }}"
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ work_dir }}/{{ monitoring_prom_crb }}"
-
-- template:
-    src: "{{ resources_dir }}/{{ monitoring_am_crb }}"
-    dest: "{{ work_dir }}/{{ monitoring_am_crb }}"
-
-- oc_obj:
-    state: present
-    kind: ClusterRoleBinding
-    name: emergency-response-alertmanager-application-monitoring
-    oc_binary: "{{ openshift_cli }}"
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ work_dir }}/{{ monitoring_am_crb }}"
-
-- template:
-    src: "{{ resources_dir }}/{{ monitoring_graf_crb }}"
-    dest: "{{ work_dir }}/{{ monitoring_graf_crb }}"
-
-- oc_obj:
-    state: present
-    kind: ClusterRoleBinding
-    name: emergency-response-grafana-operator
-    oc_binary: "{{ openshift_cli }}"
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ work_dir }}/{{ monitoring_graf_crb }}"
-
-- template:
-    src: "{{ resources_dir }}/{{ monitoring_prom_operator_crb }}"
-    dest: "{{ work_dir }}/{{ monitoring_prom_operator_crb }}"
-
-- oc_obj:
-    state: present
-    kind: ClusterRoleBinding
-    name: emergency-response-prometheus-application-monitoring-operator
-    oc_binary: "{{ openshift_cli }}"
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ work_dir }}/{{ monitoring_prom_operator_crb }}"
-
-- oc_obj:
-    state: present
-    kind: ServiceAccount
-    name: application-monitoring-operator
-    oc_binary: "{{ openshift_cli }}"
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ monitoring_sa }}"
-
-- oc_obj:
-    state: present
-    kind: Role
-    name: application-monitoring-operator
-    oc_binary: "{{ openshift_cli }}"
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ monitoring_role }}"
-
-- oc_obj:
-    state: present
-    kind: RoleBinding
-    name: application-monitoring-operator
-    oc_binary: "{{ openshift_cli }}"
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ monitoring_role_binding }}"
-
-- debug: msg="Creating operator {{ monitoring_operator }}"
-
-- oc_obj:
-    state: present
-    kind: Deployment
-    name: application-monitoring-operator
-    oc_binary: "{{ openshift_cli }}"
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ monitoring_operator }}"
-
-- template:
-    src: "{{ resources_dir }}/{{ monitoring_cr }}"
-    dest: "{{ work_dir }}/{{ monitoring_cr }}"
-
-- oc_obj:
-    state: present
-    kind: ApplicationMonitoring
-    name: application-monitoring
-    oc_binary: "{{ openshift_cli }}"
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ work_dir }}/{{ monitoring_cr }}"
-
 - name: Update namespace with monitoring label
   shell: oc label namespace {{ monitor_namespace }} monitoring-key={{ application_monitoring_label_value }} --overwrite
 
@@ -129,7 +26,8 @@
     src: "{{ resources_dir }}/application-grafanadashboard.yml"
     dest: "{{ work_dir }}/application-grafanadashboard.yml"
 
-- oc_obj:
+- name: create service monitor for Kafka
+  oc_obj:
     state: present
     oc_binary: "{{ openshift_cli }}"
     name: metrics-monitor-kafka
@@ -138,7 +36,8 @@
     files:
       - "{{ work_dir }}/kafka-servicemonitor.yml"
 
-- oc_obj:
+- name: create service monitor for services
+  oc_obj:
     state: present
     oc_binary: "{{ openshift_cli }}"
     name: metrics-monitor-services
@@ -147,7 +46,8 @@
     files:
       - "{{ work_dir }}/application-servicemonitor.yml"
 
-- oc_obj:
+- name: create service monitor for services that uses SB Actuator 
+  oc_obj:
     state: present
     oc_binary: "{{ openshift_cli }}"
     name: emergency-services-actuator-monitor-services
@@ -156,7 +56,8 @@
     files:
       - "{{ work_dir }}/application-actuator-servicemonitor.yml"
 
-- oc_obj:
+- name: create Grafana dashboard
+  oc_obj:
     state: present
     oc_binary: "{{ openshift_cli }}"
     name: emergency-response-dashboard

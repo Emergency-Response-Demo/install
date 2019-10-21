@@ -1,0 +1,33 @@
+---
+
+- name: create service monitor for Kafka
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: metrics-monitor-kafka
+    namespace: "{{ monitor_namespace }}"
+    kind: ServiceMonitor
+
+- name: remove service monitor for services
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: metrics-monitor-services
+    namespace: "{{ monitor_namespace }}"
+    kind: ServiceMonitor
+
+- name: remove service monitor for services that uses SB Actuator 
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: emergency-services-actuator-monitor-services
+    namespace: "{{ monitor_namespace }}"
+    kind: ServiceMonitor
+
+- name: remove Grafana dashboard
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: emergency-response-dashboard
+    namespace: "{{ namespace }}"
+    kind: GrafanaDashboard
