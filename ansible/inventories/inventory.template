@@ -5,6 +5,9 @@ map_token=replaceme
 # Non-admin user with project admin permissions for the Emergency Response projects
 cluster_provisioner=developer
 
+# namespcace for sso
+sso_namespace=user-sso
+
 # valid choices: image, source
 deploy_from=image
 
