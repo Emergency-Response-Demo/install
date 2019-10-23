@@ -174,3 +174,8 @@
     resource: "{{ deployment_cluster_operator }}"
     resource_template: "{{ work_dir }}/{{ deployment_cluster_operator_template }}"
     resource_namespace: "{{ namespace_strimzi_operator }}"
+
+- name: Provide ability to strimzi operator to view all namespaces
+  shell: oc adm policy add-cluster-role-to-user strimzi-cluster-operator-namespaced -z strimzi-cluster-operator -n {{ namespace_strimzi_operator }}
+- shell: oc adm policy add-cluster-role-to-user strimzi-entity-operator -z strimzi-cluster-operator -n {{ namespace_strimzi_operator }}
+- shell: oc adm policy add-cluster-role-to-user strimzi-topic-operator -z strimzi-cluster-operator -n {{ namespace_strimzi_operator }}
