@@ -84,6 +84,16 @@ items:
                 configMapKeyRef:
                   key: PUBLIC_KEY
                   name: {{ rhsso_config_configmap }}
+            - name: REALM
+              valueFrom:
+                configMapKeyRef:
+                  key: REALM
+                  name: {{ rhsso_config_configmap }}
+            - name: CLIENTID
+              valueFrom:
+                configMapKeyRef:
+                  key: CLIENTID
+                  name: {{ rhsso_config_configmap }}
             - name: TOKEN
               valueFrom:
                 configMapKeyRef:

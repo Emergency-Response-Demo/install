@@ -7,3 +7,5 @@ sso_theme_directory: "{{ resources_dir }}/themes/coreui"
 sso_theme_pvc: sso-themes-claim
 sso_theme_template: themes-pvc.yml
 sso_namespace: sso
+
+sso_clientId: js
