@@ -104,10 +104,10 @@
       - "{{ work_dir }}/{{ monitoring_cr }}"
 
 - name: Update namespace with monitoring label
-  shell: oc label namespace {{ monitor_namespace }} monitoring-key={{ application_monitoring_label_value }} --overwrite
+  shell: "{{ openshift_cli }} label namespace {{ monitor_namespace }} monitoring-key={{ application_monitoring_label_value }} --overwrite"
 
 - name: Update monitoring namespace with monitoring label
-  shell: oc label namespace {{ namespace }} monitoring-key={{ application_monitoring_label_value }} --overwrite
+  shell: "{{ openshift_cli }} label namespace {{ namespace }} monitoring-key={{ application_monitoring_label_value }} --overwrite"
 
 - name: Copy Kafka ServiceMonitor template
   template:
