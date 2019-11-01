@@ -7,6 +7,8 @@ strimzi_cluster_operator: strimzi-cluster-operator
 
 kafka_cluster: kafka-cluster
 
+kafka_connect: kafka-connect
+
 kafka_topics: >
   [{"name": "topic-incident-event", "partitions": "15", "replicas": "3", "config": "{}"},
    {"name": "topic-incident-command", "partitions": "15", "replicas": "3", "config": "{}"},

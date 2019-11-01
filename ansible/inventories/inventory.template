@@ -56,6 +56,8 @@ datawarehouse_service_image_tag=2.4
 
 process_service_postgresql_image=quay.io/btison/postgres-10-decoderbufs-fedora
 
+kafka_connect_image=quay.io/btison/strimzi-debezium-postgresql:1.4.0-1.1.2.Final
+
 # source repos
 incident_service_git_repo=https://github.com/Emergency-Response-Demo/incident-service.git
 incident_service_git_branch=master
