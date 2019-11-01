@@ -127,3 +127,5 @@
       AUTH_URL: "{{ sso_url }}/auth"
       KEYCLOAK: "true"
       PUBLIC_KEY: "{{ lookup('file', work_dir + '/sso_public_key.txt') }}"
+      REALM: "{{ sso_realm_id }}"
+      CLIENTID: "{{ sso_clientId }}"
