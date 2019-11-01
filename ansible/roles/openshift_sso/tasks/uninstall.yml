@@ -5,11 +5,13 @@
   register: sso_route_cmd
 
 - name: retrieve sso admin password
-  shell: "{{ openshift_cli }} get dc/sso -o jsonpath='{.spec.template.spec.containers[?(@.name=="sso")].env[?(@.name=="SSO_ADMIN_PASSWORD")].value}' -n {{ sso_namespace }}"
+  shell: >-
+    {{ openshift_cli }} get dc/sso -o jsonpath='{.spec.template.spec.containers[?(@.name=="sso")].env[?(@.name=="SSO_ADMIN_PASSWORD")].value}' -n {{ sso_namespace }}
   register: sso_admin_password_cmd
 
 - name: retrieve sso admin username
-  shell: "{{ openshift_cli }} get dc/sso -o jsonpath='{.spec.template.spec.containers[?(@.name=="sso")].env[?(@.name=="SSO_ADMIN_USERNAME")].value}' -n {{ sso_namespace }}"
+  shell: >-
+    {{ openshift_cli }} get dc/sso -o jsonpath='{.spec.template.spec.containers[?(@.name=="sso")].env[?(@.name=="SSO_ADMIN_USERNAME")].value}' -n {{ sso_namespace }}
   register: sso_admin_user_cmd
 
 - set_fact:
