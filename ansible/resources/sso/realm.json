@@ -822,7 +822,8 @@
       "redirectUris": [
         "http://localhost:8080/*",
         "http://localhost:4200/*",
-        "https://{{ emergency_console_application_name }}.{{ ocp_domain }}/*"
+        "https://{{ emergency_console_application_name }}.{{ ocp_domain }}/*",
+        "https://{{ responder_client_application_name }}.{{ ocp_domain }}/*"
       ],
       "webOrigins": [
         "*"

@@ -1,0 +1,33 @@
+---
+
+application_name: "{{ responder_client_application_name }}"
+
+service_account: responder-client-app
+
+resources_limits_cpu: 500m
+resources_limits_memory: 300Mi
+resources_requests_cpu: 200m
+resources_requests_memory: 100Mi
+
+application_image: nodejs:10
+application_image_namespace: openshift
+
+buildconfig_name: "{{ application_name }}"
+buildconfig_template: responder-client-app-buildconfig.yml
+
+pipeline_buildconfig_name: "{{ application_name }}-pipeline"
+
+imagestream_name: "{{ application_name }}"
+imagestream_template: responder-client-app-imagestream.yml
+
+image_imagestream_name: "{{ application_name }}"
+image_imagestream_template: responder-client-app-image-is.yml
+
+application_template: responder-client-app.yml
+
+git_url: "{{ responder_client_app_git_repo }}"
+git_ref: "{{ responder_client_app_git_branch }}"
+
+rhsso_config_configmap: "{{ sso_config_configmap }}"
+
+responder_client_app_config_map_token: "{{ map_token | default('') }}"
