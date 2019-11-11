@@ -34,10 +34,10 @@ responder_simulator_image=quay.io/emergencyresponsedemo/responder-simulator
 responder_simulator_image_tag=1.0.0
 
 emergency_console_image=quay.io/emergencyresponsedemo/emergency-console
-emergency_console_image_tag=1.1.0
+emergency_console_image_tag=1.1.2
 
 responder_client_app_image=quay.io/emergencyresponsedemo/emergency-response-client-app
-responder_client_app_image_tag=1.0.1
+responder_client_app_image_tag=1.0.2
 
 # source repos
 incident_service_git_repo=https://github.com/Emergency-Response-Demo/incident-service.git

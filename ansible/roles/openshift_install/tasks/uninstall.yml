@@ -18,7 +18,7 @@
     resources_dir: "{{ resources_base_dir }}/disaster-simulator-service"
     work_dir_name: disaster-simulator-service
 
-- name: install emergency console
+- name: uninstall emergency console
   import_role:
     name: openshift_emergency_console
     tasks_from: uninstall
@@ -26,6 +26,15 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/emergency-console"
     work_dir_name: emergency-console
+
+- name: uninstall responder client app
+  import_role:
+    name: openshift_responder_client_app
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/responder-client-app"
+    work_dir_name: responder-client-app
 
 - name: uninstall responder service
   import_role:
