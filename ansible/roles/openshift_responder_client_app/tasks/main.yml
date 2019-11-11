@@ -1,0 +1,14 @@
+---
+
+- name: create {{ service_account }} service account for {{ application_name }} application
+  oc_serviceaccount:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ service_account }}"
+    namespace: "{{ namespace }}"
+
+- import_tasks: deploy_from_source.yml
+  when: deploy_from is defined and deploy_from == "source"
+
+- import_tasks: deploy_from_image.yml
+  when: deploy_from is defined and deploy_from == "image"

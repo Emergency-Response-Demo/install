@@ -14,6 +14,7 @@ emergency_console_application_name: emergency-console
 process_viewer_application_name: process-viewer
 incident_priority_service_application_name: incident-priority-service
 disaster_simulator_service_application_name: disaster-simulator
+responder_client_application_name: responder-client-app
 
 process_service_postgresql_username: rhpam
 process_service_postgresql_password: rhpam
