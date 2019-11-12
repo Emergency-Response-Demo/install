@@ -69,6 +69,16 @@ items:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.namespace
+            - name: REALM
+              valueFrom:
+                configMapKeyRef:
+                  key: REALM
+                  name: {{ rhsso_config_configmap }}
+            - name: CLIENTID
+              valueFrom:
+                configMapKeyRef:
+                  key: CLIENTID
+                  name: {{ rhsso_config_configmap }}
             - name: AUTH_URL
               valueFrom:
                 configMapKeyRef:

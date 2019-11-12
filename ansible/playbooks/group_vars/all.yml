@@ -1,5 +1,7 @@
 ---
 
+project_admin: user1
+
 home_dir: "{{ playbook_dir }}/.."
 
 # resources dir
@@ -8,6 +10,6 @@ resources_base_dir: "{{ home_dir }}/resources"
 # oc executable
 openshift_cli: oc
 
-project_name: emergency-response-demo
+project_name: "{{ project_admin }}-er-demo"
 
 monitoring_label: prometheus
