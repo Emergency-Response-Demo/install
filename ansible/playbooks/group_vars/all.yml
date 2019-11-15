@@ -13,3 +13,6 @@ openshift_cli: oc
 project_name: "{{ project_admin }}-er-demo"
 
 monitoring_label: prometheus
+
+# If set to True, then every user that creates an account in Emergency Response demo will automatically be a "realm-admin"
+set_realm_admin_as_default: False
