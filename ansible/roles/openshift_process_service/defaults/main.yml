@@ -74,6 +74,7 @@ incident_process_assignment_delay: PT20S
 responder_service_scheme: http
 responder_service_url: "{{ responder_service_application_name }}.{{ namespace }}.svc:8080"
 responder_service_available_responders_path: /responders/available
+responder_service_available_responders_limit: 100
 
 incident_priority_service_scheme: http
 incident_priority_service_url: "{{ incident_priority_service_application_name }}.{{ namespace }}.svc:8080"
