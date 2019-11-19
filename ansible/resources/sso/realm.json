@@ -40,7 +40,6 @@
         "scopeParamRequired": false,
         "composite": false,
         "clientRole": false,
-        "containerId": "emergency-realm"
       },
       {
         "name": "offline_access",
@@ -48,7 +47,6 @@
         "scopeParamRequired": true,
         "composite": false,
         "clientRole": false,
-        "containerId": "emergency-realm"
       }
     ],
     "client": {
@@ -538,6 +536,11 @@
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
+      {% if set_realm_admin_as_default %}
+      "defaultRoles": [
+        "realm-admin"
+      ],
+      {% endif %}
       "secret": "**********",
       "redirectUris": [],
       "webOrigins": [],
@@ -645,7 +648,7 @@
     {
       "clientId": "account",
       "name": "${client_account}",
-      "baseUrl": "/auth/realms/emergency-realm/account",
+      "baseUrl": "/auth/realms/{{ sso_realm_id }}/account",
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
@@ -655,7 +658,7 @@
         "manage-account"
       ],
       "redirectUris": [
-        "/auth/realms/emergency-realm/account/*"
+        "/auth/realms/{{ sso_realm_id }}/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -889,13 +892,13 @@
     {
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
-      "baseUrl": "/auth/admin/emergency-realm/console/index.html",
+      "baseUrl": "/auth/admin/{{ sso_realm_id }}/console/index.html",
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "/auth/admin/emergency-realm/console/*"
+        "/auth/admin/{{ sso_realm_id }}/console/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -1026,7 +1029,7 @@
   },
   "smtpServer": {},
   "loginTheme": "coreui",
-  "accountTheme": "coreui",
+  "accountTheme": "rh-sso",
   "eventsEnabled": false,
   "eventsListeners": [
     "jboss-logging"
