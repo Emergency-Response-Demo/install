@@ -40,6 +40,7 @@ kafka_groupid: responder-service
 kafka_consumer_concurrency: 5
 
 kafka_responder_command_topic: topic-responder-command
+kafka_responder_update_location_event_topic: topic-responder-location-update
 kafka_responder_event_topic: topic-responder-event
 
 logging_style: dev
