@@ -31,6 +31,9 @@ pipeline_buildconfig_template: incident-priority-service-pipeline.yml
 
 application_template: incident-priority-service.yml
 
+service_account_role_name: "{{ service_account }}-role"
+service_account_role_template: incident-priority-service-role.yml
+
 kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
 kafka_bootstrap_port: 9092
 kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
@@ -42,3 +45,5 @@ logging_style: dev
 
 prometheus_endpoint_path: "/metrics"
 prometheus_endpoint_port: 8080
+
+ha_leader_configmap: incident-priority-service-leaders

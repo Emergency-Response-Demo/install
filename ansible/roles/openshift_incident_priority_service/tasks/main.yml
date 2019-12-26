@@ -17,6 +17,32 @@
     namespace: "{{ namespace }}"
     rolebinding_name: "{{ service_account }}-view"
 
+- name: copy service account role template
+  template:
+    src: "{{ resources_dir }}/{{ service_account_role_template }}"
+    dest: "{{ work_dir }}/{{ service_account_role_template }}"
+
+- name: create {{ service_account_role_name }} role
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    kind: role
+    name: "{{ service_account_role_name }}"
+    files:
+      - "{{ work_dir }}/{{ service_account_role_template }}"
+
+- name: give {{ service_account_role_name }} role privileges to {{ service_account }} service account
+  oc_adm_policy_user:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    resource_kind: role
+    resource_name: "{{ service_account_role_name }}"
+    role_namespace: "{{ namespace }}"
+    user: "system:serviceaccount:{{ namespace }}:{{ service_account }}"
+    namespace: "{{ namespace }}"
+    rolebinding_name: "{{ service_account_role_name }}"
+
 - name: copy application properties template
   template:
     src: "{{ resources_dir }}/{{ application_properties }}"
