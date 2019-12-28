@@ -17,4 +17,6 @@ kafka_topics: >
    {"name": "topic-mission-event", "partitions": "15", "replicas": "2", "config": "{}"},
    {"name": "topic-responder-command", "partitions": "15", "replicas": "2", "config": "{}"},
    {"name": "topic-responder-event", "partitions": "15", "replicas": "2", "config": "{}"},
-   {"name": "topic-responder-location-update", "partitions": "15", "replicas": "2", "config": "{}"}]
+   {"name": "topic-responder-location-update", "partitions": "15", "replicas": "2", "config": "{}"},
+   {"name": "topic-incident-assignment-event", "partitions": "1", "replicas": "2", "config": "{}"},
+   {"name": "topic-incident-priority-control", "partitions": "1", "replicas": "2", "config": "{}"}]
