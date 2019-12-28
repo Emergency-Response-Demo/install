@@ -39,7 +39,7 @@ kafka_bootstrap_port: 9092
 kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
 kafka_groupid: incident-priority
 
-kafka_incident_assignment_event_topic: topic-incident-event
+kafka_incident_assignment_event_topic: topic-incident-assignment-event
 
 logging_style: dev
 
