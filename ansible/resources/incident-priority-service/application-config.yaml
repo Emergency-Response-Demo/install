@@ -4,5 +4,6 @@ kafka:
   bootstrap-servers: {{ kafka_bootstrap_address }}
   group-id: {{ kafka_groupid }}
   topic-incident-assignment-event: {{ kafka_incident_assignment_event_topic }}
+  topic-incident-priority-control: {{ kafka_incident_priority_control_topic }}
 ha:
   leader-configmap: {{ ha_leader_configmap }}

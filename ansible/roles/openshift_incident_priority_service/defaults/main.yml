@@ -40,6 +40,7 @@ kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port 
 kafka_groupid: incident-priority
 
 kafka_incident_assignment_event_topic: topic-incident-assignment-event
+kafka_incident_priority_control_topic: topic-incident-priority-control
 
 logging_style: dev
 
