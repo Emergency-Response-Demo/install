@@ -28,6 +28,10 @@
 - name: scale down emergency console
   shell: "{{ openshift_cli }} scale --replicas=0 dc {{ emergency_console_application_name }} -n {{ namespace_services }}"
 
+# scale down responder client app
+- name: scale down responder client app
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ responder_client_application_name }} -n {{ namespace_services }}"
+
 # scale down process viewer
 - name: scale down process viewer
   shell: "{{ openshift_cli }} scale --replicas=0 dc {{ process_viewer_application_name }} -n {{ namespace_services }}"  
@@ -162,6 +166,10 @@
   # scale up emergency console
 - name: scale up emergency console
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ emergency_console_application_name }} -n {{ namespace_services }}"
+
+# scale up responder client app
+- name: scale up responder client app
+  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ responder_client_application_name }} -n {{ namespace_services }}"
 
 # scale up process viewer
 - name: scale up process viewer
