@@ -1,0 +1,8 @@
+apiVersion: v1                                                       
+kind: Secret                                                         
+metadata:                                                            
+  name: aws-auth                                                     
+stringData:                                                          
+  AWS_ACCESS_KEY_ID: {{ aws-key }}
+  AWS_SECRET_ACCESS_KEY: {{ aws-secret }}
+type: Opaque

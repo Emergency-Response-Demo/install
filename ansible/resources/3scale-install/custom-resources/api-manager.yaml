@@ -1,0 +1,13 @@
+apiVersion: apps.3scale.net/v1alpha1
+kind: APIManager
+metadata:
+  name: apim-apimanager
+spec:
+  wildcardDomain: {{ wildcard-domain }}
+  system:
+    fileStorage: 
+      amazonSimpleStorageService:
+        awsRegion: {{ aws-region }}
+        awsBucket: {{ aws-bucket }}
+        awsCredentialsSecret: 
+          name: {{ aws-auth }}
