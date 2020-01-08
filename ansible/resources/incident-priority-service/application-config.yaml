@@ -7,3 +7,4 @@ kafka:
   topic-incident-priority-control: {{ kafka_incident_priority_control_topic }}
 ha:
   leader-configmap: {{ ha_leader_configmap }}
+  lease-duration-millis: {{ ha_lease_duration_millis }}

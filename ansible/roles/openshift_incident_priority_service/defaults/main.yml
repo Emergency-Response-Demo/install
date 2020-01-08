@@ -48,3 +48,4 @@ prometheus_endpoint_path: "/metrics"
 prometheus_endpoint_port: 8080
 
 ha_leader_configmap: incident-priority-service-leaders
+ha_lease_duration_millis: 2000
