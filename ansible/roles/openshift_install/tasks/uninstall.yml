@@ -124,14 +124,14 @@
     resources_dir: "{{ resources_base_dir }}/datagrid"
     work_dir_name: datagrid
 
-- name: uninstall sso
+- name: uninstall sso theme and realm
   import_role:
-    name: openshift_sso
+    name: sso_theme_realm
     tasks_from: uninstall
   vars:
-    namespace: "{{ namespace_sso }}"
-    resources_dir: "{{ resources_base_dir }}/sso"
-    work_dir_name: sso
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/sso_theme_realm"
+    work_dir_name: sso-theme-realm
 
 - name: uninstall postgresql
   import_role:

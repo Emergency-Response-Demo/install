@@ -62,3 +62,11 @@
     namespace: "{{ namespace }}"
     name: "{{ sso_config_configmap }}"
     kind: configmap
+
+- name: delete themes pvc claim
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    namespace: "{{ sso_namespace }}"
+    name: "{{ sso_theme_pvc }}"
+    kind: pvc

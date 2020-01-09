@@ -57,13 +57,13 @@
     resources_dir: "{{ resources_base_dir }}/postgresql"
     work_dir_name: postgresql
 
-- name: install sso
+- name: install sso theme and realm
   import_role:
-    name: openshift_sso
+    name: sso_theme_realm
   vars:
-    namespace: "{{ namespace_sso }}"
-    resources_dir: "{{ resources_base_dir }}/sso"
-    work_dir_name: sso
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/sso_theme_realm"
+    work_dir_name: sso-theme-realm
 
 - name: install datagrid
   import_role:
