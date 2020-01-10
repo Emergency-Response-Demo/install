@@ -186,6 +186,15 @@
     resources_dir: "{{ resources_base_dir }}/strimzi"
     work_dir_name: strimzi-operator
 
+- name: uninstall monitoring stack
+  import_role:
+    name: monitoring
+    tasks_from: uninstall
+  vars:
+    monitor_namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/monitoring"
+    work_dir_name: monitoring
+
 - name: uninstall sso
   import_role:
     name: sso

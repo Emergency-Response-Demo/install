@@ -1,6 +1,6 @@
 ---
 
-- name: Deploy Mission Service
+- name: Deploy Application Monitoring Stack
   hosts: localhost
   connection: local
   gather_facts: false
@@ -12,7 +12,6 @@
   tasks:
     - set_fact:
         namespace: "{{ namespace_monitoring }}"
-        monitor_namespace: "{{ namespace_services }}"
         resources_dir: "{{ resources_base_dir }}/monitoring"
         work_dir_name: monitoring
     - include_role:

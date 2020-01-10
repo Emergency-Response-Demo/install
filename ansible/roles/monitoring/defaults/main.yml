@@ -1,17 +1,29 @@
 ---
 
-application_monitoring_namespace: emergency-response-monitoring
-application_monitoring_release: '0.0.5-monitoring-key'
-application_monitoring_resources_repo: https://raw.githubusercontent.com/aidenkeating/application-monitoring-operator/{{ application_monitoring_release }}/deploy
-application_monitoring_label_value: emergency-response
+application_monitoring_label_value: application-monitoring
+monitoring_label_value: "{{ application_monitoring_label_value }}"
 
-monitoring_sa: "{{ application_monitoring_resources_repo }}/operator_roles/service_account.yaml"
-monitoring_role: "{{ application_monitoring_resources_repo }}/operator_roles/role.yaml"
-monitoring_role_binding: "{{ application_monitoring_resources_repo }}/operator_roles/role_binding.yaml"
-monitoring_operator: "{{ application_monitoring_resources_repo }}/operator.yaml"
+monitoring_prometheus_retention: 45d
+monitoring_prometheus_storage_request: 10Gi
 
-monitoring_cr: application_monitoring_cr.yml
-monitoring_prom_crb: prometheus_cluster_role_binding.yml
-monitoring_am_crb: alert_manager_cluster_role_binding.yml
-monitoring_graf_crb: grafana_cluster_role_binding.yml
-monitoring_prom_operator_crb: prometheus_operator_cluster_role_binding.yml
+monitoring_namespace: "{{ namespace }}"
+namespace_postfix: ""
+
+monitoring_grafana_crd_template: grafana_crd.yml
+monitoring_grafana_dashboard_crd_template: grafana_dashboard_crd.yml
+monitoring_grafana_datasource_crd_template: grafana_datasource_crd.yml
+monitoring_grafana_clusterrole_template: grafana_cluster_role.yml
+monitoring_grafana_clusterrole_binding_template: grafana_cluster_role_binding.yml
+monitoring_grafana_proxy_clusterrole_template: grafana_proxy_cluster_role.yml
+monitoring_grafana_proxy_clusterrole_binding_template: grafana_proxy_cluster_role_binding.yml
+monitoring_prometheus_crd_template: prometheus_crd.yml
+monitoring_prometheus_alert_manager_crd_template: prometheus_alert_manager_crd.yml
+monitoring_prometheus_service_monitor_crd_template: prometheus_service_monitor_crd.yml
+monitoring_prometheus_rule_crd_template: prometheus_rule_crd.yml
+monitoring_prometheus_clusterrole_template: prometheus_cluster_role.yml
+monitoring_prometheus_clusterrole_binding_template: prometheus_cluster_role_binding.yml
+monitoring_prometheus_operator_clusterrole_template: prometheus_operator_cluster_role.yml
+monitoring_prometheus_operator_clusterrole_binding_template: prometheus_operator_cluster_role_binding.yml
+monitoring_alert_manager_clusterrole_template: alert_manager_cluster_role.yml
+monitoring_alert_manager_clusterrole_binding_template: alert_manager_cluster_role_binding.yml
+application_monitoring_cr_template: application_monitoring_cr.yml
