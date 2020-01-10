@@ -1,35 +1,34 @@
 ---
 
-- name: Deploy SSO Theme and Realm
+- name: Deploy SSO
   hosts: localhost
   connection: local
   gather_facts: false
   run_once: true
   vars_files:
-    - group_vars/sso_theme_realm.yml
     - group_vars/sso.yml
     - group_vars/services.yml
 
   tasks:
     - set_fact:
-        namespace: "{{ namespace_services }}"
-        resources_dir: "{{ resources_base_dir }}/sso_theme_realm"
-        work_dir_name: sso-theme-realm
+        namespace: "{{ namespace_sso }}"
+        resources_dir: "{{ resources_base_dir }}/sso"
+        work_dir_name: sso
     - include_role:
-        name: ../roles/sso_theme_realm
+        name: ../roles/sso
       when: >
         ACTION is not defined or
         ACTION is none or
         ACTION|trim() == "" or
         ACTION|trim() == "install"
     - include_role:
-        name: ../roles/sso_theme_realm
+        name: ../roles/sso
         tasks_from: uninstall
       when: >
         ACTION is defined and
         ACTION|trim() == "uninstall"
     - include_role:
-        name: ../roles/sso_theme_realm
+        name: ../roles/sso
         tasks_from: reset
       when: >
         ACTION is defined and

@@ -1,0 +1,7 @@
+---
+
+namespace_sso: user-sso
+
+rhsso_operator_release_tag: 'v1.9.5'
+rhsso_operator_resources: "https://raw.githubusercontent.com/integr8ly/keycloak-operator/{{rhsso_operator_release_tag}}/deploy"
+

@@ -1,5 +1,13 @@
 ---
 
+- name: install sso
+  import_role:
+    name: sso
+  vars:
+    namespace: "{{ namespace_sso }}"
+    resources_dir: "{{ resources_base_dir }}/sso"
+    work_dir_name: sso
+
 - name: install kafka operator
   import_role:
     name: openshift_strimzi_operator
