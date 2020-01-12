@@ -1,0 +1,71 @@
+---
+
+- name: "update namespace with monitoring label"
+  oc_label:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: namespace
+    name: "{{ namespace }}"
+    labels:
+      - key: monitoring-key
+        value: "{{ application_monitoring_label_value }}"
+
+- name: "copy Kafka servicemonitor template"
+  template:
+    src: "{{ resources_dir }}/{{ monitoring_kafka_servicemonitor_template }}"
+    dest: "{{ work_dir }}/{{ monitoring_kafka_servicemonitor_template }}"
+
+- name: "copy application servicemonitor template"
+  template:
+    src: "{{ resources_dir }}/{{ monitoring_application_servicemonitor_template }}"
+    dest: "{{ work_dir }}/{{ monitoring_application_servicemonitor_template }}"
+
+- name: "copy actuator endpoint servicemonitor template"
+  template:
+    src: "{{ resources_dir }}/{{ monitoring_actuator_servicemonitor_template }}"
+    dest: "{{ work_dir }}/{{ monitoring_actuator_servicemonitor_template }}"
+
+- name: "copy application grafana dashboard template"
+  template:
+    src: "{{ resources_dir }}/{{ monitoring_grafana_dashboard_template }}"
+    dest: "{{ work_dir }}/{{ monitoring_grafana_dashboard_template }}"
+
+- name: "create Kafka servicemonitor resource"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: emergency-response-kafka
+    namespace: "{{ namespace }}"
+    kind: ServiceMonitor
+    files:
+      - "{{ work_dir }}/{{ monitoring_kafka_servicemonitor_template }}"
+
+- name: "create application servicemonitor resource"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: emergency-response-services
+    namespace: "{{ namespace }}"
+    kind: ServiceMonitor
+    files:
+      - "{{ work_dir }}/{{ monitoring_application_servicemonitor_template }}"
+
+- name: "create actuator servicemonitor resource"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: emergency-response-services-actuator
+    namespace: "{{ namespace }}"
+    kind: ServiceMonitor
+    files:
+      - "{{ work_dir }}/{{ monitoring_actuator_servicemonitor_template }}"
+
+- name: "create application grafana dashboard"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: emergency-response-dashboard
+    namespace: "{{ namespace_monitoring }}"
+    kind: GrafanaDashboard
+    files:
+      - "{{ work_dir }}/{{ monitoring_grafana_dashboard_template }}"

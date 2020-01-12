@@ -201,6 +201,14 @@
     resources_dir: "{{ resources_base_dir }}/responder-client-app"
     work_dir_name: responder-client-app
 
+- name: install emergency response demo monitoring
+  import_role:
+    name: erd_monitoring
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/erd-monitoring"
+    work_dir_name: erd-monitoring
+
 - name: assign user {{ cluster_provisioner }} as project admin in namespace kafka cluster
   oc_adm_policy_user:
     state: present

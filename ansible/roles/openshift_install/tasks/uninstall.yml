@@ -115,6 +115,15 @@
     resources_dir: "{{ resources_base_dir }}/assignment-rules-model"
     work_dir_name: assignment-rules-model
 
+- name: uninstall emergency response demo monitoring
+  import_role:
+    name: erd_monitoring
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/erd-monitoring"
+    work_dir_name: erd-monitoring
+
 - name: uninstall datagrid
   import_role:
     name: openshift_datagrid
