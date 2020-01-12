@@ -5,6 +5,9 @@ map_token=replaceme
 # valid choices: image, source
 deploy_from=image
 
+# If set to True, then every user that creates an account in Emergency Response demo will automatically be a "realm-admin"
+set_realm_admin_as_default: False
+
 # images
 incident_service_image=quay.io/emergencyresponsedemo/incident-service
 incident_service_image_tag=1.0.0.Final
