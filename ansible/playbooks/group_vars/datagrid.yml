@@ -1,6 +1,6 @@
 ---
 
-namespace_datagrid: "{{ project_name }}"
+namespace_datagrid: "{{ project_admin }}-{{ project_name }}"
 
 datagrid_application_name: datagrid-service
 
