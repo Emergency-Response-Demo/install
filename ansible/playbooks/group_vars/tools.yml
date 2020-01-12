@@ -1,6 +1,6 @@
 ---
 
-namespace_tools: tools-erd
+namespace_tools: "{{ project_admin }}-tools-erd"
 namespace_nexus: tools-erd
 
 nexus_service_name: nexus
