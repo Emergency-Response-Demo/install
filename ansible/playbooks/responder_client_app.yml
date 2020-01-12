@@ -9,6 +9,7 @@
     - group_vars/services.yml
     - group_vars/sso.yml
     - group_vars/tools.yml
+    - group_vars/sso_theme_realm.yml
 
   tasks:
     - set_fact:
