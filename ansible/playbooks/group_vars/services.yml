@@ -1,6 +1,6 @@
 ---
 
-namespace_services: "{{ project_name }}"
+namespace_services: "{{ project_admin }}-{{ project_name }}"
 
 assignment_rules_application_name: assignment-rules
 assignment_rules_model_application_name: assignment-rules-model

@@ -202,7 +202,7 @@
   vars:
     namespace: "{{ namespace_monitoring }}"
     resources_dir: "{{ resources_base_dir }}/monitoring"
-    work_dir_name: monitoring
+    work_dir_name: "{{ project_admin }}-monitoring"
 
 - name: uninstall sso
   import_role:
