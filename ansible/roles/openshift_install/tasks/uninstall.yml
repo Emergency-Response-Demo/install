@@ -200,7 +200,7 @@
     name: monitoring
     tasks_from: uninstall
   vars:
-    monitor_namespace: "{{ namespace_services }}"
+    namespace: "{{ namespace_monitoring }}"
     resources_dir: "{{ resources_base_dir }}/monitoring"
     work_dir_name: monitoring
 

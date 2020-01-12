@@ -12,7 +12,7 @@
   import_role:
     name: monitoring
   vars:
-    monitor_namespace: "{{ namespace_services }}"
+    namespace: "{{ namespace_monitoring }}"
     resources_dir: "{{ resources_base_dir }}/monitoring"
     work_dir_name: monitoring
 
@@ -268,15 +268,6 @@
     namespace: "{{ namespace_services }}"
     rolebinding_name: "{{ cluster_provisioner }}-admin"
     resource_name: admin
-
-- name: install monitoring configuration
-  import_role:
-    name: monitoring
-  vars:
-    namespace: "{{ namespace_monitoring }}"
-    monitor_namespace: "{{ namespace_services }}"
-    resources_dir: "{{ resources_base_dir }}/monitoring"
-    work_dir_name: monitoring
 
 - block:
   - name: start pipeline incident service
