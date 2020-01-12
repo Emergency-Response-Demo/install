@@ -53,7 +53,7 @@
   import_role:
     name: openshift_nexus
   vars:
-    namespace: "{{ namespace_tools }}"
+    namespace: "{{ namespace_nexus }}"
     resources_dir: "{{ resources_base_dir }}/nexus"
     work_dir_name: nexus
 

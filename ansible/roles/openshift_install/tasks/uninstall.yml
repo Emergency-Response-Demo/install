@@ -156,7 +156,7 @@
     name: openshift_nexus
     tasks_from: uninstall
   vars:
-    namespace: "{{ namespace_tools }}"
+    namespace: "{{ namespace_nexus }}"
     resources_dir: "{{ resources_base_dir }}/nexus"
     work_dir_name: nexus
 
@@ -233,6 +233,12 @@
     oc_binary: "{{ openshift_cli }}"
     state: absent
     name: "{{ namespace_tools }}"
+
+- name: delete namespace nexus
+  oc_project:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ namespace_nexus }}"
 
 - name: delete namespace kafka operator
   oc_project:
