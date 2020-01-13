@@ -49,13 +49,23 @@
     resources_dir: "{{ resources_base_dir }}/jenkins"
   when: deploy_from is defined and deploy_from == "source"
 
-- name: install nexus
+- name: install common nexus when building from image
   import_role:
     name: openshift_nexus
   vars:
     namespace: "{{ namespace_nexus }}"
     resources_dir: "{{ resources_base_dir }}/nexus"
     work_dir_name: nexus
+  when: deploy_from is defined and deploy_from == "image"
+
+- name: install nexus
+  import_role:
+    name: openshift_nexus
+  vars:
+    namespace: "{{ namespace_tools }}"
+    resources_dir: "{{ resources_base_dir }}/nexus"
+    work_dir_name: nexus
+  when: deploy_from is defined and deploy_from == "source"
 
 - name: install pgadmin4
   import_role:
