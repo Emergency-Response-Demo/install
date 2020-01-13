@@ -96,7 +96,8 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/incident-process"
     work_dir_name: incident-process
-
+  when: deploy_from is defined and deploy_from == "source"
+  
 - name: install incident service
   import_role:
     name: openshift_incident_service
