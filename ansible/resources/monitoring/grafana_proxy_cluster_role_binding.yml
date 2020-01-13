@@ -1,0 +1,12 @@
+apiVersion: authorization.openshift.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: grafana-proxy{{ namespace_postfix }}
+roleRef:
+  name: grafana-proxy
+subjects:
+  - kind: ServiceAccount
+    name: grafana-serviceaccount
+    namespace: "{{ monitoring_namespace }}"
+userNames:
+  - system:serviceaccount:{{ monitoring_namespace }}:grafana-serviceaccount

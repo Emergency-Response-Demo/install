@@ -1,12 +1,12 @@
 apiVersion: authorization.openshift.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: emergency-response-grafana-operator
+  name: grafana-operator
 roleRef:
-  name: grafana-operator-cluster-role
+  name: grafana-operator
 subjects:
   - kind: ServiceAccount
-    name: grafana-serviceaccount
-    namespace: "{{ application_monitoring_namespace }}"
+    name: grafana-operator
+    namespace: "{{ monitoring_namespace }}"
 userNames:
-  - system:serviceaccount:{{ application_monitoring_namespace }}:grafana-serviceaccount
+  - system:serviceaccount:{{ monitoring_namespace }}:grafana-operator

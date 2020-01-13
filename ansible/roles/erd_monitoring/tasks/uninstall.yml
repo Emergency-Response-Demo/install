@@ -1,0 +1,33 @@
+---
+
+- name: "delete Kafka servicemonitor resource"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: emergency-response-kafka
+    namespace: "{{ namespace }}"
+    kind: ServiceMonitor
+
+- name: "delete application servicemonitor resource"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: emergency-response-services
+    namespace: "{{ namespace }}"
+    kind: ServiceMonitor
+
+- name: "delete actuator servicemonitor resource"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: emergency-response-services-actuator
+    namespace: "{{ namespace }}"
+    kind: ServiceMonitor
+
+- name: "delete application GrafanaDashboard template"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: emergency-response-dashboard
+    namespace: "{{ namespace_monitoring }}"
+    kind: GrafanaDashboard

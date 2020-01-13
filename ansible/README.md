@@ -1,13 +1,14 @@
 # Emergency Response - Installer
 
 A set of Ansible roles and playbooks that install the Emergency Response
-project on top of RHMI (Integreatly) version 1.4.
+project.
 
 Prerequisites:
-* access to an OpenShift cluster with Integreatly installed.
+* access to an OpenShift 4.2 cluster.   
+Note: OpenShift 3.11 is not longer supported.   
+Note: previous versions of the Emergency Response Demo required Integreatly to be installed prior to installing the demo. This is not longer required.
 * `oc` client on the PATH
 * logged in into the cluster with a user with cluster admin rights
-* A Registry Credentials Secret with access to `registry.redhat.io` named `imagestreamsecret` should exist in the `openshift` Namespace. See https://access.redhat.com/RegistryAuthentication for more details.
 * A MapBox access token. See https://docs.mapbox.com/help/how-mapbox-works/access-tokens/ for more details.
 
 ## Installing
@@ -40,8 +41,6 @@ $ ansible-playbook -i inventories/inventory playbooks/openshift_strimzi_operator
 $ ansible-playbook -i inventories/inventory playbooks/openshift_kafka_cluster.yml
 $ ansible-playbook -i inventories/inventory playbooks/openshift_kafka_topics.yml
 ```
-
-Apart from the `openshift_strimzi_operator` playbook, none of the playbooks require cluster admin rights.
 
 ## Reset the demo
 

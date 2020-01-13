@@ -1,0 +1,83 @@
+---
+
+- name: "delete keycloak custom resource"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    kind: Keycloak
+    name: rhsso
+    namespace: "{{ namespace }}"
+
+- name: "delete all resources"
+  shell: "oc delete all -l application=sso -n {{ namespace }}"
+
+- name: "delete pvc"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    kind: pvc
+    name: sso-postgresql-claim
+    namespace: "{{ namespace }}"
+
+- name: "delete credential-rhsso secret"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    kind: secret
+    name: credential-rhsso
+    namespace: "{{ namespace }}"
+
+- name: "delete db-credentials-rhsso secret"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    kind: secret
+    name: db-credentials-rhsso
+    namespace: "{{ namespace }}"
+
+- name: "delete keycloak operator"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    kind: deployment
+    name: keycloak-operator
+    namespace: "{{ namespace }}"
+
+- name: "delete rolebinding"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    namespace: "{{ namespace }}"
+    kind: rolebinding
+    name: default-account-keycloak-operator 
+
+- name: "delete role keycloak"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    namespace: "{{ namespace }}"
+    kind: role
+    name: keycloak-operator
+
+- name: "delete keycloak crd"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    kind: crd
+    name: keycloaks.aerogear.org
+  when: uninstall_cluster_resources|bool == true
+
+- name: "delete keycloakrealm crd"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    kind: crd
+    name: keycloakrealms.aerogear.org
+  when: uninstall_cluster_resources|bool == true
+
+- name: delete project
+  oc_project:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ namespace }}"
+  when: uninstall_delete_project|bool == true

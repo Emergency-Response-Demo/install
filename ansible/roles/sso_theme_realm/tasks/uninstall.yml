@@ -1,17 +1,17 @@
 ---
 
 - name: retrieve sso route
-  shell: "{{ openshift_cli }} get route sso -o jsonpath='{.spec.host}' -n {{ sso_namespace }}"
+  shell: "{{ openshift_cli }} get route sso -o jsonpath='{.spec.host}' -n {{ namespace_sso }}"
   register: sso_route_cmd
 
 - name: retrieve sso admin password
   shell: >-
-    {{ openshift_cli }} get dc/sso -o jsonpath='{.spec.template.spec.containers[?(@.name=="sso")].env[?(@.name=="SSO_ADMIN_PASSWORD")].value}' -n {{ sso_namespace }}
+    {{ openshift_cli }} get dc/sso -o jsonpath='{.spec.template.spec.containers[?(@.name=="sso")].env[?(@.name=="SSO_ADMIN_PASSWORD")].value}' -n {{ namespace_sso }}
   register: sso_admin_password_cmd
 
 - name: retrieve sso admin username
   shell: >-
-    {{ openshift_cli }} get dc/sso -o jsonpath='{.spec.template.spec.containers[?(@.name=="sso")].env[?(@.name=="SSO_ADMIN_USERNAME")].value}' -n {{ sso_namespace }}
+    {{ openshift_cli }} get dc/sso -o jsonpath='{.spec.template.spec.containers[?(@.name=="sso")].env[?(@.name=="SSO_ADMIN_USERNAME")].value}' -n {{ namespace_sso }}
   register: sso_admin_user_cmd
 
 - set_fact:

@@ -3,6 +3,18 @@ kind: ClusterRole
 metadata:
   name: prometheus-application-monitoring
 rules:
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
 - apiGroups: [""]
   resources:
   - nodes
@@ -13,6 +25,7 @@ rules:
 - apiGroups: [""]
   resources:
   - configmaps
+  - namespaces
   verbs: ["get"]
 - nonResourceURLs: ["/metrics"]
   verbs: ["get"]

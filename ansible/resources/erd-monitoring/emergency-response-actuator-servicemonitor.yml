@@ -4,7 +4,7 @@ metadata:
   labels:
     k8s-app: prometheus
     monitoring-key: "{{ application_monitoring_label_value }}"
-  name: emergency-services-actuator-monitor-services
+  name: emergency-response-services-actuator
 spec:
   endpoints:
     - interval: 5s

@@ -70,6 +70,8 @@ items:
                   value: '{{ jenkins_jnlp_service }}'
                 - name: ENABLE_FATAL_ERROR_LOG_FILE
                   value: '{{ jenkins_enable_fatal_error_log_file }}'
+                - name: JENKINS_UC_INSECURE
+                  value: '{{ jenkins_uc_insecure }}'
               image: ' '
               imagePullPolicy: IfNotPresent
               livenessProbe:

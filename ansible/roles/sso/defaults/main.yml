@@ -1,0 +1,10 @@
+---
+
+integreatly-middleware-service: true
+monitoring-key: middleware
+
+rhsso_resource_template: keycloak.json
+
+rhsso_provision_immediately: true
+rhsso_plugins:
+  - keycloak-metrics-spi

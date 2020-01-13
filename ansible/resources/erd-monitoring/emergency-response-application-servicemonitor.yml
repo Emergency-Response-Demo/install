@@ -4,11 +4,11 @@ metadata:
   labels:
     k8s-app: prometheus
     monitoring-key: "{{ application_monitoring_label_value }}"
-  name: metrics-monitor-kafka
+  name: emergency-response-services
 spec:
   endpoints:
     - interval: 5s
-      port: metrics
+      port: http
   selector:
     matchLabels:
-      strimzi.io/kind: Kafka
+      monitoring: {{ monitoring_label }}

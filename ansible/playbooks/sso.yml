@@ -15,20 +15,20 @@
         resources_dir: "{{ resources_base_dir }}/sso"
         work_dir_name: sso
     - include_role:
-        name: ../roles/openshift_sso
+        name: ../roles/sso
       when: >
         ACTION is not defined or
         ACTION is none or
         ACTION|trim() == "" or
         ACTION|trim() == "install"
     - include_role:
-        name: ../roles/openshift_sso
+        name: ../roles/sso
         tasks_from: uninstall
       when: >
         ACTION is defined and
         ACTION|trim() == "uninstall"
     - include_role:
-        name: ../roles/openshift_sso
+        name: ../roles/sso
         tasks_from: reset
       when: >
         ACTION is defined and

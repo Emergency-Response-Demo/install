@@ -23,8 +23,6 @@ spec:
         kind: ImageStreamTag
         name: "{{ application_image }}"
         namespace: "{{ application_image_namespace }}"
-      pullSecret:
-        name: imagestreamsecret
     type: Source
   successfulBuildsHistoryLimit: 2
   triggers: []

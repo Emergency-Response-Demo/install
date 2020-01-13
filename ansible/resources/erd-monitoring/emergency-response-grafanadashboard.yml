@@ -2,6 +2,8 @@ apiVersion: integreatly.org/v1alpha1
 kind: GrafanaDashboard
 metadata:
   name: emergency-response-dashboard
+  labels:
+    monitoring-key: "{{ application_monitoring_label_value }}"
 spec:
   json: |
     {

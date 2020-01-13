@@ -1,0 +1,9 @@
+---
+
+- name: delete themes pvc claim
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    namespace: "{{ namespace_sso }}"
+    name: "{{ sso_theme_pvc }}"
+    kind: pvc

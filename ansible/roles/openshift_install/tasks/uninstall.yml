@@ -115,6 +115,15 @@
     resources_dir: "{{ resources_base_dir }}/assignment-rules-model"
     work_dir_name: assignment-rules-model
 
+- name: uninstall emergency response demo monitoring
+  import_role:
+    name: erd_monitoring
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/erd-monitoring"
+    work_dir_name: erd-monitoring
+
 - name: uninstall datagrid
   import_role:
     name: openshift_datagrid
@@ -123,15 +132,6 @@
     namespace: "{{ namespace_datagrid }}"
     resources_dir: "{{ resources_base_dir }}/datagrid"
     work_dir_name: datagrid
-
-- name: uninstall sso
-  import_role:
-    name: openshift_sso
-    tasks_from: uninstall
-  vars:
-    namespace: "{{ namespace_sso }}"
-    resources_dir: "{{ resources_base_dir }}/sso"
-    work_dir_name: sso
 
 - name: uninstall postgresql
   import_role:
@@ -142,7 +142,7 @@
     resources_dir: "{{ resources_base_dir }}/postgresql"
     work_dir_name: postgresql
 
-- name: uninstalll pgadmin4
+- name: uninstall pgadmin4
   import_role:
     name: openshift_pgadmin4
     tasks_from: uninstall
@@ -195,6 +195,33 @@
     resources_dir: "{{ resources_base_dir }}/strimzi"
     work_dir_name: strimzi-operator
 
+- name: uninstall monitoring stack
+  import_role:
+    name: monitoring
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_monitoring }}"
+    resources_dir: "{{ resources_base_dir }}/monitoring"
+    work_dir_name: monitoring
+
+- name: uninstall sso
+  import_role:
+    name: sso
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_sso }}"
+    resources_dir: "{{ resources_base_dir }}/sso"
+    work_dir_name: sso
+
+- name: uninstall sso theme pvc
+  import_role:
+    name: sso_theme_realm
+    tasks_from: uninstall_theme_pvc
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/sso_theme_realm"
+    work_dir_name: sso-theme-realm
+
 - name: remove user {{ cluster_provisioner }} as project admin in namespace kafka cluster
   oc_adm_policy_user:
     state: absent
@@ -225,16 +252,6 @@
     rolebinding_name: "{{ cluster_provisioner }}-admin"
     resource_name: admin
 
-- name: remove user {{ cluster_provisioner }} as project admin in namespace sso
-  oc_adm_policy_user:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    resource_kind: role
-    user: "{{ cluster_provisioner }}"
-    namespace: "{{ namespace_sso }}"
-    rolebinding_name: "{{ cluster_provisioner }}-admin"
-    resource_name: admin
-
 - name: remove user {{ cluster_provisioner }} as project admin in namespace postgresql
   oc_adm_policy_user:
     state: absent
@@ -261,35 +278,11 @@
     state: absent
     name: "{{ namespace_services }}"
 
-- name: delete namespace postgresql
-  oc_project:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ namespace_postgresql }}"
-
 - name: delete namespace tools
   oc_project:
     oc_binary: "{{ openshift_cli }}"
     state: absent
     name: "{{ namespace_tools }}"
-
-- name: delete namespace datagrid
-  oc_project:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ namespace_datagrid }}"
-
-- name: delete namespace kafka cluster
-  oc_project:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ namespace_kafka_cluster }}"
-
-- name: delete namespace sso
-  oc_project:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ namespace_sso }}"
 
 - name: delete namespace kafka operator
   oc_project:

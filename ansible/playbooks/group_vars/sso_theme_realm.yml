@@ -1,0 +1,5 @@
+---
+
+sso_build_theme_image: true
+
+sso_config_configmap: sso-config

@@ -5,9 +5,6 @@ namespace_kafka_cluster: "{{ project_name }}"
 
 strimzi_cluster_operator: strimzi-cluster-operator
 
-uninstall_delete_project: false
-uninstall_cluster_resources: false
-
 kafka_cluster: kafka-cluster
 
 kafka_topics: >

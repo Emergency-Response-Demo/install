@@ -1,0 +1,29 @@
+---
+
+- name: Deploy Monitoring for Emergency Response Demo
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  run_once: true
+  vars_files:
+    - group_vars/services.yml
+    - group_vars/monitoring.yml
+
+  tasks:
+    - set_fact:
+        namespace: "{{ namespace_services }}"
+        resources_dir: "{{ resources_base_dir }}/erd-monitoring"
+        work_dir_name: erd-monitoring
+    - include_role:
+        name: ../roles/erd_monitoring
+      when: >
+        ACTION is not defined or
+        ACTION is none or
+        ACTION|trim() == "" or
+        ACTION|trim() == "install"
+    - include_role:
+        name: ../roles/erd_monitoring
+        tasks_from: uninstall
+      when: >
+        ACTION is defined and
+        ACTION|trim() == "uninstall"

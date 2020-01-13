@@ -11,3 +11,6 @@ openshift_cli: oc
 project_name: emergency-response-demo
 
 monitoring_label: prometheus
+
+uninstall_delete_project: false
+uninstall_cluster_resources: false
