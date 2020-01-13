@@ -96,7 +96,8 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/incident-process"
     work_dir_name: incident-process
-
+  when: deploy_from is defined and deploy_from == "source"
+  
 - name: install incident service
   import_role:
     name: openshift_incident_service
@@ -144,14 +145,6 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/responder-service"
     work_dir_name: responder-service
-
-- name: install incident priority service
-  import_role:
-    name: openshift_incident_priority_service
-  vars:
-    namespace: "{{ namespace_services }}"
-    resources_dir: "{{ resources_base_dir }}/incident-priority-service"
-    work_dir_name: incident-priority-service
 
 - name: install responder simulator service
   import_role:
