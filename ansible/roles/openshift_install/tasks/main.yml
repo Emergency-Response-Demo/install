@@ -262,6 +262,16 @@
     rolebinding_name: "{{ cluster_provisioner }}-admin"
     resource_name: admin
 
+- name: install datawarehouse postgresql
+  import_role:
+    name: datawarehouse_postgresql
+  vars:
+    namespace: "{{ namespace_dw_postgresql }}"
+    resources_dir: "{{ resources_base_dir }}/datawarehouse_postgresql"
+    work_dir_name: datawarehouse_postgresql
+  when: install_datawarehouse|bool
+
+
 - block:
   - name: start pipeline incident service
     shell: "{{ openshift_cli }} start-build {{ incident_service_application_name }}-pipeline -n {{ namespace_tools }}"

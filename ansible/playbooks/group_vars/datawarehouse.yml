@@ -1,0 +1,7 @@
+---
+
+namespace_dw: "{{ project_name }}"
+
+dw_application_name: datawarehouse
+
+install_datawarehouse: false

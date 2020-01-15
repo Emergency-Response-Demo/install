@@ -1,0 +1,13 @@
+---
+
+namespace_dw_postgresql: "{{ project_name }}"
+
+dw_postgresql_init_scripts:
+  - https://raw.githubusercontent.com/jbride/sql-scripts/datawarehouse/dw_database_ddl.sql
+
+dw_postgresql_username: naps
+dw_postgresql_password: naps
+dw_postgresql_database: datawarehouse
+
+dw_postgresql_application_name: dw-postgresql
+dw_postgresql_credentials_secret: "{{ dw_postgresql_application_name }}-credentials"
