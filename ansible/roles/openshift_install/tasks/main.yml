@@ -75,6 +75,7 @@
     namespace: "{{ namespace_tools }}"
     resources_dir: "{{ resources_base_dir }}/pgadmin4"
     work_dir_name: pgadmin4
+  when: install_tools is defined and install_tools|bool == true  
 
 - name: install postgresql
   import_role:
