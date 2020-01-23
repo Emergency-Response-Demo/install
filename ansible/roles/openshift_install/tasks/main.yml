@@ -15,6 +15,7 @@
     namespace: "{{ namespace_monitoring }}"
     resources_dir: "{{ resources_base_dir }}/monitoring"
     work_dir_name: "{{ project_admin }}-monitoring"
+  when: install_monitoring is defined and install_monitoring|bool == true
 
 - name: install kafka operator
   import_role:
@@ -211,6 +212,7 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/erd-monitoring"
     work_dir_name: erd-monitoring
+  when: install_monitoring is defined and install_monitoring|bool == true
 
 - block:
   - name: start pipeline incident service
