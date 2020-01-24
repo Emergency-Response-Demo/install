@@ -16,34 +16,34 @@ install_tools=true
 
 # images
 incident_service_image=quay.io/emergencyresponsedemo/incident-service
-incident_service_image_tag=1.0.0.Final
+incident_service_image_tag=ba3e9bca3
 
 responder_service_image=quay.io/emergencyresponsedemo/responder-service
-responder_service_image_tag=1.0.0.Final
+responder_service_image_tag=4ca7b4bab
 
 process_viewer_image=quay.io/emergencyresponsedemo/process-viewer
-process_viewer_image_tag=1.0.0.Final
+process_viewer_image_tag=8eac584e7
 
 incident_priority_service_image=quay.io/emergencyresponsedemo/incident-priority-service
-incident_priority_service_image_tag=1.0.0.Final
+incident_priority_service_image_tag=1f5b136f5
 
 process_service_image=quay.io/emergencyresponsedemo/process-service
-process_service_image_tag=1.0.0.Final
+process_service_image_tag=cbfad8cf2
 
 disaster_simulator_service_image=quay.io/emergencyresponsedemo/disaster-simulator
-disaster_simulator_service_image_tag=1.0.0
+disaster_simulator_service_image_tag=c6818a7a8
 
 mission_service_image=quay.io/emergencyresponsedemo/mission-service
-mission_service_image_tag=1.0.0
+mission_service_image_tag=803e6420f
 
 responder_simulator_image=quay.io/emergencyresponsedemo/responder-simulator
-responder_simulator_image_tag=1.0.0
+responder_simulator_image_tag=66105af21
 
 emergency_console_image=quay.io/emergencyresponsedemo/emergency-console
-emergency_console_image_tag=1.1.2
+emergency_console_image_tag=1fa91c80b
 
 responder_client_app_image=quay.io/emergencyresponsedemo/emergency-response-client-app
-responder_client_app_image_tag=1.0.2
+responder_client_app_image_tag=f2394c06c
 
 # source repos
 incident_service_git_repo=https://github.com/Emergency-Response-Demo/incident-service.git
