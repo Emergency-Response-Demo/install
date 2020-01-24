@@ -51,6 +51,15 @@
         "composite": false,
         "clientRole": false,
         "containerId": "emergency-realm"
+      },
+      {
+        "id": "a4f637ac-dd45-4af0-bae5-dc1a0a979ee6",
+        "name": "incident_commander",
+        "description": "${role_incident_commander}",
+        "scopeParamRequired": false,
+        "composite": false,
+        "clientRole": false,
+        "containerId": "emergency-realm"
       }
     ],
     "client": {
