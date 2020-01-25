@@ -1,0 +1,6 @@
+[
+    {
+        "id": "{{ incident_commander_role_id }}",
+        "name": "incident_commander"
+    }
+]
