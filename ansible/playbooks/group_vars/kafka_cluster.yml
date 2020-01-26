@@ -9,7 +9,7 @@ kafka_cluster: kafka-cluster
 
 kafka_topics: >
   [{"name": "topic-incident-event", "partitions": "15", "replicas": "2", "config": "{}"},
-   {"name": "topic-priority-zone-event", "partitions": "15", "replicas": "2", "config": "{}"}
+   {"name": "topic-priority-zone-event", "partitions": "15", "replicas": "2", "config": "{}"},
    {"name": "topic-incident-command", "partitions": "15", "replicas": "2", "config": "{}"},
    {"name": "topic-mission-command", "partitions": "15", "replicas": "2", "config": "{}"},
    {"name": "topic-mission-event", "partitions": "15", "replicas": "2", "config": "{}"},
