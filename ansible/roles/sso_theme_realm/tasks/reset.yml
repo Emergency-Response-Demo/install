@@ -128,4 +128,6 @@
       KEYCLOAK: "true"
       PUBLIC_KEY: "{{ lookup('file', work_dir + '/sso_public_key.txt') }}"
       REALM: "{{ sso_realm_id }}"
-      CLIENTID: "{{ sso_clientId }}"
+      CLIENTID: "{{ sso_js_clientId }}"
+      VERTX_CLIENTID: "{{ sso_vertx_clientId }}"
+      VERTX_CLIENT_SECRET: "{{ sso_vertx_client_secret }}"

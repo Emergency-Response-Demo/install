@@ -11,6 +11,7 @@ resources_requests_memory: 200Mi
 
 application_configmap: incident-priority-service
 logging_configmap: incident-priority-service-logging
+sso_configmap: sso-config
 
 application_properties: application-config.yaml
 
@@ -37,7 +38,6 @@ kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port 
 kafka_groupid: incident-priority
 
 kafka_incident_assignment_event_topic: topic-incident-event
-kafka_priority_zone_application_event_topic: topic-priority-zone-event
 
 logging_style: dev
 
