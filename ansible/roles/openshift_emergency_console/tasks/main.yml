@@ -24,6 +24,7 @@
       MISSION: "http://{{ mission_service_application_name }}.{{ namespace }}.svc:8080"
       PROCESS_VIEWER: "http://{{ process_viewer_application_name }}.{{ namespace }}.svc:8080"
       RESPONDER_SIMULATOR: "http://{{ responder_simulator_service_application_name }}.{{ namespace }}.svc:8080"
+      PRIORITY: "http://{{ incident_priority_service_application_name }}.{{ namespace }}.svc:8080"
 
 - import_tasks: deploy_from_source.yml
   when: deploy_from is defined and deploy_from == "source"

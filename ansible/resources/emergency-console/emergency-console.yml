@@ -144,6 +144,11 @@ items:
                 configMapKeyRef:
                   key: RESPONDER_SIMULATOR
                   name: {{ emergency_console_config_configmap }}
+            - name: PRIORITY 
+              valueFrom:
+                configMapKeyRef:
+                  key: PRIORITY
+                  name: {{ emergency_console_config_configmap }}
             imagePullPolicy: IfNotPresent
             name: {{ application_name }}
             ports:
