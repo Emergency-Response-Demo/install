@@ -4,3 +4,5 @@ monitoring_kafka_servicemonitor_template: emergency-response-kafka-servicemonito
 monitoring_application_servicemonitor_template: emergency-response-application-servicemonitor.yml 
 monitoring_actuator_servicemonitor_template: emergency-response-actuator-servicemonitor.yml 
 monitoring_grafana_dashboard_template: emergency-response-grafanadashboard.yml
+
+clusterrole_get_namespaces_template: get-namespaces-clusterrole.yml

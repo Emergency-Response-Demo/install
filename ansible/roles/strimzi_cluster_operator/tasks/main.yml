@@ -4,7 +4,7 @@
     name: openshift_apply_resource
   vars:
     resource_type: serviceaccount
-    resource: "{{sa_cluster_operator }}"
+    resource: "{{ sa_cluster_operator }}"
     resource_template: "{{ resources_dir }}/cluster-operator/{{ sa_cluster_operator_template }}"
     resource_namespace: "{{ namespace_strimzi_operator }}"
 
@@ -116,51 +116,20 @@
     resource: "{{ crd_kafka_bridge }}"
     resource_template: "{{ resources_dir }}/cluster-operator/{{ crd_kafka_bridge_template }}"
 
-# kafka cluster project
-- name: create project {{ namespace_kafka_cluster }}
-  oc_project:
-    state: present
-    oc_binary: "{{ openshift_cli }}"
-    name: "{{ namespace_kafka_cluster }}"
-
 - name: copy rolebinding template to work directory
   template:
     src: "{{ resources_dir }}/cluster-operator/{{ rolebinding_cluster_operator_template }}"
     dest: "{{ work_dir }}/{{ rolebinding_cluster_operator_template }}"
-
-- import_role:
-    name: openshift_apply_resource
-  vars:
-    resource_type: rolebinding
-    resource: "{{ rolebinding_cluster_operator }}"
-    resource_template: "{{ work_dir }}/{{ rolebinding_cluster_operator_template }}"
-    resource_namespace: "{{ namespace_kafka_cluster }}"
 
 - name: copy rolebinding template to work directory
   template:
     src: "{{ resources_dir }}/cluster-operator/{{ rolebinding_entity_operator_template }}"
     dest: "{{ work_dir }}/{{ rolebinding_entity_operator_template }}"
 
-- import_role:
-    name: openshift_apply_resource
-  vars:
-    resource_type: rolebinding
-    resource: "{{ rolebinding_entity_operator }}"
-    resource_template: "{{ work_dir }}/{{ rolebinding_entity_operator_template }}"
-    resource_namespace: "{{ namespace_kafka_cluster }}"
-
 - name: copy rolebinding template to work directory
   template:
     src: "{{ resources_dir }}/cluster-operator/{{ rolebinding_topic_operator_template }}"
     dest: "{{ work_dir }}/{{ rolebinding_topic_operator_template }}"
-
-- import_role:
-    name: openshift_apply_resource
-  vars:
-    resource_type: rolebinding
-    resource: "{{ rolebinding_topic_operator }}"
-    resource_template: "{{ work_dir }}/{{ rolebinding_topic_operator_template }}"
-    resource_namespace: "{{ namespace_kafka_cluster }}"
 
 - name: copy deployment template to work directory
   template:
@@ -174,3 +143,33 @@
     resource: "{{ deployment_cluster_operator }}"
     resource_template: "{{ work_dir }}/{{ deployment_cluster_operator_template }}"
     resource_namespace: "{{ namespace_strimzi_operator }}"
+
+- name: provide ability to strimzi cluster operator to view all namespaces
+  oc_adm_policy_user:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace_strimzi_operator }}"
+    rolebinding_name: strimzi-cluster-operator-namespaced
+    resource_kind: cluster-role
+    resource_name: "{{ clusterrole_cluster_operator_role }}"
+    user: "system:serviceaccount:{{ namespace_strimzi_operator }}:{{ sa_cluster_operator }}"
+
+- name: provide ability to strimzi entity operator to view all namespaces
+  oc_adm_policy_user:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace_strimzi_operator }}"
+    rolebinding_name: strimzi-cluster-operator-entity-operator-delegation
+    resource_kind: cluster-role
+    resource_name: "{{ clusterrole_entity_operator }}"
+    user: "system:serviceaccount:{{ namespace_strimzi_operator }}:{{ sa_cluster_operator }}"
+
+- name: provide ability to strimzi topic operator to view all namespaces
+  oc_adm_policy_user:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace_strimzi_operator }}"
+    rolebinding_name: strimzi-cluster-operator-topic-operator-delegation
+    resource_kind: cluster-role
+    resource_name: "{{ clusterrole_topic_operator }}"
+    user: "system:serviceaccount:{{ namespace_strimzi_operator }}:{{ sa_cluster_operator }}"

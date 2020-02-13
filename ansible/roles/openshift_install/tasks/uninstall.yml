@@ -158,7 +158,8 @@
   vars:
     namespace: "{{ namespace_tools }}"
     resources_dir: "{{ resources_base_dir }}/nexus"
-    work_dir_name: nexus
+    work_dir_name: nexuss
+  when: deploy_from is defined and deploy_from == "source"
 
 - name: uninstall jenkins
   import_role:
@@ -202,75 +203,7 @@
   vars:
     namespace: "{{ namespace_monitoring }}"
     resources_dir: "{{ resources_base_dir }}/monitoring"
-    work_dir_name: monitoring
-
-- name: uninstall sso
-  import_role:
-    name: sso
-    tasks_from: uninstall
-  vars:
-    namespace: "{{ namespace_sso }}"
-    resources_dir: "{{ resources_base_dir }}/sso"
-    work_dir_name: sso
-
-- name: uninstall sso theme pvc
-  import_role:
-    name: sso_theme_realm
-    tasks_from: uninstall_theme_pvc
-  vars:
-    namespace: "{{ namespace_services }}"
-    resources_dir: "{{ resources_base_dir }}/sso_theme_realm"
-    work_dir_name: sso-theme-realm
-
-- name: remove user {{ cluster_provisioner }} as project admin in namespace kafka cluster
-  oc_adm_policy_user:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    resource_kind: role
-    user: "{{ cluster_provisioner }}"
-    namespace: "{{ namespace_kafka_cluster }}"
-    rolebinding_name: "{{ cluster_provisioner }}-admin"
-    resource_name: admin
-
-- name: remove user {{ cluster_provisioner }} as project admin in namespace tools
-  oc_adm_policy_user:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    resource_kind: role
-    user: "{{ cluster_provisioner }}"
-    namespace: "{{ namespace_tools }}"
-    rolebinding_name: "{{ cluster_provisioner }}-admin"
-    resource_name: admin
-
-- name: remove user {{ cluster_provisioner }} as project admin in namespace datagrid
-  oc_adm_policy_user:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    resource_kind: role
-    user: "{{ cluster_provisioner }}"
-    namespace: "{{ namespace_datagrid }}"
-    rolebinding_name: "{{ cluster_provisioner }}-admin"
-    resource_name: admin
-
-- name: remove user {{ cluster_provisioner }} as project admin in namespace postgresql
-  oc_adm_policy_user:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    resource_kind: role
-    user: "{{ cluster_provisioner }}"
-    namespace: "{{ namespace_postgresql }}"
-    rolebinding_name: "{{ cluster_provisioner }}-admin"
-    resource_name: admin
-
-- name: remove user {{ cluster_provisioner }} as project admin in namespace services
-  oc_adm_policy_user:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    resource_kind: role
-    user: "{{ cluster_provisioner }}"
-    namespace: "{{ namespace_services }}"
-    rolebinding_name: "{{ cluster_provisioner }}-admin"
-    resource_name: admin
+    work_dir_name: "{{ project_admin }}-monitoring"
 
 - name: delete namespace services
   oc_project:

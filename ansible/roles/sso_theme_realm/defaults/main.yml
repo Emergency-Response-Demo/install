@@ -1,5 +1,5 @@
 ---
-sso_realm_id: emergency-realm
+sso_realm_id: "{{ project_admin }}-emergency-realm"
 sso_realm_template: "{{ resources_dir }}/realm.json"
 
 sso_theme_path: /opt/eap/themes
