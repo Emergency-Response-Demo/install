@@ -33,7 +33,7 @@ application_template: process-viewer.yml
 
 logging_style: dev
 
-process_viewer_postgresql_host: "{{ process_service_postgresql_service_name}}.{{ project_name }}.svc"
+process_viewer_postgresql_host: "{{ process_service_postgresql_service_name}}.{{ namespace_services }}.svc"
 process_viewer_postgresql_port: 5432
 process_viewer_postgresql_database: "{{ process_service_postgresql_database }}"
 process_viewer_postgresql_username: "{{ process_service_postgresql_username }}"

@@ -10,7 +10,7 @@
 
   tasks:
     - set_fact:
-        namespace: "{{ namespace_tools }}"
+        namespace: "{{ namespace_nexus }}"
         resources_dir: "{{ resources_base_dir }}/nexus"
         work_dir_name: nexus
     - include_role:

@@ -13,7 +13,7 @@
     - set_fact:
         namespace: "{{ namespace_monitoring }}"
         resources_dir: "{{ resources_base_dir }}/monitoring"
-        work_dir_name: monitoring
+        work_dir_name: "{{ project_admin }}-monitoring"
     - include_role:
         name: ../roles/monitoring
       when: >

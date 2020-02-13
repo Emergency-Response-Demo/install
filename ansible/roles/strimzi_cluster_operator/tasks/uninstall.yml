@@ -56,14 +56,6 @@
     kind: crd
   when: uninstall_cluster_resources|bool == true
 
-- name: remove rolebinding {{ rolebinding_topic_operator }}
-  oc_obj:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    name: "{{ rolebinding_topic_operator }}"
-    kind: rolebinding
-    namespace: "{{ namespace_kafka_cluster }}"
-
 - name: remove clusterrole {{ clusterrole_topic_operator }}
   oc_obj:
     state: absent
@@ -71,14 +63,6 @@
     name: "{{ clusterrole_topic_operator }}"
     kind: clusterrole
   when: uninstall_cluster_resources|bool == true
-
-- name: remove rolebinding {{ rolebinding_entity_operator }}
-  oc_obj:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    name: "{{ rolebinding_entity_operator }}"
-    kind: rolebinding
-    namespace: "{{ namespace_kafka_cluster }}"
 
 - name: remove clusterrole {{ clusterrole_entity_operator }}
   oc_obj:
@@ -118,14 +102,6 @@
     kind: clusterrole
   when: uninstall_cluster_resources|bool == true
 
-- name: remove rolebinding {{ rolebinding_cluster_operator }}
-  oc_obj:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    name: "{{ rolebinding_cluster_operator }}"
-    kind: rolebinding
-    namespace: "{{ namespace_kafka_cluster }}"
-
 - name: remove clusterrole {{ clusterrole_cluster_operator_role }}
   oc_obj:
     state: absent
@@ -141,3 +117,33 @@
     name: "{{ sa_cluster_operator }}"
     kind: serviceaccount
     namespace: "{{ namespace_strimzi_operator }}"
+
+- name: remove cluster operator clusterrolebinding
+  oc_adm_policy_user:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    namespace: "{{ namespace_strimzi_operator }}"
+    rolebinding_name: strimzi-cluster-operator-namespaced
+    resource_kind: cluster-role
+    resource_name: "{{ clusterrole_cluster_operator_role }}"
+    user: "system:serviceaccount:{{ namespace_strimzi_operator }}:{{ sa_cluster_operator }}"
+
+- name: remove entity operator clusterrole binding
+  oc_adm_policy_user:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    namespace: "{{ namespace_strimzi_operator }}"
+    rolebinding_name: strimzi-cluster-operator-entity-operator-delegation
+    resource_kind: cluster-role
+    resource_name: "{{ clusterrole_entity_operator }}"
+    user: "system:serviceaccount:{{ namespace_strimzi_operator }}:{{ sa_cluster_operator }}"
+
+- name: remove topic operator clusterrolebinding
+  oc_adm_policy_user:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    namespace: "{{ namespace_strimzi_operator }}"
+    rolebinding_name: strimzi-cluster-operator-topic-operator-delegation
+    resource_kind: cluster-role
+    resource_name: "{{ clusterrole_topic_operator }}"
+    user: "system:serviceaccount:{{ namespace_strimzi_operator }}:{{ sa_cluster_operator }}"
