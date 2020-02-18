@@ -80,5 +80,9 @@ incident_priority_service_scheme: http
 incident_priority_service_url: "{{ incident_priority_service_application_name }}.{{ namespace }}.svc:8080"
 incident_priority_service_incident_priority_path: "/priority/{incidentId}"
 
+disaster_service_scheme: http
+disaster_service_url: "{{ disaster_service_application_name }}.{{ namespace }}.svc:8080"
+disaster_service_shelters_path: "/shelters"
+
 prometheus_endpoint_path: "/actuator/prometheus"
 prometheus_endpoint_port: 8080

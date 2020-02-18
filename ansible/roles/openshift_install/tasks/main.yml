@@ -194,6 +194,14 @@
     resources_dir: "{{ resources_base_dir }}/responder-client-app"
     work_dir_name: responder-client-app
 
+- name: install disaster service
+  import_role:
+    name: openshift_disaster_service
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/disaster-service"
+    work_dir_name: disaster-service
+
 - name: install emergency response demo monitoring
   import_role:
     name: erd_monitoring
@@ -325,5 +333,8 @@
 
   - name: start pipeline process viewer service
     shell: "{{ openshift_cli }} start-build {{ process_viewer_application_name }}-pipeline -n {{ namespace_tools }}"
+
+  - name: start pipeline disaster service
+    shell: "{{ openshift_cli }} start-build {{ disaster_service_application_name }}-pipeline -n {{ namespace_tools }}"
 
   when: deploy_from is defined and deploy_from == "source"

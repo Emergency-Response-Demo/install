@@ -1,0 +1,8 @@
+http:
+  port: 8080
+datagrid:
+  service-name: {{ datagrid_service }}
+  app-name: {{ datagrid_application_name }}
+  user-name: {{ datagrid_application_user }}
+  password: {{ datagrid_application_password }}
+  port: {{ datagrid_port }}
