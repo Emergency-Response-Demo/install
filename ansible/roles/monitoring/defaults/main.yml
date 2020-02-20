@@ -6,7 +6,7 @@ monitoring_prometheus_retention: 45d
 monitoring_prometheus_storage_request: 10Gi
 
 monitoring_namespace: "{{ namespace }}"
-namespace_postfix: ""
+namespace_postfix: "-{{ project_admin }}"
 
 monitoring_grafana_crd_template: grafana_crd.yml
 monitoring_grafana_dashboard_crd_template: grafana_dashboard_crd.yml

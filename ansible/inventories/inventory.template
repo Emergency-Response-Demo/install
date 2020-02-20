@@ -2,11 +2,17 @@
 # MapBox API token, see https://docs.mapbox.com/help/how-mapbox-works/access-tokens/
 map_token=replaceme
 
-# Non-admin user with project admin permissions for the Emergency Response projects
-cluster_provisioner=developer
-
 # valid choices: image, source
 deploy_from=image
+
+# If set to True, then every user that creates an account in Emergency Response demo will automatically be a "realm-admin"
+set_realm_admin_as_default: False
+
+# If set to true, installs the monitoring stack
+install_monitoring=true
+
+# If set to true, installs the tools (pgadmin)
+install_tools=true
 
 # images
 incident_service_image=quay.io/emergencyresponsedemo/incident-service

@@ -1,7 +1,7 @@
 ---
 
 namespace_strimzi_operator: kafka-operator-erd
-namespace_kafka_cluster: "{{ project_name }}"
+namespace_kafka_cluster: "{{ project_admin }}-{{ project_name }}"
 
 strimzi_cluster_operator: strimzi-cluster-operator
 

@@ -89,6 +89,9 @@
 - set_fact:
     application_image_tag: "latest"
 
+- set_fact:
+    nexus_mirror: "http://{{ nexus_service_name }}.{{ namespace_tools }}.svc:8081/content/groups/public"
+
 - name: copy application template
   template:
     src: "{{ resources_dir }}/{{ application_template }}"
