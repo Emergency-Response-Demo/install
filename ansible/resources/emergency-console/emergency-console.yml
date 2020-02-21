@@ -149,6 +149,11 @@ items:
                 configMapKeyRef:
                   key: PRIORITY
                   name: {{ emergency_console_config_configmap }}
+            - name: DISASTER 
+              valueFrom:
+                configMapKeyRef:
+                  key: DISASTER
+                  name: {{ emergency_console_config_configmap }}
             imagePullPolicy: IfNotPresent
             name: {{ application_name }}
             ports:
