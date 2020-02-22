@@ -78,7 +78,7 @@
     oc_binary: "{{ openshift_cli }}"
     state: present
     kind: clusterrolebinding
-    name: grafana-operator
+    name: grafana-operator{{ namespace_postfix }}
     namespace: "{{ namespace }}"
     files:
       - "{{ work_dir }}/{{ monitoring_grafana_clusterrole_binding_template }}"
