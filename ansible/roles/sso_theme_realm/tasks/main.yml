@@ -1,5 +1,12 @@
 ---
 
+# https://github.com/Emergency-Response-Demo/install/issues/71
+- name: "Define random value for variable incident_commander_role_id "
+  set_fact:
+    incident_commander_role_id: "{{ lookup('password', '/dev/null chars=ascii_letters length=32') }}"
+- debug:
+    msg: "incident_commander_role_id = {{ incident_commander_role_id }}"  
+
 - name: wait for sso to be ready
   shell: "oc get keycloak/rhsso -o jsonpath='{.status.phase}' -n {{ namespace_sso }}"
   register: result
