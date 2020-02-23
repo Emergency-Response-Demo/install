@@ -902,7 +902,6 @@
       "useTemplateMappers": false
     },
     {
-      "id": "03ce7b97-c7dd-475f-a2e4-725007d9c450",
       "clientId": "vertx",
       "surrogateAuthRequired": false,
       "enabled": true,
@@ -944,7 +943,6 @@
       "nodeReRegistrationTimeout": -1,
       "protocolMappers": [
         {
-          "id": "faf60f1f-d19f-4d5f-9eca-75826fbea8ab",
           "name": "Client ID",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usersessionmodel-note-mapper",
@@ -958,7 +956,6 @@
           }
         },
         {
-          "id": "f884cc59-b3b3-4a37-a7d9-8a16f8b95583",
           "name": "Client IP Address",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usersessionmodel-note-mapper",
@@ -972,7 +969,6 @@
           }
         },
         {
-          "id": "f25e3b4c-c23f-49f2-bb56-29bf7ff246a9",
           "name": "Client Host",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usersessionmodel-note-mapper",
@@ -1041,7 +1037,6 @@
       }
     },
     {
-      "id": "cd8dd08d-4cde-4318-902e-eeeedf5d9114",
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
       "baseUrl": "/auth/admin/{{ sso_realm_id }}/console/index.html",

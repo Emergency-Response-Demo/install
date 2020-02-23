@@ -10,6 +10,5 @@ sso_theme_template: themes-pvc.yml
 sso_js_clientId: js
 sso_vertx_clientId: vertx
 
-incident_commander_role_id: a4f637ac-dd45-4af0-bae5-dc1a0a979ee6
 incident_commander_template: "{{ resources_dir }}/incident-commander-user.json"
 incident_commander_add_role: "{{ resources_dir }}/add-role-to-incident-commander.json"
