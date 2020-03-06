@@ -69,3 +69,21 @@
     kind: GrafanaDashboard
     files:
       - "{{ work_dir }}/{{ monitoring_grafana_dashboard_template }}"
+
+- name: "create clusterrole for get namespaces"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: get-namespaces
+    kind: clusterrole
+    files:
+      - "{{ resources_dir }}/{{ clusterrole_get_namespaces_template }}"
+
+- name: "give clusterrole get-namespaces privilege to {{ project_admin }}"
+  oc_adm_policy_user:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    rolebinding_name: "{{ project_admin }}-get-namespaces"
+    resource_kind: cluster-role
+    resource_name: get-namespaces
+    user: "{{ project_admin }}"

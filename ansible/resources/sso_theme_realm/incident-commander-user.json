@@ -1,0 +1,35 @@
+{
+    "username": "incident_commander",
+    "enabled": true,
+    "emailVerified": true,
+    "firstName": "Incident",
+    "lastName": "Commander",
+    "email": "commander@example.com",
+    "attributes": {
+        "medical": [
+            "true"
+        ],
+        "boatCapacity": [
+            "4"
+        ],
+        "phoneNumber": [
+            "703-867-5309"
+        ]
+    },
+    "disableableCredentialTypes": [
+        "password"
+    ],
+    "access": {
+        "manageGroupMembership": true,
+        "view": true,
+        "mapRoles": true,
+        "impersonate": true,
+        "manage": true
+    },
+    "credentials": [
+        {
+            "type": "password",
+            "value": "{{ sso_incident_commander_password }}"
+        }
+    ]
+}

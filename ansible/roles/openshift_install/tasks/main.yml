@@ -14,7 +14,8 @@
   vars:
     namespace: "{{ namespace_monitoring }}"
     resources_dir: "{{ resources_base_dir }}/monitoring"
-    work_dir_name: monitoring
+    work_dir_name: "{{ project_admin }}-monitoring"
+  when: install_monitoring is defined and install_monitoring|bool == true
 
 - name: install kafka operator
   import_role:
@@ -49,6 +50,15 @@
     resources_dir: "{{ resources_base_dir }}/jenkins"
   when: deploy_from is defined and deploy_from == "source"
 
+- name: install common nexus when building from image
+  import_role:
+    name: openshift_nexus
+  vars:
+    namespace: "{{ namespace_nexus }}"
+    resources_dir: "{{ resources_base_dir }}/nexus"
+    work_dir_name: nexus
+  when: deploy_from is defined and deploy_from == "image"
+
 - name: install nexus
   import_role:
     name: openshift_nexus
@@ -56,6 +66,7 @@
     namespace: "{{ namespace_tools }}"
     resources_dir: "{{ resources_base_dir }}/nexus"
     work_dir_name: nexus
+  when: deploy_from is defined and deploy_from == "source"
 
 - name: install pgadmin4
   import_role:
@@ -64,6 +75,7 @@
     namespace: "{{ namespace_tools }}"
     resources_dir: "{{ resources_base_dir }}/pgadmin4"
     work_dir_name: pgadmin4
+  when: install_tools is defined and install_tools|bool == true  
 
 - name: install postgresql
   import_role:
@@ -113,7 +125,7 @@
     resources_dir: "{{ resources_base_dir }}/incident-process"
     work_dir_name: incident-process
   when: deploy_from is defined and deploy_from == "source"
-  
+
 - name: install incident service
   import_role:
     name: openshift_incident_service
@@ -194,6 +206,14 @@
     resources_dir: "{{ resources_base_dir }}/responder-client-app"
     work_dir_name: responder-client-app
 
+- name: install disaster service
+  import_role:
+    name: openshift_disaster_service
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/disaster-service"
+    work_dir_name: disaster-service
+
 - name: install emergency response demo monitoring
   import_role:
     name: erd_monitoring
@@ -201,66 +221,7 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/erd-monitoring"
     work_dir_name: erd-monitoring
-
-- name: assign user {{ cluster_provisioner }} as project admin in namespace kafka cluster
-  oc_adm_policy_user:
-    state: present
-    oc_binary: "{{ openshift_cli }}"
-    resource_kind: role
-    user: "{{ cluster_provisioner }}"
-    namespace: "{{ namespace_kafka_cluster }}"
-    rolebinding_name: "{{ cluster_provisioner }}-admin"
-    resource_name: admin
-
-- name: assign user {{ cluster_provisioner }} as project admin in namespace tools
-  oc_adm_policy_user:
-    state: present
-    oc_binary: "{{ openshift_cli }}"
-    resource_kind: role
-    user: "{{ cluster_provisioner }}"
-    namespace: "{{ namespace_tools }}"
-    rolebinding_name: "{{ cluster_provisioner }}-admin"
-    resource_name: admin
-
-- name: assign user {{ cluster_provisioner }} as project admin in namespace datagrid
-  oc_adm_policy_user:
-    state: present
-    oc_binary: "{{ openshift_cli }}"
-    resource_kind: role
-    user: "{{ cluster_provisioner }}"
-    namespace: "{{ namespace_datagrid }}"
-    rolebinding_name: "{{ cluster_provisioner }}-admin"
-    resource_name: admin
-
-- name: assign user {{ cluster_provisioner }} as project admin in namespace sso
-  oc_adm_policy_user:
-    state: present
-    oc_binary: "{{ openshift_cli }}"
-    resource_kind: role
-    user: "{{ cluster_provisioner }}"
-    namespace: "{{ namespace_sso }}"
-    rolebinding_name: "{{ cluster_provisioner }}-admin"
-    resource_name: admin
-
-- name: assign user {{ cluster_provisioner }} as project admin in namespace postgresql
-  oc_adm_policy_user:
-    state: present
-    oc_binary: "{{ openshift_cli }}"
-    resource_kind: role
-    user: "{{ cluster_provisioner }}"
-    namespace: "{{ namespace_postgresql }}"
-    rolebinding_name: "{{ cluster_provisioner }}-admin"
-    resource_name: admin
-
-- name: assign user {{ cluster_provisioner }} as project admin in namespace services
-  oc_adm_policy_user:
-    state: present
-    oc_binary: "{{ openshift_cli }}"
-    resource_kind: role
-    user: "{{ cluster_provisioner }}"
-    namespace: "{{ namespace_services }}"
-    rolebinding_name: "{{ cluster_provisioner }}-admin"
-    resource_name: admin
+  when: install_monitoring is defined and install_monitoring|bool == true
 
 - name: install datawarehouse postgresql
   import_role:
@@ -335,5 +296,8 @@
 
   - name: start pipeline process viewer service
     shell: "{{ openshift_cli }} start-build {{ process_viewer_application_name }}-pipeline -n {{ namespace_tools }}"
+
+  - name: start pipeline disaster service
+    shell: "{{ openshift_cli }} start-build {{ disaster_service_application_name }}-pipeline -n {{ namespace_tools }}"
 
   when: deploy_from is defined and deploy_from == "source"

@@ -11,6 +11,7 @@ resources_requests_memory: 200Mi
 
 application_configmap: incident-priority-service
 logging_configmap: incident-priority-service-logging
+sso_configmap: sso-config
 
 application_properties: application-config.yaml
 

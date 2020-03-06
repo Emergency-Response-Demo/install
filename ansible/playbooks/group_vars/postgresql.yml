@@ -1,6 +1,6 @@
 ---
 
-namespace_postgresql: "{{ project_name }}"
+namespace_postgresql: "{{ project_admin }}-{{ project_name }}"
 
 postgresql_init_scripts:
   - https://raw.githubusercontent.com/Emergency-Response-Demo/sql-scripts/master/emergency_response_demo_ddl.sql

@@ -2,42 +2,51 @@
 # MapBox API token, see https://docs.mapbox.com/help/how-mapbox-works/access-tokens/
 map_token=replaceme
 
-# Non-admin user with project admin permissions for the Emergency Response projects
-cluster_provisioner=developer
-
 # valid choices: image, source
 deploy_from=image
 
+# If set to True, then every user that creates an account in Emergency Response demo will automatically be a "realm-admin"
+set_realm_admin_as_default=false
+
+# If set to true, installs the monitoring stack
+install_monitoring=true
+
+# If set to true, installs the tools (pgadmin)
+install_tools=true
+
 # images
 incident_service_image=quay.io/emergencyresponsedemo/incident-service
-incident_service_image_tag=ba3e9bca3
+incident_service_image_tag=2.0
 
 responder_service_image=quay.io/emergencyresponsedemo/responder-service
-responder_service_image_tag=4ca7b4bab
+responder_service_image_tag=2.0
 
 process_viewer_image=quay.io/emergencyresponsedemo/process-viewer
-process_viewer_image_tag=8eac584e7
+process_viewer_image_tag=2.0
 
 incident_priority_service_image=quay.io/emergencyresponsedemo/incident-priority-service
-incident_priority_service_image_tag=1f5b136f5
+incident_priority_service_image_tag=2.0
 
 process_service_image=quay.io/emergencyresponsedemo/process-service
-process_service_image_tag=cbfad8cf2
+process_service_image_tag=2.0
 
 disaster_simulator_service_image=quay.io/emergencyresponsedemo/disaster-simulator
-disaster_simulator_service_image_tag=c6818a7a8
+disaster_simulator_service_image_tag=2.0
 
 mission_service_image=quay.io/emergencyresponsedemo/mission-service
-mission_service_image_tag=803e6420f
+mission_service_image_tag=2.0
 
 responder_simulator_image=quay.io/emergencyresponsedemo/responder-simulator
-responder_simulator_image_tag=66105af21
+responder_simulator_image_tag=2.0
 
 emergency_console_image=quay.io/emergencyresponsedemo/emergency-console
-emergency_console_image_tag=1fa91c80b
+emergency_console_image_tag=2.0
 
 responder_client_app_image=quay.io/emergencyresponsedemo/emergency-response-client-app
-responder_client_app_image_tag=f2394c06c
+responder_client_app_image_tag=2.0
+
+disaster_service_image=quay.io/emergencyresponsedemo/disaster-service
+disaster_service_image_tag=2.0
 
 # source repos
 incident_service_git_repo=https://github.com/Emergency-Response-Demo/incident-service.git
@@ -78,3 +87,6 @@ disaster_simulator_service_git_branch=master
 
 responder_client_app_git_repo=https://github.com/Emergency-Response-Demo/mobile-app.git
 responder_client_app_git_branch=master
+
+disaster_service_git_repo=https://github.com/Emergency-Response-Demo/disaster-service.git
+disaster_service_git_branch=master

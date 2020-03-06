@@ -1,5 +1,12 @@
 ---
 
+# https://github.com/Emergency-Response-Demo/install/issues/71
+- name: "Define random value for variable incident_commander_role_id "
+  set_fact:
+    incident_commander_role_id: "{{ lookup('password', '/dev/null chars=ascii_letters length=32') }}"
+- debug:
+    msg: "incident_commander_role_id = {{ incident_commander_role_id }}"  
+
 - name: wait for sso to be ready
   shell: "oc get keycloak/rhsso -o jsonpath='{.status.phase}' -n {{ namespace_sso }}"
   register: result
@@ -105,6 +112,16 @@
     src: "{{ sso_realm_template }}"
     dest: "{{ work_dir }}/{{ sso_realm_id }}.json"
 
+- name: copy incident commander template
+  template:
+    src: "{{ incident_commander_template }}"
+    dest: "{{ work_dir }}/incident-commander-user.json"
+
+- name: copy json to add role to incident commander
+  template:
+    src: "{{ incident_commander_add_role }}"
+    dest: "{{ work_dir }}/add-role-to-incident-commander.json"
+
 - name: check if {{ sso_realm_id }} exists
   uri:
     url: "{{ sso_route }}/auth/admin/realms/{{ sso_realm_id }}"
@@ -128,6 +145,37 @@
     status_code: 201
     validate_certs: no
   when: result.status == 404
+
+- name: create incident_commander user
+  uri:
+    url: "{{ sso_route }}/auth/admin/realms/{{ sso_realm_id }}/users"
+    method: POST
+    headers:
+      Authorization: Bearer {{ admin_token }}
+      Content-Type: application/json
+    body: "{{ lookup('file', work_dir + '/incident-commander-user.json') }}"
+    body_format: json
+    status_code: 201,409
+    validate_certs: no
+  register: commander_creation
+
+- name: set incident commander user id fact
+  set_fact: 
+    incident_commander_user_id: "{{ commander_creation.location | regex_replace('^.*/users/(.*)$', '\\1') }}"
+  when: commander_creation.status == 201
+
+- name: add role to incident_commander user
+  uri:
+    url: "{{ sso_route }}/auth/admin/realms/{{ sso_realm_id }}/users/{{ incident_commander_user_id }}/role-mappings/realm"
+    method: POST
+    headers:
+      Authorization: Bearer {{ admin_token }}
+      Content-Type: application/json
+    body: "{{ lookup('file', work_dir + '/add-role-to-incident-commander.json') }}"
+    body_format: json
+    status_code: 204  
+    validate_certs: no
+  when: commander_creation.status == 201
 
 - name: get rhsso realm certs
   uri:
@@ -178,4 +226,6 @@
       KEYCLOAK: "true"
       PUBLIC_KEY: "{{ lookup('file', work_dir + '/sso_public_key.txt') }}"
       REALM: "{{ sso_realm_id }}"
-      CLIENTID: "{{ sso_clientId }}"
+      CLIENTID: "{{ sso_js_clientId }}"
+      VERTX_CLIENTID: "{{ sso_vertx_clientId }}"
+      VERTX_CLIENT_SECRET: "{{ sso_vertx_client_secret }}"
