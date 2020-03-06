@@ -223,13 +223,13 @@
     work_dir_name: erd-monitoring
   when: install_monitoring is defined and install_monitoring|bool == true
 
-- name: install datawarehouse postgresql
+- name: install openshift_datawarehouse
   import_role:
-    name: datawarehouse_postgresql
+    name: openshift_datawarehouse
   vars:
-    namespace: "{{ namespace_dw_postgresql }}"
-    resources_dir: "{{ resources_base_dir }}/datawarehouse_postgresql"
-    work_dir_name: datawarehouse_postgresql
+    namespace: "{{ namespace_dw }}"
+    resources_dir: "{{ resources_base_dir }}/datawarehouse"
+    work_dir_name: datawarehouse
   when: install_datawarehouse|bool
 
 

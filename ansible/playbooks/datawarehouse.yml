@@ -1,27 +1,27 @@
 ---
 
-- name: Deploy Datawarehouse Postgresql
+- name: Deploy Datawarehouse 
   hosts: localhost
   connection: local
   gather_facts: false
   run_once: true
   vars_files:
-    - group_vars/datawarehouse_postgresql.yml
+    - group_vars/datawarehouse.yml
 
   tasks:
     - set_fact:
-        namespace: "{{ namespace_dw_postgresql }}"
-        resources_dir: "{{ resources_base_dir }}/datawarehouse_postgresql"
-        work_dir_name: datawarehouse_postgresql
+        namespace: "{{ namespace_dw }}"
+        resources_dir: "{{ resources_base_dir }}/datawarehouse"
+        work_dir_name: datawarehouse
     - include_role:
-        name: ../roles/datawarehouse_postgresql
+        name: ../roles/openshift_datawarehouse
       when: >
         ACTION is not defined or
         ACTION is none or
         ACTION|trim() == "" or
         ACTION|trim() == "install"
     - include_role:
-        name: ../roles/datawarehouse_postgresql
+        name: ../roles/datawarehouse
         tasks_from: uninstall
       when: >
         ACTION is defined and
