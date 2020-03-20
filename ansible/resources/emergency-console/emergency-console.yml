@@ -144,6 +144,11 @@ items:
                 configMapKeyRef:
                   key: RESPONDER_SIMULATOR
                   name: {{ emergency_console_config_configmap }}
+            - name: DISASTER_SIMULATOR
+              valueFrom:
+                configMapKeyRef:
+                  key: DISASTER_SIMULATOR
+                  name: {{ emergency_console_config_configmap }}
             - name: PRIORITY 
               valueFrom:
                 configMapKeyRef:
