@@ -227,7 +227,7 @@
   import_role:
     name: openshift_datawarehouse
   vars:
-    namespace: "{{ namespace_dw }}"
+    namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/datawarehouse"
     work_dir_name: datawarehouse
   when: install_datawarehouse|bool

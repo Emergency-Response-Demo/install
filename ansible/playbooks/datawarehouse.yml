@@ -6,11 +6,11 @@
   gather_facts: false
   run_once: true
   vars_files:
-    - group_vars/datawarehouse.yml
+    - group_vars/services.yml
 
   tasks:
     - set_fact:
-        namespace: "{{ namespace_dw }}"
+        namespace: "{{ namespace_services }}"
         resources_dir: "{{ resources_base_dir }}/datawarehouse"
         work_dir_name: datawarehouse
     - include_role:

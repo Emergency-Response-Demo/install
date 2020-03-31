@@ -1,5 +1,7 @@
 ---
 
+
+#####       PostgreSQL for Datawarehouse        ########
 - name: create {{ postgresql_service_account }} service account
   oc_serviceaccount:
     oc_binary: "{{ openshift_cli }}"
@@ -7,7 +9,6 @@
     name: "{{ postgresql_service_account }}"
     namespace: "{{ namespace }}"
 
-# postgresql
 - name: create work directory
   file:
     path: "{{ work_dir }}/{{ postgresql_init_configmap }}"
@@ -53,7 +54,7 @@
       database-password: "{{ dw_postgresql_password }}"
       database-name: "{{ dw_postgresql_database }}"
 
-- name: check if postgresql is deployed
+- name: "check if {{ dw_postgresql_application_name }} is deployed"
   oc_obj:
     state: list
     oc_binary: "{{ openshift_cli }}"
@@ -62,7 +63,7 @@
     kind: dc
   register: result
 
-- name: deploy postgresql
+- name: "deploy {{ dw_postgresql_application_name }}"
   oc_list:
     state: present
     oc_binary: "{{ openshift_cli }}"
@@ -71,7 +72,7 @@
       - "{{ work_dir }}/postgresql.yml"
   when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
 
-- name: wait until postgresql database is up and running
+- name: "wait until {{ dw_postgresql_application_name }} database is up and running"
   shell: "{{ openshift_cli }} get dc {{ dw_postgresql_application_name }} -o template --template={{ json_template }} -n {{ namespace }}"
   vars:
     json_template: '\{\{.status.readyReplicas\}\}'
@@ -80,3 +81,49 @@
   retries: 10
   delay: 30
   changed_when: false
+########################################################
+
+
+
+ 
+######       Datawarehouse Warehouse Service        ########
+- name: create {{ dw_application_name }} service account
+  oc_serviceaccount:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ dw_application_name }}"
+    namespace: "{{ namespace }}"
+
+- name: give cluster view privileges to {{ dw_application_name }} service account
+  oc_adm_policy_user:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    resource_kind: role
+    resource_name: view
+    user: "system:serviceaccount:{{ namespace }}:{{ dw_application_name }}"
+    namespace: "{{ namespace }}"
+    rolebinding_name: "{{ dw_application_name }}-view"
+
+- name: "copy {{ application_properties }} template"
+  template:
+    src: "{{ application_properties_resource }}"
+    dest: "{{ work_dir }}/{{ application_properties }}"
+
+- name: "create {{ cm_name }} configmap"
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ cm_name }}"
+    namespace: "{{ namespace }}"
+    from_file:
+      dir: "{{ work_dir }}/{{ application_properties }}"
+
+- import_tasks: deploy_from_source.yml
+  when: deploy_from is defined and deploy_from == "source"
+
+- import_tasks: deploy_from_image.yml
+  when: deploy_from is defined and deploy_from == "image"
+
+
+
+########################################################

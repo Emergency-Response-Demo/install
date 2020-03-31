@@ -16,8 +16,15 @@ incident_priority_service_application_name: "{{ project_admin }}-incident-priori
 disaster_simulator_service_application_name: "{{ project_admin }}-disaster-simulator"
 responder_client_application_name: "{{ project_admin }}-responder-client-app"
 disaster_service_application_name: "{{ project_admin }}-disaster-service"
+dw_application_name: "{{ project_admin }}-datawarehouse"
+dw_postgresql_application_name: dw-postgresql
 
 process_service_postgresql_username: rhpam
 process_service_postgresql_password: rhpam
 process_service_postgresql_database: rhpam
 process_service_postgresql_service_name: process-service-postgresql
+
+install_datawarehouse: false
+dw_postgresql_username: naps
+dw_postgresql_password: naps
+dw_postgresql_database: datawarehouse

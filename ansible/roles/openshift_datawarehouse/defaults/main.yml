@@ -15,3 +15,13 @@ postgresql_cpu_limit: 500m
 postgresql_memory_request: 256Mi
 postgresql_cpu_request: 100m
 
+dw_postgresql_init_scripts:
+  - https://raw.githubusercontent.com/jbride/sql-scripts/datawarehouse/dw_database_ddl.sql
+
+dw_postgresql_credentials_secret: "{{ dw_postgresql_application_name }}-credentials"
+
+cm_name: datawarehouse
+application_properties: application.properties
+application_properties_resource: "{{ resources_dir }}/{{ application_properties }}"
+binary_imagestream_template: datawarehouse-imagestream.yml
+application_template: datawarehouse-service.yml
