@@ -230,8 +230,6 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/datawarehouse"
     work_dir_name: datawarehouse
-  when: install_datawarehouse|bool
-
 
 - block:
   - name: start pipeline incident service

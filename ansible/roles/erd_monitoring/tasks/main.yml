@@ -30,6 +30,16 @@
     src: "{{ resources_dir }}/{{ monitoring_grafana_dashboard_template }}"
     dest: "{{ work_dir }}/{{ monitoring_grafana_dashboard_template }}"
 
+- name: "copy application grafana datasource template {{ monitoring_dw_postgresql_datasource_template }}"
+  template:
+    src: "{{ resources_dir }}/{{ monitoring_dw_postgresql_datasource_template }}"
+    dest: "{{ work_dir }}/{{ monitoring_dw_postgresql_datasource_template }}"
+
+- name: "copy application grafana dashboard template {{ monitoring_mission_commander_template }}"
+  template:
+    src: "{{ resources_dir }}/{{ monitoring_mission_commander_template }}"
+    dest: "{{ work_dir }}/{{ monitoring_mission_commander_template }}"
+
 - name: "create Kafka servicemonitor resource"
   oc_obj:
     state: present
@@ -60,7 +70,7 @@
     files:
       - "{{ work_dir }}/{{ monitoring_actuator_servicemonitor_template }}"
 
-- name: "create application grafana dashboard"
+- name: "create application grafana dashboard {{ monitoring_grafana_dashboard_template }}"
   oc_obj:
     state: present
     oc_binary: "{{ openshift_cli }}"
@@ -69,6 +79,26 @@
     kind: GrafanaDashboard
     files:
       - "{{ work_dir }}/{{ monitoring_grafana_dashboard_template }}"
+
+- name: "create application grafana datasource {{ monitoring_dw_postgresql_datasource_template }}"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: ds-dw-postgresql
+    namespace: "{{ namespace_monitoring }}"
+    kind: GrafanaDataSource
+    files:
+      - "{{ work_dir }}/{{ monitoring_dw_postgresql_datasource_template }}"
+
+- name: "create application grafana dashboard {{ monitoring_mission_commander_template }}"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: mission-commander-kpis
+    namespace: "{{ namespace_monitoring }}"
+    kind: GrafanaDashboard
+    files:
+      - "{{ work_dir }}/{{ monitoring_mission_commander_template }}"
 
 - name: "create clusterrole for get namespaces"
   oc_obj:

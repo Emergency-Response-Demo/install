@@ -24,7 +24,6 @@ process_service_postgresql_password: rhpam
 process_service_postgresql_database: rhpam
 process_service_postgresql_service_name: process-service-postgresql
 
-install_datawarehouse: false
 dw_postgresql_username: naps
 dw_postgresql_password: naps
 dw_postgresql_database: datawarehouse

@@ -1,0 +1,20 @@
+apiVersion: integreatly.org/v1alpha1
+kind: GrafanaDataSource
+metadata:
+  finalizers:
+  - grafana.cleanup
+  name: ds-dw-postgresql
+spec:
+  datasources:
+  - name: DS_DW_POSTGRESQL
+    type: postgres
+    url: {{ dw_postgresql_application_name }}.{{ namespace_services }}:5432
+    database: {{ dw_postgresql_database }}
+    user: {{ dw_postgresql_username }}
+    secureJsonData:
+      password: {{ dw_postgresql_password }}
+    jsonData:
+      sslmode: "disable"
+    editable: true
+    access: "proxy"
+  name: datasources.yaml
