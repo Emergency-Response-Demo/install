@@ -52,11 +52,11 @@
     name: "{{ cm_name }}"
     namespace: "{{ namespace }}"
 
-- name: "delete imagestream {{ binary_imagestream_template }}"
+- name: "delete imagestream {{ dw_application_name }}"
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ binary_imagestream_template }}"
+    name: "{{ dw_application_name }}"
     namespace: "{{ namespace }}"
     kind: imagestream
 

@@ -20,8 +20,22 @@ dw_postgresql_init_scripts:
 
 dw_postgresql_credentials_secret: "{{ dw_postgresql_application_name }}-credentials"
 
+application_name: "{{ dw_application_name }}"
 cm_name: datawarehouse
 application_properties: application.properties
 application_properties_resource: "{{ resources_dir }}/{{ application_properties }}"
+
+application_image: redhat-openjdk18-openshift:1.4
+application_image_namespace: openshift
+
+buildconfig_name: "{{ application_name }}-binary"
+buildconfig_template: datawarehouse-binary-buildconfig.yml
+
+pipeline_buildconfig_name: "{{ application_name }}-pipeline"
+pipeline_buildconfig_template: datawarehouse-pipeline.yml
+
+source_imagestream_name: "{{ application_name }}"
+source_imagestream_template: datawarehouse-source-imagestream.yml
+
 binary_imagestream_template: datawarehouse-imagestream.yml
 application_template: datawarehouse-service.yml

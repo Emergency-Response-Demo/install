@@ -5,7 +5,7 @@
     src: "{{ resources_dir }}/{{ buildconfig_template }}"
     dest: "{{ work_dir }}/{{ buildconfig_template }}"
 
-- name: create build config in the {{ namespace_tools }} project
+- name: "create {{ buildconfig_template }} in the {{ namespace_tools }} project"
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: present
@@ -15,30 +15,30 @@
     files:
       - "{{ work_dir }}/{{ buildconfig_template }}"
 
-- name: copy imagestream template
+- name: copy source imagestream template
   template:
-    src: "{{ resources_dir }}/{{ imagestream_template }}"
-    dest: "{{ work_dir }}/{{ imagestream_template }}"
+    src: "{{ resources_dir }}/{{ source_imagestream_template }}"
+    dest: "{{ work_dir }}/{{ source_imagestream_template }}"
 
-- name: create output imagestream in the {{ namespace_tools }} project
+- name: create output source imagestream in the {{ namespace_tools }} project
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: present
     namespace: "{{ namespace_tools }}"
     kind: imagestream
-    name: "{{ imagestream_name }}"
+    name: "{{ source_imagestream_name }}"
     files:
-      - "{{ work_dir }}/{{ imagestream_template }}"
+      - "{{ work_dir }}/{{ source_imagestream_template }}"
 
-- name: create output imagestream in the {{ namespace }} project
+- name: create output source imagestream in the {{ namespace }} project
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: present
     namespace: "{{ namespace }}"
     kind: imagestream
-    name: "{{ imagestream_name }}"
+    name: "{{ source_imagestream_name }}"
     files:
-      - "{{ work_dir }}/{{ imagestream_template }}"
+      - "{{ work_dir }}/{{ source_imagestream_template }}"
 
 - name: give edit permissions to system:serviceaccount:{{ namespace_tools }}:jenkins in project {{ namespace }}
   oc_adm_policy_user:
