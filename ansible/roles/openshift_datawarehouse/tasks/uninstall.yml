@@ -44,3 +44,34 @@
     state: absent
     name: "{{ postgresql_service_account }}"
     namespace: "{{ namespace }}"
+
+- name: "delete {{ cm_name }} configmap"
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ cm_name }}"
+    namespace: "{{ namespace }}"
+
+- name: "delete imagestream {{ binary_imagestream_template }}"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ binary_imagestream_template }}"
+    namespace: "{{ namespace }}"
+    kind: imagestream
+
+- name: "delete dc {{ dw_application_name }}"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ dw_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: deploymentconfig
+
+- name: "delete service {{ dw_application_name }}"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ dw_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: service

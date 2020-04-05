@@ -21,7 +21,7 @@
         ACTION|trim() == "" or
         ACTION|trim() == "install"
     - include_role:
-        name: ../roles/datawarehouse
+        name: ../roles/openshift_datawarehouse
         tasks_from: uninstall
       when: >
         ACTION is defined and
