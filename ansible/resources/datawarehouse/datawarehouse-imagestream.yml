@@ -1,0 +1,10 @@
+---
+  
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: {{ dw_application_name }}
+  labels:
+    app: {{ dw_application_name }}
+spec:
+  dockerImageRepository: {{ datawarehouse_service_image }}

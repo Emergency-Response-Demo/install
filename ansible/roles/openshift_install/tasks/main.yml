@@ -223,6 +223,14 @@
     work_dir_name: erd-monitoring
   when: install_monitoring is defined and install_monitoring|bool == true
 
+- name: install openshift_datawarehouse
+  import_role:
+    name: openshift_datawarehouse
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/datawarehouse"
+    work_dir_name: datawarehouse
+
 - block:
   - name: start pipeline incident service
     shell: "{{ openshift_cli }} start-build {{ incident_service_application_name }}-pipeline -n {{ namespace_tools }}"
@@ -289,5 +297,9 @@
 
   - name: start pipeline disaster service
     shell: "{{ openshift_cli }} start-build {{ disaster_service_application_name }}-pipeline -n {{ namespace_tools }}"
+
+  # TO-DO:  Need to create jenkins slave image that utilizes maven 3.6.3 +.  mvn 3.5.0  (existing version of maven in jenkins slave image is insufficient
+  #- name: start pipeline datawarehouse service
+  #  shell: "{{ openshift_cli }} start-build {{ dw_application_name }}-pipeline -n {{ namespace_tools }}"
 
   when: deploy_from is defined and deploy_from == "source"
