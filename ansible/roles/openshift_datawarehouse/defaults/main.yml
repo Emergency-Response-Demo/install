@@ -16,7 +16,7 @@ postgresql_memory_request: 256Mi
 postgresql_cpu_request: 100m
 
 dw_postgresql_init_scripts:
-  - https://raw.githubusercontent.com/jbride/sql-scripts/datawarehouse/dw_database_ddl.sql
+  - https://raw.githubusercontent.com/Emergency-Response-Demo/sql-scripts/datawarehouse/dw_database_ddl.sql
 
 dw_postgresql_credentials_secret: "{{ dw_postgresql_application_name }}-credentials"
 
