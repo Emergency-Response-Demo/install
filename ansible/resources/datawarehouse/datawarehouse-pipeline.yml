@@ -33,11 +33,10 @@ spec:
             def commitIdFull = sh( script: 'git rev-parse HEAD', returnStdout: true )
             commitId = commitIdFull[0..8]
             echo "Building version ${version}, commitId ${commitId}"
-            sh "mvn clean compile -Dcom.redhat.xpaas.repo.redhatga=true"
+            sh "mvn clean compile -Dcom.redhat.xpaas.repo.redhatga=true -DskipTests"
           }
 
           stage ('Unit Tests') {
-            sh "mvn test -Dcom.redhat.xpaas.repo.redhatga=true"
           }
 
           stage ('Build Application') {
@@ -49,9 +48,12 @@ spec:
           }
 
           stage ('Build Image') {
+
+            sh "mkdir deployFiles && cp -r target/lib deployFiles && cp target/*-runner.jar deployFiles/app.jar"
+
             openshift.withCluster() { // Use "default" cluster or fallback to OpenShift cluster detection
               def bc = openshift.selector("bc", "${app_build}")
-              def builds = bc.startBuild("--from-file=target/${artifactId}-${version}.jar")
+              def builds = bc.startBuild("--from-file=target/deployFiles")
               timeout (15) {
                 builds.watch {
                   if ( it.count() == 0 ) {
