@@ -53,7 +53,7 @@ spec:
 
             openshift.withCluster() { // Use "default" cluster or fallback to OpenShift cluster detection
               def bc = openshift.selector("bc", "${app_build}")
-              def builds = bc.startBuild("--from-file=target/deployFiles")
+              def builds = bc.startBuild("--from-dir=deployFiles")
               timeout (15) {
                 builds.watch {
                   if ( it.count() == 0 ) {
