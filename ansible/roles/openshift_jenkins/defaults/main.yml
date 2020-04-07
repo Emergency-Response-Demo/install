@@ -22,7 +22,8 @@ jenkins_maven_slave_pvc_template: jenkins-maven-slave-pvc.yaml
 jenkins_maven_slave_configmap: jenkins-maven-slave
 jenkins_maven_slave_configmap_name: maven-with-nexus
 jenkins_maven_slave_configmap_label: maven-with-nexus
-jenkins_maven_slave_configmap_image: image-registry.openshift-image-registry.svc:5000/openshift/jenkins-agent-maven:latest
+#jenkins_maven_slave_configmap_image: image-registry.openshift-image-registry.svc:5000/openshift/jenkins-agent-maven:latest
+jenkins_maven_slave_configmap_image: quay.io/emergencyresponsedemo/jenkins_slave_upgraded_mvn:1.0
 jenkins_maven_slave_pvc: jenkins-maven-slave-repository
 jenkins_maven_slave_request_cpu: 200m
 jenkins_maven_slave_request_memory: 500Mi
