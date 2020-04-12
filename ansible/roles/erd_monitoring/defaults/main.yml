@@ -9,3 +9,5 @@ monitoring_mission_commander_template: mission-commander-kpis-grafanadashboard.y
 monitoring_dw_postgresql_datasource_template: dw-postgresql-grafanadatasource.yml
 
 openshift_monitoring_datasource_template: openshift-monitoring-grafanadatasource.yml
+
+incident_priority_service_dashboard_template: incident-priority-service-dashboard.yml
