@@ -1,0 +1,19 @@
+apiVersion: integreatly.org/v1alpha1
+kind: GrafanaDataSource
+metadata:
+  name: prometheus-openshift-monitoring
+spec:
+  datasources:
+    - access: proxy
+      editable: true
+      jsonData:
+        httpHeaderName1: Authorization
+        timeInterval: 5s
+        tlsSkipVerify: true
+      name: OpenShift Monitoring
+      secureJsonData:
+        httpHeaderValue1: >-
+          Bearer {{ token }}
+      type: prometheus
+      url: 'https://prometheus-k8s.openshift-monitoring.svc:9091'
+  name: openshift-monitoring.yaml

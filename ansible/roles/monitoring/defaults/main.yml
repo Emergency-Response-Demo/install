@@ -34,3 +34,5 @@ application_monitoring_operator_role_binding_template: application_monitoring_op
 application_monitoring_operator_template: application_monitoring_operator.yml
 
 clusterrole_get_namespaces_template: get-namespaces-clusterrole.yml
+
+grafana_cluster_monitoring_view_crb_template: grafana-cluster-monitoring-view-crb.yml

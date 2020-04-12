@@ -108,3 +108,25 @@
     resource_kind: cluster-role
     resource_name: get-namespaces
     user: "{{ project_admin }}"
+
+- name: "obtain token for grafana serviceaccount"
+  shell: |
+    {{ openshift_cli }} sa get-token grafana-serviceaccount -n {{ namespace_monitoring }}
+  register: grafana_sa_token
+
+- name: "copy openshift monitoring grafana datasource template {{ openshift_monitoring_datasource_template }}"
+  template:
+    src: "{{ resources_dir }}/{{ openshift_monitoring_datasource_template }}"
+    dest: "{{ work_dir }}/{{ openshift_monitoring_datasource_template }}"
+  vars:
+    token: "{{ grafana_sa_token.stdout }}"
+
+- name: "create openshift monitoring grafana datasource"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: prometheus-openshift-monitoring
+    namespace: "{{ namespace_monitoring }}"
+    kind: GrafanaDataSource
+    files:
+      - "{{ work_dir }}/{{ openshift_monitoring_datasource_template }}"

@@ -7,3 +7,5 @@ monitoring_grafana_dashboard_template: emergency-response-grafanadashboard.yml
 
 monitoring_mission_commander_template: mission-commander-kpis-grafanadashboard.yml
 monitoring_dw_postgresql_datasource_template: dw-postgresql-grafanadatasource.yml
+
+openshift_monitoring_datasource_template: openshift-monitoring-grafanadatasource.yml
