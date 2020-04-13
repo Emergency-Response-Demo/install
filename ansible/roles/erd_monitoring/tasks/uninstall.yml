@@ -24,10 +24,33 @@
     namespace: "{{ namespace }}"
     kind: ServiceMonitor
 
-- name: "delete application GrafanaDashboard template"
+- name: "delete GrafanaDashboard emergency-response-dashboard"
   oc_obj:
     state: absent
     oc_binary: "{{ openshift_cli }}"
     name: emergency-response-dashboard
     namespace: "{{ namespace_monitoring }}"
     kind: GrafanaDashboard
+
+- name: "delete grafana datasource ds-dw-postgresql"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: ds-dw-postgresql
+    namespace: "{{ namespace_monitoring }}"
+    kind: GrafanaDataSource
+
+- name: "delete grafana dashboard mission-commander-kpis"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: mission-commander-kpis
+    namespace: "{{ namespace_monitoring }}"
+    kind: GrafanaDashboard
+
+- name: "delete clusterrole get-namespaces clusterrolebinding for user {{ project_admin}} "
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ project_admin }}-get-namespaces"
+    kind: clusterrolebinding

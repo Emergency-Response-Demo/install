@@ -12,11 +12,6 @@
       - key: monitoring-key
         value: "{{ application_monitoring_label_value }}"
 
-- name: "copy Grafana crd template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_grafana_crd_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_grafana_crd_template }}"
-
 - name: "create Grafana crd"
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
@@ -24,12 +19,7 @@
     kind: crd
     name: grafanas.integreatly.org
     files:
-      - "{{ work_dir }}/{{ monitoring_grafana_crd_template }}"
-
-- name: "copy Grafana dashboard crd template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_grafana_dashboard_crd_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_grafana_dashboard_crd_template }}"
+      - "{{ resources_dir }}/{{ monitoring_grafana_crd_template }}"
 
 - name: "create Grafana dashboard crd"
   oc_obj:
@@ -38,12 +28,7 @@
     kind: crd
     name: grafanadashboards.integreatly.org
     files:
-      - "{{ work_dir }}/{{ monitoring_grafana_dashboard_crd_template }}"
-
-- name: "copy Grafana datasource crd template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_grafana_datasource_crd_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_grafana_datasource_crd_template }}"
+      - "{{ resources_dir }}/{{ monitoring_grafana_dashboard_crd_template }}"
 
 - name: "create Grafana datasource crd"
   oc_obj:
@@ -52,7 +37,7 @@
     kind: crd
     name: grafanadatasources.integreatly.org
     files:
-      - "{{ work_dir }}/{{ monitoring_grafana_datasource_crd_template }}"
+      - "{{ resources_dir }}/{{ monitoring_grafana_datasource_crd_template }}"
 
 - name: "copy Grafana clusterrole template"
   template:
@@ -112,11 +97,6 @@
     files:
       - "{{ work_dir }}/{{ monitoring_grafana_proxy_clusterrole_binding_template }}"
 
-- name: "copy Prometheus crd template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_prometheus_crd_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_prometheus_crd_template }}"
-
 - name: "create Prometheus crd"
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
@@ -124,12 +104,7 @@
     kind: crd
     name: prometheuses.monitoring.coreos.com
     files:
-      - "{{ work_dir }}/{{ monitoring_prometheus_crd_template }}"
-
-- name: "copy Prometheus alert manager crd template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_prometheus_alert_manager_crd_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_prometheus_alert_manager_crd_template }}"
+      - "{{resources_dir }}/{{ monitoring_prometheus_crd_template }}"
 
 - name: "create Prometheus alert manager crd"
   oc_obj:
@@ -138,12 +113,7 @@
     kind: crd
     name: alertmanagers.monitoring.coreos.com
     files:
-      - "{{ work_dir }}/{{ monitoring_prometheus_alert_manager_crd_template }}"
-
-- name: "copy Prometheus service monitor crd template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_prometheus_service_monitor_crd_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_prometheus_service_monitor_crd_template }}"
+      - "{{ resources_dir }}/{{ monitoring_prometheus_alert_manager_crd_template }}"
 
 - name: "create Prometheus service monitor crd"
   oc_obj:
@@ -152,12 +122,7 @@
     kind: crd
     name: servicemonitors.monitoring.coreos.com
     files:
-      - "{{ work_dir }}/{{ monitoring_prometheus_service_monitor_crd_template }}"
-
-- name: "copy Prometheus rule crd template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_prometheus_rule_crd_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_prometheus_rule_crd_template }}"
+      - "{{ resources_dir }}/{{ monitoring_prometheus_service_monitor_crd_template }}"
 
 - name: "create Prometheus rule crd"
   oc_obj:
@@ -166,7 +131,7 @@
     kind: crd
     name: prometheusrules.monitoring.coreos.com
     files:
-      - "{{ work_dir }}/{{ monitoring_prometheus_rule_crd_template }}"
+      - "{{ resources_dir }}/{{ monitoring_prometheus_rule_crd_template }}"
 
 - name: "copy Prometheus clusterrole template"
   template:
@@ -262,7 +227,7 @@
     kind: crd
     name: blackboxtargets.applicationmonitoring.integreatly.org
     files:
-      - "{{ middleware_monitoring_operator_resources }}/crds/BlackboxTarget.yaml"
+      - "{{ resources_dir }}/{{ monitoring_blakbox_crd_template }}"
 
 - name: "create ApplicationMonitoring crd"
   oc_obj:
@@ -271,7 +236,7 @@
     kind: crd
     name: applicationmonitorings.applicationmonitoring.integreatly.org
     files:
-      - "{{ middleware_monitoring_operator_resources }}/crds/ApplicationMonitoring.yaml"
+      - "{{ resources_dir }}/{{ application_monitoring_crd_template }}"
 
 - name: "create application monitoring operator service account"
   oc_obj:
@@ -281,7 +246,7 @@
     name: application-monitoring-operator
     namespace: "{{ namespace }}"
     files:
-      - "{{ middleware_monitoring_operator_resources }}/operator_roles/service_account.yaml"
+      - "{{ resources_dir }}/{{ application_monitoring_operator_sa_template }}"
 
 - name: "create application monitoring operator role"
   oc_obj:
@@ -291,7 +256,7 @@
     name: application-monitoring-operator
     namespace: "{{ namespace }}"
     files:
-      - "{{ middleware_monitoring_operator_resources }}/operator_roles/role.yaml"
+      - "{{ resources_dir }}/{{ application_monitoring_operator_role_template }}"
 
 - name: "create application monitoring operator rolebinding"
   oc_obj:
@@ -301,7 +266,7 @@
     name: application-monitoring-operator
     namespace: "{{ namespace }}"
     files:
-      - "{{ middleware_monitoring_operator_resources }}/operator_roles/role_binding.yaml"
+      - "{{ resources_dir }}/{{ application_monitoring_operator_role_binding_template }}"
 
 - name: "create application monitoring operator"
   oc_obj:
@@ -311,7 +276,7 @@
     name: application-monitoring-operator
     namespace: "{{ namespace }}"
     files:
-      - "{{ middleware_monitoring_operator_resources }}/operator.yaml"
+      - "{{ resources_dir }}/{{ application_monitoring_operator_template }}"
 
 - name: "copy application monitoring cr template"
   template:
@@ -327,3 +292,12 @@
     namespace: "{{ namespace }}"
     files:
       - "{{ work_dir }}/{{ application_monitoring_cr_template }}"
+
+- name: "create clusterrole for get namespaces"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: get-namespaces
+    kind: clusterrole
+    files:
+      - "{{ resources_dir }}/{{ clusterrole_get_namespaces_template }}"
