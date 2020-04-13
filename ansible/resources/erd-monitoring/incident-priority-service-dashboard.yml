@@ -730,7 +730,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg((rate(rules_assignment_timer_seconds_sum[1m])/rate(rules_assignment_timer_seconds_count[1m]))*1000)",
+              "expr": "avg((rules:assignment:sum:rate1m/rules:assignment:count:rate1m)*1000)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -738,7 +738,7 @@ spec:
               "refId": "A"
             },
             {
-              "expr": "max((rate(rules_assignment_timer_seconds_sum[1m])/rate(rules_assignment_timer_seconds_count[1m]))*1000)",
+              "expr": "max((rules:assignment:sum:rate1m/rules:assignment:count:rate1m)*1000)",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "Max",
@@ -826,7 +826,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(rate(rules_assignment_timer_seconds_count[1m]))",
+              "expr": "avg(rules:assignment:count:rate1m)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -915,7 +915,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg((rate(rules_query_timer_seconds_sum[1m])/rate(rules_query_timer_seconds_count[1m]))*1000)",
+              "expr": "avg((rules:query:sum:rate1m/rules:query:count:rate1m)*1000)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -923,7 +923,7 @@ spec:
               "refId": "A"
             },
             {
-              "expr": "max((rate(rules_query_timer_seconds_sum[1m])/rate(rules_query_timer_seconds_count[1m]))*1000)",
+              "expr": "max((rules:query:sum:rate1m/rules:query:count:rate1m)*1000)",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "Max",
@@ -1011,7 +1011,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(rate(rules_query_timer_seconds_count[1m]))",
+              "expr": "avg(rules:query:count:rate1m)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,

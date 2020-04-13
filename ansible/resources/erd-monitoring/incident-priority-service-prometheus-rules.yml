@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: incident-priority-service-prometheus-rules
+spec:
+  groups:
+    - name: incident-priority-service.rules
+      rules:
+        - record: rules:assignment:sum:rate1m
+          expr: rate(rules_assignment_timer_seconds_sum[1m])
+        - record: rules:assignment:count:rate1m
+          expr: rate(rules_assignment_timer_seconds_count[1m])
+        - record: rules:query:sum:rate1m
+          expr: rate(rules_query_timer_seconds_sum[1m])
+        - record: rules:query:count:rate1m
+          expr: rate(rules_query_timer_seconds_count[1m])

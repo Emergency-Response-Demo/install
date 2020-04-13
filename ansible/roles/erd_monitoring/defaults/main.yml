@@ -10,4 +10,5 @@ monitoring_dw_postgresql_datasource_template: dw-postgresql-grafanadatasource.ym
 
 openshift_monitoring_datasource_template: openshift-monitoring-grafanadatasource.yml
 
+incident_priority_prometheus_rules_template: incident-priority-service-prometheus-rules.yml
 incident_priority_service_dashboard_template: incident-priority-service-dashboard.yml
