@@ -42,7 +42,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text"> <i class="icon-hourglass"></i> </span>
                 </div>
-                <input type="number" id="user.attributes.boatCapacity" class="${properties.kcInputClass!}" name="user.attributes.boatCapacity" placeholder="Boat Capacity" title="Boat Capacity" />
+                <input type="number" id="user.attributes.boatCapacity" class="${properties.kcInputClass!}" name="user.attributes.boatCapacity" placeholder="Boat Capacity" title="Boat Capacity (1-50)" value="10" min="1" max="50"/>
             </div>
 
             <div class="input-group mb-3">
