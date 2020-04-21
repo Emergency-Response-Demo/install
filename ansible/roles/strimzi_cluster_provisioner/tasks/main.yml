@@ -21,12 +21,14 @@
     project_admin|trim() != ""
 
 # create cluster provisioner clusterrole
-- import_role:
-    name: openshift_apply_cluster_resource
-  vars:
-    resource_type: clusterrole
-    resource: "{{ clusterrole_cluster_provisioner }}"
-    resource_template: "{{ resources_dir }}/cluster-provisioner/{{ clusterrole_cluster_provisioner_template }}"
+- name: "create {{ clusterrole_cluster_provisioner }} clusterrole"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrole_cluster_provisioner }}"
+    kind: clusterrole
+    files:
+      - "{{ resources_dir }}/cluster-provisioner/{{ clusterrole_cluster_provisioner_template }}"
 
 # create role binding
 - name: add {{ clusterrole_cluster_provisioner }} role to user {{ project_admin }}

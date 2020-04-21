@@ -1,120 +1,168 @@
 ---
 
-- import_role:
-    name: openshift_apply_resource
-  vars:
-    resource_type: serviceaccount
-    resource: "{{ sa_cluster_operator }}"
-    resource_template: "{{ resources_dir }}/cluster-operator/{{ sa_cluster_operator_template }}"
-    resource_namespace: "{{ namespace_strimzi_operator }}"
+- name: "create {{ sa_cluster_operator }} serviceaccount"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ sa_cluster_operator }}"
+    namespace: "{{ namespace_strimzi_operator }}"
+    kind: serviceaccount
+    files:
+      - "{{ resources_dir }}/cluster-operator/{{ sa_cluster_operator_template }}"
 
-- import_role:
-    name: openshift_apply_cluster_resource
-  vars:
-    resource_type: clusterrole
-    resource: "{{ clusterrole_cluster_operator_role }}"
-    resource_template: "{{ resources_dir }}/cluster-operator/{{ clusterrole_cluster_operator_role_template }}"
+- name: "create {{ clusterrole_cluster_operator_role }} clusterrole"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrole_cluster_operator_role }}"
+    kind: clusterrole
+    files:
+      - "{{ resources_dir }}/cluster-operator/{{ clusterrole_cluster_operator_role_template }}"
 
-- import_role:
-    name: openshift_apply_cluster_resource
-  vars:
-    resource_type: clusterrole
-    resource: "{{ clusterrole_cluster_operator_role_global }}"
-    resource_template: "{{ resources_dir }}/cluster-operator/{{ clusterrole_cluster_operator_role_global_template }}"
+- name: "create {{ clusterrole_cluster_operator_role }} clusterrole"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrole_cluster_operator_role_global }}"
+    kind: clusterrole
+    files:
+      - "{{ resources_dir }}/cluster-operator/{{ clusterrole_cluster_operator_role_global_template }}"
 
 - name: copy clusterrolebinding template to work directory
   template:
     src: "{{ resources_dir }}/cluster-operator/{{ clusterrolebinding_cluster_operator_template }}"
     dest: "{{ work_dir }}/{{ clusterrolebinding_cluster_operator_template }}"
 
-- import_role:
-    name: openshift_apply_cluster_resource
-  vars:
-    resource_type: clusterrolebinding
-    resource: "{{ clusterrolebinding_cluster_operator }}"
-    resource_template: "{{ work_dir }}/{{ clusterrolebinding_cluster_operator_template }}"
+- name: "create {{ clusterrolebinding_cluster_operator }} clusterrolebinding"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrolebinding_cluster_operator }}"
+    kind: clusterrolebinding
+    files:
+      - "{{ work_dir }}/{{ clusterrolebinding_cluster_operator_template }}"
 
-- import_role:
-    name: openshift_apply_cluster_resource
-  vars:
-    resource_type: clusterrole
-    resource: "{{ clusterrole_kafka_broker }}"
-    resource_template: "{{ resources_dir }}/cluster-operator/{{ clusterrole_kafka_broker_template }}"
+- name: "create {{ clusterrole_kafka_broker }} clusterrole"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrole_kafka_broker }}"
+    kind: clusterrole
+    files:
+      - "{{ resources_dir }}/cluster-operator/{{ clusterrole_kafka_broker_template }}"
 
 - name: copy clusterrolebinding template to work directory
   template:
     src: "{{ resources_dir }}/cluster-operator/{{ clusterrolebinding_cluster_operator_kafka_template }}"
     dest: "{{ work_dir }}/{{ clusterrolebinding_cluster_operator_kafka_template }}"
 
-- import_role:
-    name: openshift_apply_cluster_resource
-  vars:
-    resource_type: clusterrolebinding
-    resource: "{{ clusterrolebinding_cluster_operator_kafka }}"
-    resource_template: "{{ work_dir }}/{{ clusterrolebinding_cluster_operator_kafka_template }}"
+- name: "create {{ clusterrolebinding_cluster_operator_kafka }} clusterrolebinding"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrolebinding_cluster_operator_kafka }}"
+    kind: clusterrolebinding
+    files:
+      - "{{ work_dir }}/{{ clusterrolebinding_cluster_operator_kafka_template }}"
 
-- import_role:
-    name: openshift_apply_cluster_resource
-  vars:
-    resource_type: clusterrole
-    resource: "{{ clusterrole_entity_operator }}"
-    resource_template: "{{ resources_dir }}/cluster-operator/{{ clusterrole_entity_operator_template }}"
+- name: "create {{ clusterrole_entity_operator }} clusterrole"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrole_entity_operator }}"
+    kind: clusterrole
+    files:
+      - "{{ resources_dir }}/cluster-operator/{{ clusterrole_entity_operator_template }}"
 
-- import_role:
-    name: openshift_apply_cluster_resource
-  vars:
-    resource_type: clusterrole
-    resource: "{{ clusterrole_topic_operator }}"
-    resource_template: "{{ resources_dir }}/cluster-operator/{{ clusterrole_topic_operator_template }}"
+- name: "create {{ clusterrole_topic_operator }} clusterrole"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ clusterrole_topic_operator }}"
+    kind: clusterrole
+    files:
+      - "{{ resources_dir }}/cluster-operator/{{ clusterrole_topic_operator_template }}"
 
-- import_role:
-    name: openshift_apply_cluster_resource
-  vars:
-    resource_type: crd
-    resource: "{{ crd_kafka }}"
-    resource_template: "{{ resources_dir }}/cluster-operator/{{ crd_kafka_template }}"
+- name: "create {{ crd_kafka }} crd"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ crd_kafka }}"
+    kind: crd
+    files:
+      - "{{ resources_dir }}/cluster-operator/{{ crd_kafka_template }}"
 
-- import_role:
-    name: openshift_apply_cluster_resource
-  vars:
-    resource_type: crd
-    resource: "{{ crd_kafka_connect }}"
-    resource_template: "{{ resources_dir }}/cluster-operator/{{ crd_kafka_connect_template }}"
+- name: "create {{ crd_kafka_connect }} crd"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ crd_kafka_connect }}"
+    kind: crd
+    files:
+      - "{{ resources_dir }}/cluster-operator/{{ crd_kafka_connect_template }}"
 
-- import_role:
-    name: openshift_apply_cluster_resource
-  vars:
-    resource_type: crd
-    resource: "{{ crd_kafka_connect_s2i }}"
-    resource_template: "{{ resources_dir }}/cluster-operator/{{ crd_kafka_connect_s2i_template }}"
+- name: "create {{ crd_kafka_connect_s2i }} crd"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ crd_kafka_connect_s2i }}"
+    kind: crd
+    files:
+      - "{{ resources_dir }}/cluster-operator/{{ crd_kafka_connect_s2i_template }}"
 
-- import_role:
-    name: openshift_apply_cluster_resource
-  vars:
-    resource_type: crd
-    resource: "{{ crd_kafka_topic }}"
-    resource_template: "{{ resources_dir }}/cluster-operator/{{ crd_kafka_topic_template }}"
+- name: "create {{ crd_kafka_topic }} crd"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ crd_kafka_topic }}"
+    kind: crd
+    files:
+      - "{{ resources_dir }}/cluster-operator/{{ crd_kafka_topic_template }}"
 
-- import_role:
-    name: openshift_apply_cluster_resource
-  vars:
-    resource_type: crd
-    resource: "{{ crd_kafka_user }}"
-    resource_template: "{{ resources_dir }}/cluster-operator/{{ crd_kafka_user_template }}"
+- name: "create {{ crd_kafka_user }} crd"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ crd_kafka_user }}"
+    kind: crd
+    files:
+      - "{{ resources_dir }}/cluster-operator/{{ crd_kafka_user_template }}"
 
-- import_role:
-    name: openshift_apply_cluster_resource
-  vars:
-    resource_type: crd
-    resource: "{{ crd_kafka_mirror_maker }}"
-    resource_template: "{{ resources_dir }}/cluster-operator/{{ crd_kafka_mirror_maker_template }}"
+- name: "create {{ crd_kafka_mirror_maker }} crd"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ crd_kafka_mirror_maker }}"
+    kind: crd
+    files:
+      - "{{ resources_dir }}/cluster-operator/{{ crd_kafka_mirror_maker_template }}"
 
-- import_role:
-    name: openshift_apply_cluster_resource
-  vars:
-    resource_type: crd
-    resource: "{{ crd_kafka_bridge }}"
-    resource_template: "{{ resources_dir }}/cluster-operator/{{ crd_kafka_bridge_template }}"
+- name: "create {{ crd_kafka_bridge }} crd"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ crd_kafka_bridge }}"
+    kind: crd
+    files:
+      - "{{ resources_dir }}/cluster-operator/{{ crd_kafka_bridge_template }}"
+
+- name: "create {{ crd_kafka_connector_name }} crd"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ crd_kafka_connector_name }}"
+    kind: crd
+    files:
+      - "{{ resources_dir }}/cluster-operator/{{ crd_kafka_connector_template }}"
+
+- name: "create {{ crd_kafka_mirrormaker2_name }} crd"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ crd_kafka_mirrormaker2_name }}"
+    kind: crd
+    files:
+      - "{{ resources_dir }}/cluster-operator/{{ crd_kafka_mirrormaker2_template }}"
 
 - name: copy rolebinding template to work directory
   template:
@@ -136,19 +184,20 @@
     src: "{{ resources_dir }}/cluster-operator/{{ deployment_cluster_operator_template }}"
     dest: "{{ work_dir }}/{{ deployment_cluster_operator_template }}"
 
-- import_role:
-    name: openshift_apply_resource
-  vars:
-    resource_type: deployment
-    resource: "{{ deployment_cluster_operator }}"
-    resource_template: "{{ work_dir }}/{{ deployment_cluster_operator_template }}"
-    resource_namespace: "{{ namespace_strimzi_operator }}"
+- name: "create {{ deployment_cluster_operator }} deployment"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ deployment_cluster_operator }}"
+    namespace: "{{ namespace_strimzi_operator }}"
+    kind: deployment
+    files:
+      - "{{ work_dir }}/{{ deployment_cluster_operator_template }}"
 
 - name: provide ability to strimzi cluster operator to view all namespaces
   oc_adm_policy_user:
     oc_binary: "{{ openshift_cli }}"
     state: present
-    namespace: "{{ namespace_strimzi_operator }}"
     rolebinding_name: strimzi-cluster-operator-namespaced
     resource_kind: cluster-role
     resource_name: "{{ clusterrole_cluster_operator_role }}"
@@ -158,7 +207,6 @@
   oc_adm_policy_user:
     oc_binary: "{{ openshift_cli }}"
     state: present
-    namespace: "{{ namespace_strimzi_operator }}"
     rolebinding_name: strimzi-cluster-operator-entity-operator-delegation
     resource_kind: cluster-role
     resource_name: "{{ clusterrole_entity_operator }}"
@@ -168,7 +216,6 @@
   oc_adm_policy_user:
     oc_binary: "{{ openshift_cli }}"
     state: present
-    namespace: "{{ namespace_strimzi_operator }}"
     rolebinding_name: strimzi-cluster-operator-topic-operator-delegation
     resource_kind: cluster-role
     resource_name: "{{ clusterrole_topic_operator }}"
