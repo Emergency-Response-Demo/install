@@ -4,7 +4,7 @@
   set_fact:
     topic_name: "{{ topic.name }}"
 
-- name: delete topic {{ topic_name }}
+- name: "delete topic {{ topic_name }}"
   oc_obj:
     state: absent
     oc_binary: "{{ openshift_cli }}"

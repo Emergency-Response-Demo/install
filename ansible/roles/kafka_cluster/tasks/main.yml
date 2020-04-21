@@ -5,10 +5,12 @@
     src: "{{ resources_dir }}/templates/{{ kafka_template }}"
     dest: "{{ work_dir }}/{{ kafka_template }}"
 
-- import_role:
-    name: openshift_apply_resource
-  vars:
-    resource_type: kafka
-    resource: "{{ kafka_cluster }}"
-    resource_template: "{{ work_dir }}/{{ kafka_template }}"
-    resource_namespace: "{{ namespace }}"
+- name: "create {{ kafka_cluster }} kafka cluster"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ kafka_cluster }}"
+    kind: kafka
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/{{ kafka_template }}"

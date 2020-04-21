@@ -1,4 +1,4 @@
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: strimzi-cluster-operator-namespaced
@@ -43,9 +43,17 @@ rules:
   - kafkas
   - kafkas/status
   - kafkaconnects
+  - kafkaconnects/status
   - kafkaconnects2is
+  - kafkaconnects2is/status
+  - kafkaconnectors
+  - kafkaconnectors/status
   - kafkamirrormakers
+  - kafkamirrormakers/status
   - kafkabridges
+  - kafkabridges/status
+  - kafkamirrormaker2s
+  - kafkamirrormaker2s/status
   verbs:
   - get
   - list

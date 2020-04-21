@@ -28,8 +28,8 @@ zookeeper_tlssidecar_liveness_probe_timeout_seconds: 5
 zookeeper_tlssidecar_readiness_probe_initial_delay_seconds: 20
 zookeeper_tlssidecar_readiness_probe_timeout_seconds: 5
 
-kafka_version: 2.2.1
-kafka_log_message_format_version: "2.2"
+kafka_version: 2.4.0
+kafka_log_message_format_version: "2.4"
 kafka_replicas: 3
 # persistent, ephemeral
 kafka_storage_type: persistent

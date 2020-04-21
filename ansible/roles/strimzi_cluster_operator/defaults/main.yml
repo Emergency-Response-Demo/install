@@ -54,6 +54,12 @@ crd_kafka_mirror_maker_template: 045-Crd-kafkamirrormaker.yaml
 crd_kafka_bridge: kafkabridges.kafka.strimzi.io
 crd_kafka_bridge_template: 046-Crd-kafkabridge.yaml
 
+crd_kafka_connector_name: kafkaconnectors.kafka.strimzi.io
+crd_kafka_connector_template: 047-Crd-kafkaconnector.yaml
+
+crd_kafka_mirrormaker2_name: kafkamirrormaker2s.kafka.strimzi.io
+crd_kafka_mirrormaker2_template: 048-Crd-kafkamirrormaker2.yaml
+
 deployment_cluster_operator: "{{ strimzi_cluster_operator }}"
 deployment_cluster_operator_template: 050-Deployment-strimzi-cluster-operator.yaml
 

@@ -8,7 +8,7 @@
     name: strimzi_cluster_operator
     tasks_from: uninstall
 
-- name: delete project
+- name: "delete project {{ namespace_kafka_cluster }}"
   oc_project:
     oc_binary: "{{ openshift_cli }}"
     state: absent
@@ -17,7 +17,7 @@
     uninstall_delete_project is defined and
     uninstall_delete_project|bool == True
 
-- name: delete project
+- name: "delete project {{ namespace_strimzi_operator }}"
   oc_project:
     oc_binary: "{{ openshift_cli }}"
     state: absent

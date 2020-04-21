@@ -8,7 +8,7 @@
     kind: rolebinding
     namespace: "{{ namespace_kafka_cluster }}"
 
-- name: remove clusterrole {{ clusterrole_cluster_provisioner }}
+- name: "remove {{ clusterrole_cluster_provisioner }} clusterrole"
   oc_obj:
     state: absent
     oc_binary: "{{ openshift_cli }}"
