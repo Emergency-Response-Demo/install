@@ -10,3 +10,4 @@ spec:
   prometheusStorageRequest: {{ monitoring_prometheus_storage_request }}
   prometheusInstanceNamespaces: {{ monitoring_namespace }}
   alertmanagerInstanceNamespaces: {{ monitoring_namespace }}
+  selfSignedCerts: true

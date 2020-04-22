@@ -70,7 +70,7 @@
     files:
       - "{{ work_dir }}/{{ monitoring_actuator_servicemonitor_template }}"
 
-- name: "create application grafana dashboard {{ monitoring_grafana_dashboard_template }}"
+- name: "create grafana dashboard emergency-response-dashboard"
   oc_obj:
     state: present
     oc_binary: "{{ openshift_cli }}"
@@ -80,7 +80,7 @@
     files:
       - "{{ work_dir }}/{{ monitoring_grafana_dashboard_template }}"
 
-- name: "create application grafana datasource {{ monitoring_dw_postgresql_datasource_template }}"
+- name: "create application grafana datasource ds-dw-postgresql"
   oc_obj:
     state: present
     oc_binary: "{{ openshift_cli }}"
@@ -90,7 +90,7 @@
     files:
       - "{{ work_dir }}/{{ monitoring_dw_postgresql_datasource_template }}"
 
-- name: "create application grafana dashboard {{ monitoring_mission_commander_template }}"
+- name: "create application grafana dashboard mission-commander-kpis"
   oc_obj:
     state: present
     oc_binary: "{{ openshift_cli }}"
@@ -99,15 +99,6 @@
     kind: GrafanaDashboard
     files:
       - "{{ work_dir }}/{{ monitoring_mission_commander_template }}"
-
-- name: "create clusterrole for get namespaces"
-  oc_obj:
-    state: present
-    oc_binary: "{{ openshift_cli }}"
-    name: get-namespaces
-    kind: clusterrole
-    files:
-      - "{{ resources_dir }}/{{ clusterrole_get_namespaces_template }}"
 
 - name: "give clusterrole get-namespaces privilege to {{ project_admin }}"
   oc_adm_policy_user:
