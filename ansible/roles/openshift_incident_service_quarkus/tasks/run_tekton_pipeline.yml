@@ -1,0 +1,16 @@
+---
+
+- name: copy tekton pipeline run template
+  template:
+    src: "{{ resources_dir }}/{{ tekton_pipeline_run_template }}"
+    dest: "{{ work_dir }}/{{ tekton_pipeline_run_template }}"
+
+- name: "launch the {{ tekton_build_deploy_pipeline_name }} tekton pipeline in the {{ namespace_tools }} project"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ tekton_pipeline_run_name }}"
+    namespace: "{{ namespace_tools }}"
+    kind: PipelineRun
+    files:
+      - "{{ work_dir }}/{{ tekton_pipeline_run_template }}"

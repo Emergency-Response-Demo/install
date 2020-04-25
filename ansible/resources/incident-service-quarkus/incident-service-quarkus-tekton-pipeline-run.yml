@@ -1,0 +1,38 @@
+---
+
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  generateName: '{{ tekton_pipeline_run_name }}-'
+  labels:
+    tekton.dev/pipeline: {{ tekton_build_deploy_pipeline_name }}
+spec:
+  params:
+    - name: gitUrl
+      value: {{ incident_service_quarkus_git_repo }}
+    - name: gitRevision
+      value: {{ incident_service_quarkus_git_branch }}
+    - name: workspaceDirectory
+      value: source
+    - name: deleteExisting
+      value: 'true'
+    - name: artifactDirectory
+      value: upload
+    - name: fromNamespace
+      value: {{ namespace_tools }}
+    - name: toNamespace
+      value: {{ namespace }}
+    - name: imageStream
+      value: {{ imagestream_name }}
+    - name: baseImage
+      value: {{ tekton_base_image }}
+    - name: image
+      value: {{ tekton_image }}
+  pipelineRef:
+    name: {{ tekton_build_deploy_pipeline_name }}
+  serviceAccountName: pipeline
+  timeout: 1h0m0s
+  workspaces:
+    - name: workspace
+      persistentVolumeClaim:
+        claimName: {{ tekton_workspace_pvc_name }}

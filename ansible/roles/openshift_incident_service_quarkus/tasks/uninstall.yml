@@ -24,19 +24,20 @@
     namespace: "{{ namespace }}"
     kind: route
 
-- name: delete buildconfig
+# TODO: find all tekton pipeline runs for incident service and delete them    
+- name: "delete the {{ tekton_workspace_pvc_name }} pvc in the {{ namespace_tools }} project"
   oc_obj:
-    oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ buildconfig_name }}"
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ tekton_workspace_pvc_name }}"
     namespace: "{{ namespace_tools }}"
-    kind: buildconfig
+    kind: pvc
 
 - name: delete imagestream in tools project
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ application_name }}"
+    name: "{{ imagestream_name }}"
     namespace: "{{ namespace_tools }}"
     kind: imagestream
 
@@ -44,7 +45,7 @@
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ application_name }}"
+    name: "{{ imagestream_name }}"
     namespace: "{{ namespace }}"
     kind: imagestream
 

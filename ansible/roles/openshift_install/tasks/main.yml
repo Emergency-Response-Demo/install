@@ -128,11 +128,11 @@
 
 - name: install incident service
   import_role:
-    name: openshift_incident_service
+    name: openshift_incident_service_quarkus
   vars:
     namespace: "{{ namespace_services }}"
-    resources_dir: "{{ resources_base_dir }}/incident-service"
-    work_dir_name: incident-service
+    resources_dir: "{{ resources_base_dir }}/incident-service-quarkus"
+    work_dir_name: incident-service-quarkus
 
 - name: install process viewer
   import_role:

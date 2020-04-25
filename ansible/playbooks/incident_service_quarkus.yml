@@ -29,3 +29,9 @@
       when: >
         ACTION is defined and
         ACTION|trim() == "uninstall"
+    - include_role:
+        name: ../roles/openshift_incident_service_quarkus
+        tasks_from: run_tekton_pipeline
+      when: >
+        ACTION is defined and
+        ACTION|trim() == "tekton"

@@ -21,6 +21,9 @@ emergency_response_theme_extension=https://github.com/Emergency-Response-Demo/em
 incident_service_image=quay.io/emergencyresponsedemo/incident-service
 incident_service_image_tag=2.3
 
+incident_service_quarkus_image=
+incident_service_quarkus_image_tag=
+
 responder_service_image=quay.io/emergencyresponsedemo/responder-service
 responder_service_image_tag=2.3
 
