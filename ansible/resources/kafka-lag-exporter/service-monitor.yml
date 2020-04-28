@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: prometheus
+    monitoring-key: "{{ application_monitoring_label_value }}"
+  name: {{ kafka_lag_exporter_servicemonitor_name }}
+spec:
+  endpoints:
+    - interval: 5s
+      port: http
+  selector:
+    matchLabels:
+      monitoring: prometheus-kafka-lag-exporter

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ kafka_lag_exporter_service_name }}
+  labels:
+    monitoring: prometheus-kafka-lag-exporter
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ kafka_lag_exporter_service_port }}
+      targetPort: {{ kafka_lag_exporter_service_port }}
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ kafka_lag_exporter_deployment_name }}
+    app.kubernetes.io/instance: {{ kafka_lag_exporter_release }}
