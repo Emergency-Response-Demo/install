@@ -16,40 +16,40 @@ install_tools=true
 
 # images
 incident_service_image=quay.io/emergencyresponsedemo/incident-service
-incident_service_image_tag=2.1
+incident_service_image_tag=2.2
 
 responder_service_image=quay.io/emergencyresponsedemo/responder-service
-responder_service_image_tag=2.1
+responder_service_image_tag=2.2
 
 process_viewer_image=quay.io/emergencyresponsedemo/process-viewer
-process_viewer_image_tag=2.1
+process_viewer_image_tag=2.2
 
 incident_priority_service_image=quay.io/emergencyresponsedemo/incident-priority-service
-incident_priority_service_image_tag=2.1
+incident_priority_service_image_tag=2.2
 
 process_service_image=quay.io/emergencyresponsedemo/process-service
-process_service_image_tag=2.1
+process_service_image_tag=2.2
 
 disaster_simulator_service_image=quay.io/emergencyresponsedemo/disaster-simulator
-disaster_simulator_service_image_tag=2.1
+disaster_simulator_service_image_tag=2.2
 
 mission_service_image=quay.io/emergencyresponsedemo/mission-service
-mission_service_image_tag=2.1
+mission_service_image_tag=2.2
 
 responder_simulator_image=quay.io/emergencyresponsedemo/responder-simulator
-responder_simulator_image_tag=2.1
+responder_simulator_image_tag=2.2
 
 emergency_console_image=quay.io/emergencyresponsedemo/emergency-console
-emergency_console_image_tag=2.1
+emergency_console_image_tag=2.2
 
 responder_client_app_image=quay.io/emergencyresponsedemo/emergency-response-client-app
-responder_client_app_image_tag=2.1
+responder_client_app_image_tag=2.2
 
 disaster_service_image=quay.io/emergencyresponsedemo/disaster-service
-disaster_service_image_tag=2.1
+disaster_service_image_tag=2.2
 
 datawarehouse_service_image=quay.io/emergencyresponsedemo/datawarehouse
-datawarehouse_service_image_tag=2.1
+datawarehouse_service_image_tag=2.2
 
 # source repos
 incident_service_git_repo=https://github.com/Emergency-Response-Demo/incident-service.git
