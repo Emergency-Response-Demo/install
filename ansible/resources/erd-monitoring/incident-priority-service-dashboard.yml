@@ -1103,7 +1103,7 @@ spec:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "{{topic}} {{pod}}",
+              "legendFormat": "{{'{{'}}topic{{'}}'}} {{'{{'}}pod{{'}}'}}",
               "refId": "A"
             }
           ],
@@ -1296,7 +1296,7 @@ spec:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "code {{code}} - {{pod}}",
+              "legendFormat": "code {{'{{'}}code{{'}}'}} - {{'{{'}}pod{{'}}'}}",
               "refId": "A"
             }
           ],
@@ -1383,7 +1383,7 @@ spec:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "code {{code}} - {{pod}}",
+              "legendFormat": "code {{'{{'}}code{{'}}'}} - {{'{{'}}pod{{'}}'}}",
               "refId": "A"
             }
           ],
