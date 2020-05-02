@@ -1,5 +1,23 @@
 ---
 
+- name: uninstall datawarehouse service
+  import_role:
+    name: openshift_datawarehouse
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/datawarehouse"
+    work_dir_name: datawarehouse
+
+- name: uninstall disaster service
+  import_role:
+    name: openshift_disaster_service
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/disaster-service"
+    work_dir_name: disaster-service
+
 - name: uninstall responder simulator service
   import_role:
     name: openshift_responder_simulator_service
