@@ -1,5 +1,12 @@
 ---
 
+- name: "delete grafana cluster monitoring clusterrole binding"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    kind: clusterrolebinding
+    name: "grafana-cluster-monitoring-view{{ namespace_postfix }}"
+
 - name: "delete application monitoring cr"
   oc_obj:
     oc_binary: "{{ openshift_cli }}"

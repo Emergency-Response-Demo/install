@@ -301,3 +301,17 @@
     kind: clusterrole
     files:
       - "{{ resources_dir }}/{{ clusterrole_get_namespaces_template }}"
+
+- name: "copy grafana cluster monitoring clusterrole binding template"
+  template:
+    src: "{{ resources_dir }}/{{ grafana_cluster_monitoring_view_crb_template }}"
+    dest: "{{ work_dir }}/{{ grafana_cluster_monitoring_view_crb_template }}"
+
+- name: "grafana cluster monitoring clusterrole binding"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: clusterrolebinding
+    name: "grafana-cluster-monitoring-view{{ namespace_postfix }}"
+    files:
+      - "{{ work_dir }}/{{ grafana_cluster_monitoring_view_crb_template }}"

@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: incident-priority-service-prometheus-rules
+spec:
+  groups:
+    - name: incident-priority-service.rules
+      rules:
+        - record: rules:assignment:sum:rate1m
+          expr: rate(rules_assignment_timer_seconds_sum[1m])
+        - record: rules:assignment:count:rate1m
+          expr: rate(rules_assignment_timer_seconds_count[1m])
+        - record: rules:query:sum:rate1m
+          expr: rate(rules_query_timer_seconds_sum[1m])
+        - record: rules:query:count:rate1m
+          expr: rate(rules_query_timer_seconds_count[1m])
+        - record: kafka:messages_consumed:total:rate1m
+          expr: rate(kafka_message_consumed_total[1m])          
+        - record: vertx:http_responsetime:count:rate1m
+          expr: rate(vertx_http_server_responseTime_seconds_count[1m])
+        - record: vertx:http_responsetime:sum:rate1m
+          expr: rate(vertx_http_server_responseTime_seconds_sum[1m])
