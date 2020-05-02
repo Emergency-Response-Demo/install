@@ -1,6 +1,6 @@
 ---
 
-- name: wait until topic-operator is active
+- name: "wait until kafka-cluster-entity-operator is active in {{ namespace }}"
   shell: "{{ openshift_cli }} get deployment kafka-cluster-entity-operator -o template --template={{ json_template }} -n {{ namespace }}"
   vars:
     json_template: '\{\{.status.readyReplicas\}\}'

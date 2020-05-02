@@ -32,14 +32,6 @@
     namespace: "{{ namespace_monitoring }}"
     kind: GrafanaDashboard
 
-- name: "delete grafana datasource ds-dw-postgresql"
-  oc_obj:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    name: ds-dw-postgresql
-    namespace: "{{ namespace_monitoring }}"
-    kind: GrafanaDataSource
-
 - name: "delete grafana dashboard mission-commander-kpis"
   oc_obj:
     state: absent
@@ -47,6 +39,14 @@
     name: mission-commander-kpis
     namespace: "{{ namespace_monitoring }}"
     kind: GrafanaDashboard
+
+- name: "delete grafana datasource ds-dw-postgresql"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: ds-dw-postgresql
+    namespace: "{{ namespace_monitoring }}"
+    kind: GrafanaDataSource
 
 - name: "delete clusterrole get-namespaces clusterrolebinding for user {{ project_admin}} "
   oc_obj:
