@@ -54,3 +54,27 @@
     oc_binary: "{{ openshift_cli }}"
     name: "{{ project_admin }}-get-namespaces"
     kind: clusterrolebinding
+
+- name: "delete openshift monitoring grafana datasource"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: prometheus-openshift-monitoring
+    namespace: "{{ namespace_monitoring }}"
+    kind: GrafanaDataSource
+
+- name: "delete incident priority service grafana dashboard"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: incident-priority-service-dashboard
+    namespace: "{{ namespace_monitoring }}"
+    kind: GrafanaDashboard
+
+- name: "delete incident priority service prometheus rules"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: incident-priority-service-prometheus-rules
+    namespace: "{{ namespace_monitoring }}"
+    kind: PrometheusRule
