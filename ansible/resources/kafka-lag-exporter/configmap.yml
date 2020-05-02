@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-lag-exporter
+data:
+  application.conf: |
+    kafka-lag-exporter {
+      port = {{ kafka_lag_exporter_service_port }}
+      poll-interval = {{ kafka_lag_exporter_poll_interval_seconds }} seconds
+      lookup-table-size = {{ kafka_lag_exporter_lookup_table_size }}
+      client-group-id = "{{ kafka_lag_exporter_group_id }}"
+      kafka-client-timeout = {{ kafka_lag_exporter_timeout_seconds }} seconds
+      clusters = [
+        {
+          name = "{{ kafka_cluster }}"
+          bootstrap-brokers = "{{ kafka_bootstrap_address }}"
+          group-whitelist = {{ kafka_lag_exporter_group_whitelist }}
+          topic-whitelist = {{ kafka_lag_exporter_topic_whitelist }}
+          topic-blacklist = {{ kafka_lag_exporter_topic_blacklist }}
+          consumer-properties = {}
+          admin-client-properties = {}
+          labels = {}
+        }
+      ]
+      watchers = {
+        strimzi = "false"
+      }
+      metric-whitelist = {{ kafka_lag_exporter_metric_whitelist }}
+    }
+
+    akka {
+      loggers = ["akka.event.slf4j.Slf4jLogger"]
+      loglevel = "{{ kafka_lag_exporter_akka_loglevel }}"
+      logging-filter = "akka.event.slf4j.Slf4jLoggingFilter"
+    }
+  logback.xml: |
+    <configuration>
+        <variable name="ROOT_LOG_LEVEL" value="{{ kafka_lag_exporter_root_loglevel }}" />
+        <variable name="KAFKA_LAG_EXPORTER_LOG_LEVEL" value="{{ kafka_lag_exporter_loglevel }}" />
+        <variable name="KAFKA_LAG_EXPORTER_KAFKA_LOG_LEVEL" value="{{ kafka_lag_exporter_kafka_loglevel }}" />
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%date{ISO8601} %-5level %logger{36} %X{akkaSource} - %msg %ex%n</pattern>
+            </encoder>
+        </appender>
+        <logger name="org.apache.kafka" level="${KAFKA_LAG_EXPORTER_KAFKA_LOG_LEVEL}"/>
+        <logger name="com.lightbend.kafkalagexporter" level="${KAFKA_LAG_EXPORTER_LOG_LEVEL}"/>
+        <root level="${ROOT_LOG_LEVEL}">
+            <appender-ref ref="STDOUT" />
+        </root>
+    </configuration>
