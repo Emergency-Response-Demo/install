@@ -1469,14 +1469,14 @@ spec:
               "expr": "sum_over_time(kiesession_incidents[1m])/count_over_time(kiesession_incidents[1m])",
               "format": "time_series",
               "intervalFactor": 1,
-              "legendFormat": "Avg",
+              "legendFormat": "Avg {{pod}}",
               "refId": "A"
             },
             {
               "expr": "max_over_time(kiesession_incidents[1m])",
               "format": "time_series",
               "intervalFactor": 1,
-              "legendFormat": "Max",
+              "legendFormat": "Max {{pod}}",
               "refId": "B"
             }
           ],
@@ -1560,7 +1560,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "rate(vertx_eventbus_delivered_total[1m])",
+              "expr": "rate(vertx_eventbus_delivered_total{job=\"{{ project_admin }}-incident-priority-service\"}[1m])",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
