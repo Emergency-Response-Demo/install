@@ -8,7 +8,7 @@ metadata:
 spec:
   endpoints:
     - interval: 5s
-      port: metrics
+      port: prometheus
   selector:
     matchLabels:
       strimzi.io/kind: Kafka
