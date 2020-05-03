@@ -142,15 +142,6 @@
     resources_dir: "{{ resources_base_dir }}/erd-monitoring"
     work_dir_name: erd-monitoring
 
-- name: uninstall kafka lag exporter
-  import_role:
-    name: kafka_lag_exporter
-    tasks_from: uninstall
-  vars:
-    namespace: "{{ namespace_monitoring }}"
-    resources_dir: "{{ resources_base_dir }}/kafka-lag-exporter"
-    work_dir_name: "{{ project_admin }}-kafka-lag-exporter"
-
 - name: uninstall datagrid
   import_role:
     name: openshift_datagrid
