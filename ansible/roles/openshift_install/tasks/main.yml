@@ -223,15 +223,6 @@
     work_dir_name: erd-monitoring
   when: install_monitoring is defined and install_monitoring|bool == true
 
-- name: install kafka lag exporter
-  import_role:
-    name: kafka_lag_exporter
-  vars:
-    namespace: "{{ namespace_monitoring }}"
-    resources_dir: "{{ resources_base_dir }}/kafka-lag-exporter"
-    work_dir_name: "{{ project_admin }}-kafka-lag-exporter"
-  when: install_monitoring is defined and install_monitoring|bool == true
-
 - name: install openshift_datawarehouse
   import_role:
     name: openshift_datawarehouse

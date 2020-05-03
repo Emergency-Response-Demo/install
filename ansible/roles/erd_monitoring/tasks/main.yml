@@ -149,6 +149,8 @@
     pod: !unsafe "{{pod}}"
     action: !unsafe "{{action}}"
     cause: !unsafe "{{cause}}"
+    topic: !unsafe "{{topic}}"
+    code: !unsafe "{{code}}"
 
 - name: "create incident priority service grafana dashboard"
   oc_obj:

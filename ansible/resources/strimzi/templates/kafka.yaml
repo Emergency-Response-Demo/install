@@ -261,3 +261,21 @@ spec:
       livenessProbe:
         initialDelaySeconds: {{ entity_operator_tlssidecar_liveness_probe_initial_delay_seconds }}
         timeoutSeconds: {{ entity_operator_tlssidecar_liveness_probe_timeout_seconds }}
+  kafkaExporter:
+    groupRegex: ".*"
+    topicRegex: "^topic-.+"
+    resources:
+      requests:
+        cpu: 200m
+        memory: 64Mi
+      limits:
+        cpu: 500m
+        memory: 128Mi
+    logging: warn
+    enableSaramaLogging: true
+    readinessProbe: 8
+      initialDelaySeconds: 15
+      timeoutSeconds: 5
+    livenessProbe: 9
+      initialDelaySeconds: 15
+      timeoutSeconds: 5

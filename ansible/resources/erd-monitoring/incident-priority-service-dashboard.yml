@@ -1103,7 +1103,7 @@ spec:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "{{'{{'}}topic{{'}}'}} {{'{{'}}pod{{'}}'}}",
+              "legendFormat": "{{topic}} {{pod}}",
               "refId": "A"
             }
           ],
@@ -1162,6 +1162,7 @@ spec:
             "y": 42
           },
           "id": 28,
+          "interval": "",
           "legend": {
             "avg": false,
             "current": false,
@@ -1182,13 +1183,21 @@ spec:
           "renderer": "flot",
           "seriesOverrides": [
             {
-              "alias": "Time lag",
-              "color": "#FA6400",
+              "alias": "Offset lag",
+              "color": "#F2CC0C",
+              "fill": 0,
               "yaxis": 1
             },
             {
-              "alias": "Offset lag",
-              "color": "#FADE2A",
+              "alias": "Msg in",
+              "color": "#FF780A",
+              "fill": 0,
+              "yaxis": 2
+            },
+            {
+              "alias": "Msg consumed",
+              "color": "#3274D9",
+              "fill": 0,
               "yaxis": 2
             }
           ],
@@ -1197,27 +1206,34 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "kafka_consumergroup_group_max_lag_seconds{group=\"incident-priority\"}",
+              "expr": "sum(kafka_consumergroup_lag{consumergroup=\"incident-priority\", topic=\"topic-incident-event\"})",
               "format": "time_series",
               "instant": false,
+              "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "Time lag",
+              "legendFormat": "Offset lag",
               "refId": "A"
             },
             {
-              "expr": "kafka_consumergroup_group_max_lag{group=\"incident-priority\"}",
+              "expr": "sum(rate(kafka_topic_partition_current_offset{topic=\"topic-incident-event\"}[1m]))",
               "format": "time_series",
-              "instant": false,
               "intervalFactor": 1,
-              "legendFormat": "Offset lag",
+              "legendFormat": "Msg in",
               "refId": "B"
+            },
+            {
+              "expr": "sum(delta(kafka_consumergroup_current_offset{consumergroup=\"incident-priority\", topic=\"topic-incident-event\"}[1m])/60)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Msg consumed",
+              "refId": "C"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Consumer Group Lag In Time Over Offset Lag",
+          "title": "Consumer Group Lag over Messages In/Consumed",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -1233,8 +1249,8 @@ spec:
           },
           "yaxes": [
             {
-              "format": "s",
-              "label": "estimated time lag",
+              "format": "short",
+              "label": "lag in offsets",
               "logBase": 1,
               "max": null,
               "min": "0",
@@ -1242,7 +1258,7 @@ spec:
             },
             {
               "format": "short",
-              "label": "lag in offsets",
+              "label": "msg per sec",
               "logBase": 1,
               "max": null,
               "min": "0",
@@ -1296,7 +1312,7 @@ spec:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "code {{'{{'}}code{{'}}'}} - {{'{{'}}pod{{'}}'}}",
+              "legendFormat": "code {{code}} - {{pod}}",
               "refId": "A"
             }
           ],
@@ -1383,7 +1399,7 @@ spec:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "code {{'{{'}}code{{'}}'}} - {{'{{'}}pod{{'}}'}}",
+              "legendFormat": "code {{code}} - {{pod}}",
               "refId": "A"
             }
           ],
