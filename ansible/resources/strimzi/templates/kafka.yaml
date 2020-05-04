@@ -273,9 +273,9 @@ spec:
         memory: 128Mi
     logging: warn
     enableSaramaLogging: true
-    readinessProbe: 8
+    readinessProbe: 
       initialDelaySeconds: 15
       timeoutSeconds: 5
-    livenessProbe: 9
+    livenessProbe: 
       initialDelaySeconds: 15
       timeoutSeconds: 5
