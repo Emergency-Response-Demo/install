@@ -7,6 +7,16 @@
     kind: Keycloak
     name: rhsso
     namespace: "{{ namespace }}"
+  when: uninstall_cluster_resources|bool == true
+
+- name: "delete keycloak route"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    kind: route
+    name: sso
+    namespace: "{{ namespace }}"
+  when: uninstall_cluster_resources|bool == true
 
 - name: "delete keycloak operator"
   oc_obj:

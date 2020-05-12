@@ -6,15 +6,15 @@
     incident_commander_role_id: "{{ lookup('password', '/dev/null chars=ascii_letters length=32') }}"
 
 - name: wait for sso to be ready
-  shell: "{{ openshift_cli }} get keycloaks.keycloak.org/rhsso -o jsonpath='{.status.phase}' -n {{ namespace_sso }}"
+  shell: "{{ openshift_cli }} get statefulset/keycloak -o jsonpath='{.status.readyReplicas}' -n {{ namespace_sso }}"
   register: result
-  until: result.stdout == 'reconciling'
+  until: result.stdout == '1'
   retries: 50
   delay: 10
   changed_when: False
 
 - name: retrieve sso route
-  shell: "{{ openshift_cli }} get route keycloak -o jsonpath='{.spec.host}' -n {{ namespace_sso }}"
+  shell: "{{ openshift_cli }} get route sso -o jsonpath='{.spec.host}' -n {{ namespace_sso }}"
   register: sso_route_cmd
 
 - name: get sso admin credentials secret

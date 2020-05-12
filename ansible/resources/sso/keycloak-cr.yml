@@ -10,5 +10,5 @@ spec:
     - https://github.com/aerogear/keycloak-metrics-spi/releases/download/1.0.4/keycloak-metrics-spi-1.0.4.jar
     - {{ emergency_response_theme_extension }}
   externalAccess:
-    enabled: True
+    enabled: False
   profile: RHSSO

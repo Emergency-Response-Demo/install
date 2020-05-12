@@ -1,7 +1,7 @@
 ---
 
 - name: retrieve sso route
-  shell: "{{ openshift_cli }} get route keycloak -o jsonpath='{.spec.host}' -n {{ namespace_sso }}"
+  shell: "{{ openshift_cli }} get route sso -o jsonpath='{.spec.host}' -n {{ namespace_sso }}"
   register: sso_route_cmd
 
 - name: get sso admin credentials secret

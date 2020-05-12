@@ -105,4 +105,14 @@
     name: rhsso
     namespace: "{{ namespace }}"
     files:
-      - "{{ work_dir }}/{{ keycloak_cr_template }}"   
+      - "{{ work_dir }}/{{ keycloak_cr_template }}"
+
+- name: "create keycloak route"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: route
+    name: sso
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ resources_dir }}/{{ keycloak_route_template }}"

@@ -8,5 +8,6 @@ keycloak_backup_crd_template: keycloak-backup-crd.yml
 keycloak_operator_role_template: keycloak-operator-role.yml
 keycloak_operator_rolebinding_template: keycloak-operator-rolebinding.yml
 keycloak_operator_template: keycloak-operator.yml
-keycloak_cr_template: keycloak-cr.yml 
+keycloak_cr_template: keycloak-cr.yml
 
+keycloak_route_template: keycloak-route.yml
