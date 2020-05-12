@@ -4,93 +4,32 @@
 - name: "Define random value for variable incident_commander_role_id "
   set_fact:
     incident_commander_role_id: "{{ lookup('password', '/dev/null chars=ascii_letters length=32') }}"
-- debug:
-    msg: "incident_commander_role_id = {{ incident_commander_role_id }}"  
 
 - name: wait for sso to be ready
-  shell: "oc get keycloak/rhsso -o jsonpath='{.status.phase}' -n {{ namespace_sso }}"
+  shell: "{{ openshift_cli }} get keycloaks.keycloak.org/rhsso -o jsonpath='{.status.phase}' -n {{ namespace_sso }}"
   register: result
-  until: result.stdout == 'reconcile'
+  until: result.stdout == 'reconciling'
   retries: 50
   delay: 10
   changed_when: False
 
-- name: check whether themes pvc claim exists
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: list
-    namespace: "{{ namespace_sso }}"
-    name: "{{ sso_theme_pvc }}"
-    kind: pvc
-  register: result
-
-- block:
-    - name: copy the pvc template
-      template:
-        src: "{{ resources_dir }}/{{ sso_theme_template }}"
-        dest: "{{ work_dir }}/{{ sso_theme_template }}" 
-
-    - name: copy the coreui theme to the host
-      copy:
-        src: "{{ sso_theme_directory }}"
-        dest: "{{work_dir}}/themes"
-  
-    - name: create themes PVC
-      oc_obj:
-        oc_binary: "{{ openshift_cli }}"
-        state: present
-        namespace: "{{ namespace_sso }}"
-        name: "{{ sso_theme_pvc }}"
-        kind: pvc
-        files:
-          - "{{ work_dir }}/{{ sso_theme_template }}"        
-
-    - name: create theme volume
-      shell: "{{ openshift_cli }} set volume dc/sso --add --name=themes-vol -t persistentVolumeClaim --claim-name={{ sso_theme_pvc }} -m /opt/eap/themes/coreui --sub-path=coreui -n {{ namespace_sso }}" 
-  
-    - name: pause for a few seconds to allow new SSO RC to be created
-      pause:
-        seconds: 10
-
-    - name: wait until new SSO pod is started
-      shell: "{{ openshift_cli }} get dc/sso  -o template --template={{ json_template }} -n {{ namespace_sso }}"
-      vars:
-        json_template: '\{\{.status.readyReplicas\}\}'
-      register: started_result
-      until: started_result.stdout == "1"
-      retries: 50
-      delay: 10
-      changed_when: false
-  
-    - name: get sso pod name
-      shell: "{{ openshift_cli }} get pods --selector deploymentConfig=sso -o jsonpath='{.items[0].metadata.name}' -n {{ namespace_sso }}"
-      register: sso_pod_name
-  
-    - name: copy emergency response themes to new PVC
-      shell: "{{ openshift_cli }} cp {{work_dir}}/themes/coreui/account {{ sso_pod_name.stdout }}:{{ sso_theme_path }}/coreui -n {{ namespace_sso }}"
-    - name: copy emergency response themes to new PVC
-      shell: "{{ openshift_cli }} cp {{work_dir}}/themes/coreui/login {{ sso_pod_name.stdout }}:{{ sso_theme_path }}/coreui -n {{ namespace_sso }}"
-
-  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
-
 - name: retrieve sso route
-  shell: "{{ openshift_cli }} get route sso -o jsonpath='{.spec.host}' -n {{ namespace_sso }}"
+  shell: "{{ openshift_cli }} get route keycloak -o jsonpath='{.spec.host}' -n {{ namespace_sso }}"
   register: sso_route_cmd
 
-- name: retrieve sso admin password
-  shell: >-
-    {{ openshift_cli }} get dc/sso -o jsonpath='{.spec.template.spec.containers[?(@.name=="sso")].env[?(@.name=="SSO_ADMIN_PASSWORD")].value}' -n {{ namespace_sso }}
-  register: sso_admin_password_cmd
-
-- name: retrieve sso admin username
-  shell: >-
-    {{ openshift_cli }} get dc/sso -o jsonpath='{.spec.template.spec.containers[?(@.name=="sso")].env[?(@.name=="SSO_ADMIN_USERNAME")].value}' -n {{ namespace_sso }}
-  register: sso_admin_user_cmd
+- name: get sso admin credentials secret
+  oc_secret:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    namespace: "{{ namespace_sso }}"
+    decode: true
+    name: "{{ sso_admin_credentials_secret }}"
+  register: sso_admin_credentials
 
 - set_fact:
+    sso_admin_user: "{{ sso_admin_credentials.ansible_module_results.decoded[\"ADMIN_USERNAME\"] }}"
+    sso_admin_password: "{{ sso_admin_credentials.ansible_module_results.decoded[\"ADMIN_PASSWORD\"] }}"
     sso_route: "https://{{ sso_route_cmd.stdout }}"
-    sso_admin_password: "{{ sso_admin_password_cmd.stdout }}"
-    sso_admin_user: "{{ sso_admin_user_cmd.stdout }}"
 
 - name: get admin token
   uri:
