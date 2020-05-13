@@ -85,14 +85,14 @@
     work_dir_name: process-service
 
 # Recreate the SSO Realm
-- name: recreate the SSO realm
+- name: reset sso realm
   import_role:
-    name: openshift_sso
+    name: sso_realm
     tasks_from: reset
   vars:
-    namespace: "{{ namespace_sso }}"
-    resources_dir: "{{ resources_base_dir }}/sso"
-    work_dir_name: sso
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/sso_realm"
+    work_dir_name: sso-realm
 
 # install kafka
 - name: install kafka cluster

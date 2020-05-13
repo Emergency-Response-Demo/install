@@ -1,7 +1,5 @@
 ---
 
-sso_build_theme_image: true
-
 sso_config_configmap: sso-config
 
 sso_incident_commander_password: r3dh4t1!
