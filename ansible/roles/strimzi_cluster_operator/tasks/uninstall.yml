@@ -7,6 +7,7 @@
     name: "{{ deployment_cluster_operator }}"
     kind: deployment
     namespace: "{{ namespace_strimzi_operator }}"
+  when: uninstall_cluster_resources|bool == true
 
 - name: "remove {{ crd_kafka }} crd"
   oc_obj:

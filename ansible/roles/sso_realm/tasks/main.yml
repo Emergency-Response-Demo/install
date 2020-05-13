@@ -29,11 +29,11 @@
 - set_fact:
     sso_admin_user: "{{ sso_admin_credentials.ansible_module_results.decoded[\"ADMIN_USERNAME\"] }}"
     sso_admin_password: "{{ sso_admin_credentials.ansible_module_results.decoded[\"ADMIN_PASSWORD\"] }}"
-    sso_route: "https://{{ sso_route_cmd.stdout }}"
+    sso_url: "https://{{ sso_route_cmd.stdout }}"
 
 - name: get admin token
   uri:
-    url: "{{ sso_route }}/auth/realms/master/protocol/openid-connect/token"
+    url: "{{ sso_url }}/auth/realms/master/protocol/openid-connect/token"
     method: POST
     headers:
       Content-Type: application/x-www-form-urlencoded
@@ -63,7 +63,7 @@
 
 - name: check if {{ sso_realm_id }} exists
   uri:
-    url: "{{ sso_route }}/auth/admin/realms/{{ sso_realm_id }}"
+    url: "{{ sso_url }}/auth/admin/realms/{{ sso_realm_id }}"
     method: GET
     headers:
       Authorization: Bearer {{ admin_token }}
@@ -74,7 +74,7 @@
 
 - name: create {{ sso_realm_id }} realm
   uri:
-    url: "{{ sso_route }}/auth/admin/realms"
+    url: "{{ sso_url }}/auth/admin/realms"
     method: POST
     headers:
       Authorization: Bearer {{ admin_token }}
@@ -87,7 +87,7 @@
 
 - name: create incident_commander user
   uri:
-    url: "{{ sso_route }}/auth/admin/realms/{{ sso_realm_id }}/users"
+    url: "{{ sso_url }}/auth/admin/realms/{{ sso_realm_id }}/users"
     method: POST
     headers:
       Authorization: Bearer {{ admin_token }}
@@ -105,7 +105,7 @@
 
 - name: add role to incident_commander user
   uri:
-    url: "{{ sso_route }}/auth/admin/realms/{{ sso_realm_id }}/users/{{ incident_commander_user_id }}/role-mappings/realm"
+    url: "{{ sso_url }}/auth/admin/realms/{{ sso_realm_id }}/users/{{ incident_commander_user_id }}/role-mappings/realm"
     method: POST
     headers:
       Authorization: Bearer {{ admin_token }}
@@ -118,7 +118,7 @@
 
 - name: get rhsso realm certs
   uri:
-    url: "{{ sso_route }}/auth/realms/{{ sso_realm_id }}/protocol/openid-connect/certs"
+    url: "{{ sso_url }}/auth/realms/{{ sso_realm_id }}/protocol/openid-connect/certs"
     validate_certs: false
     return_content: true
   register: sso_realm_certs
@@ -161,7 +161,7 @@
     namespace: "{{ namespace }}"
     name: "{{ sso_config_configmap }}"
     from_literal:
-      AUTH_URL: "{{ sso_route }}/auth"
+      AUTH_URL: "{{ sso_url }}/auth"
       KEYCLOAK: "true"
       PUBLIC_KEY: "{{ lookup('file', work_dir + '/sso_public_key.txt') }}"
       REALM: "{{ sso_realm_id }}"

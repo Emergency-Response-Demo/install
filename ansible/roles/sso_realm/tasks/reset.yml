@@ -16,11 +16,11 @@
 - set_fact:
     sso_admin_user: "{{ sso_admin_credentials.ansible_module_results.decoded[\"ADMIN_USERNAME\"] }}"
     sso_admin_password: "{{ sso_admin_credentials.ansible_module_results.decoded[\"ADMIN_PASSWORD\"] }}"
-    sso_route: "https://{{ sso_route_cmd.stdout }}"
+    sso_url: "https://{{ sso_route_cmd.stdout }}"
 
 - name: get admin token
   uri:
-    url: "{{ sso_route }}/auth/realms/master/protocol/openid-connect/token"
+    url: "{{ sso_url }}/auth/realms/master/protocol/openid-connect/token"
     method: POST
     headers:
       Content-Type: application/x-www-form-urlencoded
