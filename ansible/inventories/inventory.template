@@ -14,6 +14,9 @@ install_monitoring=true
 # If set to true, installs the tools (pgadmin)
 install_tools=true
 
+# SSO theme extension
+emergency_response_theme_extension=https://github.com/Emergency-Response-Demo/emergency-sso/releases/download/v1.0.0/emergency-sso-theme-1.0.0.jar
+
 # images
 incident_service_image=quay.io/emergencyresponsedemo/incident-service
 incident_service_image_tag=2.2

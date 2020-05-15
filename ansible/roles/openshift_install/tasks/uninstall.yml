@@ -240,3 +240,21 @@
     oc_binary: "{{ openshift_cli }}"
     state: absent
     name: "{{ namespace_strimzi_operator }}"
+
+- name: uninstall sso realm
+  import_role:
+    name: sso_realm
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/sso_realm"
+    work_dir_name: sso-realm
+
+- name: uninstall sso
+  import_role:
+    name: sso
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_sso }}"
+    resources_dir: "{{ resources_base_dir }}/sso"
+    work_dir_name: sso

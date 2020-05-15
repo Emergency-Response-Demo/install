@@ -1,0 +1,446 @@
+kind: CustomResourceDefinition
+apiVersion: apiextensions.k8s.io/v1beta1
+metadata:
+  name: keycloakrealms.keycloak.org
+spec:
+  group: keycloak.org
+  subresources:
+    status: {}
+  names:
+    plural: keycloakrealms
+    singular: keycloakrealm
+    kind: KeycloakRealm
+    listKind: KeycloakRealmList
+  scope: Namespaced
+  conversion:
+    strategy: None
+  preserveUnknownFields: true
+  version: v1alpha1
+  validation:
+    openAPIV3Schema:
+      description: KeycloakRealm is the Schema for the keycloakrealms API
+      type: object
+      properties:
+        apiVersion:
+          description: >-
+            APIVersion defines the versioned schema of this representation of an
+            object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info:
+            https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+          type: string
+        kind:
+          description: >-
+            Kind is a string value representing the REST resource this object
+            represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info:
+            https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: KeycloakRealmSpec defines the desired state of KeycloakRealm
+          type: object
+          required:
+            - realm
+          properties:
+            instanceSelector:
+              description: Selector for looking up Keycloak Custom Resources.
+              type: object
+              properties:
+                matchExpressions:
+                  description: >-
+                    matchExpressions is a list of label selector requirements.
+                    The requirements are ANDed.
+                  type: array
+                  items:
+                    description: >-
+                      A label selector requirement is a selector that contains
+                      values, a key, and an operator that relates the key and
+                      values.
+                    type: object
+                    required:
+                      - key
+                      - operator
+                    properties:
+                      key:
+                        description: key is the label key that the selector applies to.
+                        type: string
+                      operator:
+                        description: >-
+                          operator represents a key's relationship to a set of
+                          values. Valid operators are In, NotIn, Exists and
+                          DoesNotExist.
+                        type: string
+                      values:
+                        description: >-
+                          values is an array of string values. If the operator
+                          is In or NotIn, the values array must be non-empty. If
+                          the operator is Exists or DoesNotExist, the values
+                          array must be empty. This array is replaced during a
+                          strategic merge patch.
+                        type: array
+                        items:
+                          type: string
+                matchLabels:
+                  description: >-
+                    matchLabels is a map of {key,value} pairs. A single
+                    {key,value} in the matchLabels map is equivalent to an
+                    element of matchExpressions, whose key field is "key", the
+                    operator is "In", and the values array contains only
+                    "value". The requirements are ANDed.
+                  type: object
+                  additionalProperties:
+                    type: string
+            realm:
+              description: Keycloak Realm REST object.
+              type: object
+              required:
+                - realm
+              properties:
+                enabled:
+                  description: Realm enabled flag.
+                  type: boolean
+                identityProviders:
+                  description: A set of Identity Providers.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      enabled:
+                        description: Identity Provider enabled flag.
+                        type: boolean
+                      config:
+                        description: Identity Provider config.
+                        type: object
+                        additionalProperties:
+                          type: string
+                      firstBrokerLoginFlowAlias:
+                        description: Identity Provider First Broker Login Flow Alias.
+                        type: string
+                      trustEmail:
+                        description: Identity Provider Trust Email.
+                        type: boolean
+                      linkOnly:
+                        description: Identity Provider Link Only setting.
+                        type: boolean
+                      providerId:
+                        description: Identity Provider ID.
+                        type: string
+                      displayName:
+                        description: Identity Provider Display Name.
+                        type: string
+                      alias:
+                        description: Identity Provider Alias.
+                        type: string
+                      postBrokerLoginFlowAlias:
+                        description: Identity Provider Post Broker Login Flow Alias.
+                        type: string
+                      addReadTokenRoleOnCreate:
+                        description: >-
+                          Adds Read Token role when creating this Identity
+                          Provider.
+                        type: boolean
+                      internalId:
+                        description: Identity Provider Internal ID.
+                        type: string
+                      storeToken:
+                        description: Identity Provider Store to Token.
+                        type: boolean
+                eventsListeners:
+                  description: A set of Event Listeners.
+                  type: array
+                  items:
+                    type: string
+                adminEventsDetailsEnabled:
+                  description: >-
+                    Enable admin events details TODO: change to values and use
+                    kubebuilder default annotation once supported
+                  type: boolean
+                clients:
+                  description: A set of Keycloak Clients.
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - clientId
+                    properties:
+                      adminUrl:
+                        description: Application Admin URL.
+                        type: string
+                      enabled:
+                        description: Client enabled flag.
+                        type: boolean
+                      clientAuthenticatorType:
+                        description: What Client authentication type to use.
+                        type: string
+                      fullScopeAllowed:
+                        description: True if Full Scope is allowed.
+                        type: boolean
+                      useTemplateConfig:
+                        description: True to use a Template Config.
+                        type: boolean
+                      redirectUris:
+                        description: A list of valid Redirection URLs.
+                        type: array
+                        items:
+                          type: string
+                      frontchannelLogout:
+                        description: True if this client supports Front Channel logout.
+                        type: boolean
+                      access:
+                        description: Access options.
+                        type: object
+                        additionalProperties:
+                          type: boolean
+                      serviceAccountsEnabled:
+                        description: True if Service Accounts are enabled.
+                        type: boolean
+                      clientId:
+                        description: Client ID.
+                        type: string
+                      name:
+                        description: Client name.
+                        type: string
+                      rootUrl:
+                        description: Application root URL.
+                        type: string
+                      bearerOnly:
+                        description: True if a client supports only Bearer Tokens.
+                        type: boolean
+                      implicitFlowEnabled:
+                        description: True if Implicit flow is enabled.
+                        type: boolean
+                      secret:
+                        description: >-
+                          Client Secret. The Operator will automatically create
+                          a Secret based on this value.
+                        type: string
+                      useTemplateMappers:
+                        description: True to use Template Mappers.
+                        type: boolean
+                      notBefore:
+                        description: Not Before setting.
+                        type: integer
+                      nodeReRegistrationTimeout:
+                        description: Node registration timeout.
+                        type: integer
+                      useTemplateScope:
+                        description: True to use Template Scope.
+                        type: boolean
+                      publicClient:
+                        description: True if this is a public Client.
+                        type: boolean
+                      standardFlowEnabled:
+                        description: True if Standard flow is enabled.
+                        type: boolean
+                      attributes:
+                        description: Client Attributes.
+                        type: object
+                        additionalProperties:
+                          type: string
+                      protocol:
+                        description: Protocol used for this Client.
+                        type: string
+                      webOrigins:
+                        description: A list of valid Web Origins.
+                        type: array
+                        items:
+                          type: string
+                      consentRequired:
+                        description: True if Consent Screen is required.
+                        type: boolean
+                      protocolMappers:
+                        description: Protocol Mappers.
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            config:
+                              description: Config options.
+                              type: object
+                              additionalProperties:
+                                type: string
+                            consentRequired:
+                              description: True if Consent Screen is required.
+                              type: boolean
+                            consentText:
+                              description: Text to use for displaying Consent Screen.
+                              type: string
+                            id:
+                              description: Protocol Mapper ID.
+                              type: string
+                            name:
+                              description: Protocol Mapper Name.
+                              type: string
+                            protocol:
+                              description: Protocol to use.
+                              type: string
+                            protocolMapper:
+                              description: Protocol Mapper to use
+                              type: string
+                      id:
+                        description: 'Client ID. If not specified, automatically generated.'
+                        type: string
+                      defaultRoles:
+                        description: Default Client roles.
+                        type: array
+                        items:
+                          type: string
+                      description:
+                        description: Client description.
+                        type: string
+                      directAccessGrantsEnabled:
+                        description: True if Direct Grant is enabled.
+                        type: boolean
+                      baseUrl:
+                        description: Application base URL.
+                        type: string
+                      surrogateAuthRequired:
+                        description: Surrogate Authentication Required option.
+                        type: boolean
+                users:
+                  description: A set of Keycloak Users.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      federatedIdentities:
+                        description: A set of Federated Identities.
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            identityProvider:
+                              description: Federated Identity Provider.
+                              type: string
+                            userId:
+                              description: Federated Identity User ID.
+                              type: string
+                            userName:
+                              description: Federated Identity User Name.
+                              type: string
+                      lastName:
+                        description: Last Name.
+                        type: string
+                      enabled:
+                        description: User enabled flag.
+                        type: boolean
+                      emailVerified:
+                        description: True if email has already been verified.
+                        type: boolean
+                      realmRoles:
+                        description: A set of Realm Roles.
+                        type: array
+                        items:
+                          type: string
+                      clientRoles:
+                        description: A set of Client Roles.
+                        type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+                      groups:
+                        description: A set of Groups.
+                        type: array
+                        items:
+                          type: string
+                      username:
+                        description: User Name.
+                        type: string
+                      id:
+                        description: User ID.
+                        type: string
+                      firstName:
+                        description: First Name.
+                        type: string
+                      credentials:
+                        description: A set of Credentials.
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            temporary:
+                              description: True if this credential object is temporary.
+                              type: boolean
+                            type:
+                              description: Credential Type.
+                              type: string
+                            value:
+                              description: Credential Value.
+                              type: string
+                      email:
+                        description: Email.
+                        type: string
+                      requiredActions:
+                        description: A set of Required Actions.
+                        type: array
+                        items:
+                          type: string
+                eventsEnabled:
+                  description: >-
+                    Enable events recording TODO: change to values and use
+                    kubebuilder default annotation once supported
+                  type: boolean
+                displayName:
+                  description: Realm display name.
+                  type: string
+                realm:
+                  description: Realm name.
+                  type: string
+                adminEventsEnabled:
+                  description: >-
+                    Enable events recording TODO: change to values and use
+                    kubebuilder default annotation once supported
+                  type: boolean
+                id:
+                  type: string
+            realmOverrides:
+              description: A list of overrides to the default Realm behavior.
+              type: array
+              items:
+                type: object
+                properties:
+                  forFlow:
+                    description: Flow to be overridden.
+                    type: string
+                  identityProvider:
+                    description: Identity Provider to be overridden.
+                    type: string
+        status:
+          description: KeycloakRealmStatus defines the observed state of KeycloakRealm
+          type: object
+          required:
+            - loginURL
+            - message
+            - phase
+            - ready
+          properties:
+            loginURL:
+              description: TODO
+              type: string
+            message:
+              description: >-
+                Human-readable message indicating details about current operator
+                phase or error.
+              type: string
+            phase:
+              description: Current phase of the operator.
+              type: string
+            ready:
+              description: True if all resources are in a ready state and all work is done.
+              type: boolean
+            secondaryResources:
+              description: >-
+                A map of all the secondary resources types and names created for
+                this CR. e.g "Deployment": [ "DeploymentName1",
+                "DeploymentName2" ]
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true

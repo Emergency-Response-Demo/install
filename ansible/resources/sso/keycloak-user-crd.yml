@@ -1,0 +1,189 @@
+kind: CustomResourceDefinition
+apiVersion: apiextensions.k8s.io/v1beta1
+metadata:
+  name: keycloakusers.keycloak.org
+spec:
+  group: keycloak.org
+  subresources:
+    status: {}
+  names:
+    plural: keycloakusers
+    singular: keycloakuser
+    kind: KeycloakUser
+    listKind: KeycloakUserList
+  scope: Namespaced
+  conversion:
+    strategy: None
+  preserveUnknownFields: true
+  version: v1alpha1
+  validation:
+    openAPIV3Schema:
+      description: KeycloakUser is the Schema for the keycloakusers API
+      type: object
+      properties:
+        apiVersion:
+          description: >-
+            APIVersion defines the versioned schema of this representation of an
+            object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info:
+            https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+          type: string
+        kind:
+          description: >-
+            Kind is a string value representing the REST resource this object
+            represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info:
+            https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: KeycloakUserSpec defines the desired state of KeycloakUser
+          type: object
+          required:
+            - user
+          properties:
+            realmSelector:
+              description: Selector for looking up KeycloakRealm Custom Resources.
+              type: object
+              properties:
+                matchExpressions:
+                  description: >-
+                    matchExpressions is a list of label selector requirements.
+                    The requirements are ANDed.
+                  type: array
+                  items:
+                    description: >-
+                      A label selector requirement is a selector that contains
+                      values, a key, and an operator that relates the key and
+                      values.
+                    type: object
+                    required:
+                      - key
+                      - operator
+                    properties:
+                      key:
+                        description: key is the label key that the selector applies to.
+                        type: string
+                      operator:
+                        description: >-
+                          operator represents a key's relationship to a set of
+                          values. Valid operators are In, NotIn, Exists and
+                          DoesNotExist.
+                        type: string
+                      values:
+                        description: >-
+                          values is an array of string values. If the operator
+                          is In or NotIn, the values array must be non-empty. If
+                          the operator is Exists or DoesNotExist, the values
+                          array must be empty. This array is replaced during a
+                          strategic merge patch.
+                        type: array
+                        items:
+                          type: string
+                matchLabels:
+                  description: >-
+                    matchLabels is a map of {key,value} pairs. A single
+                    {key,value} in the matchLabels map is equivalent to an
+                    element of matchExpressions, whose key field is "key", the
+                    operator is "In", and the values array contains only
+                    "value". The requirements are ANDed.
+                  type: object
+                  additionalProperties:
+                    type: string
+            user:
+              description: Keycloak User REST object.
+              type: object
+              properties:
+                federatedIdentities:
+                  description: A set of Federated Identities.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      identityProvider:
+                        description: Federated Identity Provider.
+                        type: string
+                      userId:
+                        description: Federated Identity User ID.
+                        type: string
+                      userName:
+                        description: Federated Identity User Name.
+                        type: string
+                lastName:
+                  description: Last Name.
+                  type: string
+                enabled:
+                  description: User enabled flag.
+                  type: boolean
+                emailVerified:
+                  description: True if email has already been verified.
+                  type: boolean
+                realmRoles:
+                  description: A set of Realm Roles.
+                  type: array
+                  items:
+                    type: string
+                clientRoles:
+                  description: A set of Client Roles.
+                  type: object
+                  additionalProperties:
+                    type: array
+                    items:
+                      type: string
+                groups:
+                  description: A set of Groups.
+                  type: array
+                  items:
+                    type: string
+                username:
+                  description: User Name.
+                  type: string
+                id:
+                  description: User ID.
+                  type: string
+                firstName:
+                  description: First Name.
+                  type: string
+                credentials:
+                  description: A set of Credentials.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      temporary:
+                        description: True if this credential object is temporary.
+                        type: boolean
+                      type:
+                        description: Credential Type.
+                        type: string
+                      value:
+                        description: Credential Value.
+                        type: string
+                email:
+                  description: Email.
+                  type: string
+                requiredActions:
+                  description: A set of Required Actions.
+                  type: array
+                  items:
+                    type: string
+        status:
+          description: KeycloakUserStatus defines the observed state of KeycloakUser
+          type: object
+          required:
+            - message
+            - phase
+          properties:
+            message:
+              description: >-
+                Human-readable message indicating details about current operator
+                phase or error.
+              type: string
+            phase:
+              description: Current phase of the operator.
+              type: string
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true

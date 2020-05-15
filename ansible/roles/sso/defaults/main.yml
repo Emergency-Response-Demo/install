@@ -1,10 +1,13 @@
 ---
 
-integreatly-middleware-service: true
-monitoring-key: middleware
+keycloak_crd_template: keycloak-crd.yml
+keycloak_realm_crd_template: keycloak-realm-crd.yml
+keycloak_user_crd_template: keycloak-user-crd.yml
+keycloak_client_crd_template: keycloak-client-crd.yml
+keycloak_backup_crd_template: keycloak-backup-crd.yml
+keycloak_operator_role_template: keycloak-operator-role.yml
+keycloak_operator_rolebinding_template: keycloak-operator-rolebinding.yml
+keycloak_operator_template: keycloak-operator.yml
+keycloak_cr_template: keycloak-cr.yml
 
-rhsso_resource_template: keycloak.json
-
-rhsso_provision_immediately: true
-rhsso_plugins:
-  - keycloak-metrics-spi
+keycloak_route_template: keycloak-route.yml

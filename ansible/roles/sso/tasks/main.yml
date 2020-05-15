@@ -1,19 +1,58 @@
 ---
 
-# label namespace
-- name: "label {{ namespace }} namespace"
-  oc_label:
+- name: "create keycloak crd"
+  oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: present
-    kind: namespace
-    name: "{{ namespace }}"
-    labels:
-      - key: integreatly-middleware-service
-        value: "true"
-      - key: monitoring-key
-        value: middleware
+    kind: crd
+    name: keycloaks.keycloak.org
+    files:
+      - "{{ resources_dir }}/{{ keycloak_crd_template }}"
 
-- name: "create operator rbac"
+- name: "create keycloak realm crd"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: crd
+    name: keycloakrealms.keycloak.org
+    files:
+      - "{{ resources_dir }}/{{ keycloak_realm_crd_template }}"
+
+- name: "create keycloak user crd"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: crd
+    name: keycloakusers.keycloak.org
+    files:
+      - "{{ resources_dir }}/{{ keycloak_user_crd_template }}"
+
+- name: "create keycloak client crd"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: crd
+    name: keycloakclients.keycloak.org
+    files:
+      - "{{ resources_dir }}/{{ keycloak_client_crd_template }}"
+
+- name: "create keycloak backup crd"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: crd
+    name: keycloakbackups.keycloak.org
+    files:
+      - "{{ resources_dir }}/{{ keycloak_backup_crd_template }}"
+
+- name: "create keycloak-operator service account"
+  oc_serviceaccount:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: keycloak-operator
+    namespace: "{{ namespace }}"
+
+- name: "create keycloak operator role"
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: present
@@ -21,25 +60,17 @@
     kind: role
     name: keycloak-operator
     files:
-      - "{{ rhsso_operator_resources }}/rbac.yaml"
+      - "{{ resources_dir }}/{{ keycloak_operator_role_template }}"
 
-- name: "create keycloak crd"
+- name: "create keycloak operator role binding"
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: present
-    kind: crd
-    name: keycloaks.aerogear.org
+    namespace: "{{ namespace }}"
+    kind: rolebinding
+    name: keycloak-operator
     files:
-      - "{{ rhsso_operator_resources }}/crds/Keycloak_crd.yaml"
-
-- name: "create keycloak realm crd"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: keycloakrealms.aerogear.org
-    files:
-      - "{{ rhsso_operator_resources }}/crds/KeycloakRealm_crd.yaml"
+      - "{{ resources_dir }}/{{ keycloak_operator_rolebinding_template }}"
 
 - name: "deploy keycloak operator"
   oc_obj:
@@ -49,7 +80,7 @@
     name: keycloak-operator
     namespace: "{{ namespace }}"
     files:
-      - "{{ rhsso_operator_resources }}/operator.yaml"
+      - "{{ resources_dir }}/{{ keycloak_operator_template }}"
 
 - name: "wait until operator is deployed"
   shell: "{{ openshift_cli }} get deployment keycloak-operator -o template --template={{ json_template }} -n {{ namespace }}"
@@ -63,8 +94,8 @@
 
 - name: "copy keycloak custom resource template"
   template:
-    src: "{{ resources_dir }}/{{ rhsso_resource_template }}"
-    dest: "{{ work_dir }}/{{ rhsso_resource_template }}"
+    src: "{{ resources_dir }}/{{ keycloak_cr_template }}"
+    dest: "{{ work_dir }}/{{ keycloak_cr_template }}"
 
 - name: "create keycloak custom resource"
   oc_obj:
@@ -74,16 +105,14 @@
     name: rhsso
     namespace: "{{ namespace }}"
     files:
-      - "{{ work_dir }}/{{ rhsso_resource_template }}"   
+      - "{{ work_dir }}/{{ keycloak_cr_template }}"
 
-- name: "wait until sso-postgresql deployment config is created"
-  shell: oc get dc sso-postgresql -n {{ namespace }}
-  register: result
-  until: result.stdout
-  retries: 50
-  delay: 1
-  failed_when: not result.stdout
-  changed_when: False
-
-- name: "patch sso-postgresql dc to use postgresql 9.6"
-  shell: oc patch dc sso-postgresql -p '{"spec":{"triggers":[{"type":"ImageChange", "imageChangeParams":{"automatic":true,"containerNames":["sso-postgresql"],"from":{"kind":"ImageStreamTag","namespace":"openshift","name":"postgresql:9.6"}}}]}}' -n {{ namespace }}  
+- name: "create keycloak route"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: route
+    name: sso
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ resources_dir }}/{{ keycloak_route_template }}"

@@ -1,11 +1,9 @@
 ---
+
+sso_admin_credentials_secret: credential-rhsso
+
 sso_realm_id: "{{ project_admin }}-emergency-realm"
 sso_realm_template: "{{ resources_dir }}/realm.json"
-
-sso_theme_path: /opt/eap/themes
-sso_theme_directory: "{{ resources_dir }}/themes/coreui"
-sso_theme_pvc: sso-themes-claim
-sso_theme_template: themes-pvc.yml
 
 sso_js_clientId: js
 sso_vertx_clientId: vertx
