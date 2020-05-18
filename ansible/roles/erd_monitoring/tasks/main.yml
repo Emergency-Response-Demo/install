@@ -141,6 +141,21 @@
     files:
       - "{{ resources_dir }}/{{ incident_priority_prometheus_rules_template }}"
 
+- name: "copy incident service prometheus rules template"
+  template:
+    src: "{{ resources_dir }}/{{ incident_service_prometheus_rules_template }}"
+    dest: "{{ work_dir }}/{{ incident_service_prometheus_rules_template }}"
+
+- name: "create incident service prometheus rules"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: incident-service-prometheus-rules
+    namespace: "{{ namespace_monitoring }}"
+    kind: PrometheusRule
+    files:
+      - "{{ work_dir }}/{{ incident_service_prometheus_rules_template }}"
+
 - name: "copy incident priority service grafana dashboard template"
   template:
     src: "{{ resources_dir }}/{{ incident_priority_service_dashboard_template }}"
