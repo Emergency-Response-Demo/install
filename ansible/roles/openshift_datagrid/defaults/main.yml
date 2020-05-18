@@ -1,12 +1,17 @@
 ---
 
-datagrid_template: "{{ resources_dir }}/datagrid-service-template.yml"
+# datagrid operator
+datagrid_operator_name: infinispan-operator
+datagrid_subscription_name: datagrid
+datagrid_operator_package_name: datagrid
+datagrid_catalog_source: redhat-operators
+datagrid_catalog_source_namespace: openshift-marketplace
+replica_status: '\{\{.status.readyReplicas\}\}'
 
-datagrid_image: registry.redhat.io/jboss-datagrid-7/datagrid73-openshift
+number_of_replicas: 3
+total_container_memory: 512Mi
+total_container_cpu: 1000m
 
-number_of_instances: 3
-total_container_memory: 512
-total_container_cpu: 1000
 container_memory_request: 512
 container_cpu_request: 500
 total_container_storage: 1
