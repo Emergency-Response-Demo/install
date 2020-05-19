@@ -14,3 +14,4 @@ incident_priority_prometheus_rules_template: incident-priority-service-prometheu
 incident_priority_service_dashboard_template: incident-priority-service-dashboard.yml
 
 incident_service_prometheus_rules_template: incident-service-prometheus-rules.yml
+incident_service_dashboard_template: incident-service-dashboard.yml
