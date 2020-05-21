@@ -697,7 +697,7 @@ spec:
             "dashLength": 10,
             "dashes": false,
             "datasource": "Prometheus",
-            "description": "Latency of incidents created",
+            "description": "Latency of HTTP POST incident created calls in milliseconds",
             "fill": 1,
             "gridPos": {
             "h": 8,
@@ -734,22 +734,15 @@ spec:
                 "format": "time_series",
                 "interval": "",
                 "intervalFactor": 1,
-                "legendFormat": "Latency {{pod}}",
+                "legendFormat": "{{pod}}: {{status}}",
                 "refId": "A"
-            },
-            {
-                "expr": "avg((rules:query:sum:rate1m/rules:query:count:rate1m)*1000)",
-                "format": "time_series",
-                "intervalFactor": 1,
-                "legendFormat": "Max",
-                "refId": "B"
             }
             ],
             "thresholds": [],
             "timeFrom": null,
             "timeRegions": [],
             "timeShift": null,
-            "title": "Incidents Created Latency",
+            "title": "HTTP Incidents Created Latency",
             "tooltip": {
             "shared": true,
             "sort": 0,
@@ -830,7 +823,7 @@ spec:
                 "format": "time_series",
                 "interval": "",
                 "intervalFactor": 1,
-                "legendFormat": "Throughput {{pod}}",
+                "legendFormat": "{{pod}}: {{status}}",
                 "refId": "A"
             }
             ],
@@ -838,7 +831,216 @@ spec:
             "timeFrom": null,
             "timeRegions": [],
             "timeShift": null,
-            "title": "Incidents Created Throughput",
+            "title": "HTTP Incidents Created Throughput",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "decimals": null,
+                "format": "short",
+                "label": "per second",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Latency of data access operations in milliseconds",
+            "fill": 1,
+            "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 34
+            },
+            "id": 30,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "(incident_service:dao:sum:rate1m{operation=\"create\"}/incident_service:dao:count:rate1m{operation=\"create\"})*1000",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Create {{pod}}",
+                "refId": "A"
+            },
+            {
+                "expr": "(incident_service:dao:sum:rate1m{operation=\"merge\"}/incident_service:dao:count:rate1m{operation=\"merge\"})*1000",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Update {{pod}}",
+                "refId": "B"
+            },
+            {
+                "expr": "(incident_service:dao:sum:rate1m{operation=\"findByIncidentId\"}/incident_service:dao:count:rate1m{operation=\"findByIncidentId\"})*1000",
+                "format": "time_series",
+                "intervalFactor": 1,
+                "legendFormat": "FindById {{pod}}",
+                "refId": "C"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Incident Service Dao Latency",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "decimals": null,
+                "format": "short",
+                "label": "milliseconds",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Latency of incidents created",
+            "fill": 1,
+            "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 34
+            },
+            "id": 31,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "incident_service:dao:count:rate1m{operation=\"create\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Create {{pod}}",
+                "refId": "A"
+            },
+            {
+                "expr": "incident_service:dao:count:rate1m{operation=\"merge\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Merge {{pod}}",
+                "refId": "B"
+            },
+            {
+                "expr": "incident_service:dao:count:rate1m{operation=\"findByIncidentId\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Find {{pod}}",
+                "refId": "C"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Incident Service Dao Throughput",
             "tooltip": {
             "shared": true,
             "sort": 0,
@@ -888,7 +1090,7 @@ spec:
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 34
+            "y": 42
             },
             "id": 12,
             "legend": {
@@ -983,7 +1185,7 @@ spec:
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 34
+            "y": 42
             },
             "id": 28,
             "interval": "",
@@ -1105,7 +1307,7 @@ spec:
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 42
+            "y": 50
             },
             "id": 18,
             "legend": {
@@ -1220,7 +1422,7 @@ spec:
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 42
+            "y": 50
             },
             "id": 29,
             "legend": {
@@ -1325,7 +1527,7 @@ spec:
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 50
+            "y": 58
             },
             "id": 15,
             "legend": {
@@ -1445,6 +1647,6 @@ spec:
         },
         "timezone": "",
         "title": "Incident Service",
-        "version": 4
+        "version": 6
     }
   name: incident-service-dashboard.json
