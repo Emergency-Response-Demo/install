@@ -1,0 +1,1652 @@
+apiVersion: integreatly.org/v1alpha1
+kind: GrafanaDashboard
+metadata:
+  name: incident-service-dashboard
+  labels:
+    monitoring-key: "{{ application_monitoring_label_value }}"
+spec:
+  json: |
+    {
+        "annotations": {
+        "list": [
+            {
+            "builtIn": 1,
+            "datasource": "-- Grafana --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+            }
+        ]
+        },
+        "editable": true,
+        "gnetId": null,
+        "graphTooltip": 0,
+        "id": 4,
+        "links": [],
+        "panels": [
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Heap Memory Usage as reported by JVM",
+            "fill": 1,
+            "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 0,
+            "y": 0
+            },
+            "id": 2,
+            "interval": "",
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "sum(jvm_memory_used_bytes{area=\"heap\",job=\"{{ project_admin }}-incident-service\"}) by (pod)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Used heap {{pod}}",
+                "refId": "A"
+            },
+            {
+                "expr": "sum(jvm_memory_max_bytes{area=\"heap\",job=\"{{ project_admin }}-incident-service\"}) by (pod)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Max heap {{pod}}",
+                "refId": "B"
+            },
+            {
+                "expr": "sum(jvm_memory_committed_bytes{area=\"heap\",job=\"{{ project_admin }}-incident-service\"}) by (pod)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Committed heap {{pod}}",
+                "refId": "C"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Memory Usage Heap",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": false
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Non Heap Memory Usage as reported by JVM",
+            "fill": 1,
+            "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 8,
+            "y": 0
+            },
+            "id": 3,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "sum(jvm_memory_used_bytes{area=\"nonheap\",job=\"{{ project_admin }}-incident-service\"}) by (pod)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Used non heap {{pod}}",
+                "refId": "A"
+            },
+            {
+                "expr": "sum(jvm_memory_max_bytes{area=\"nonheap\",job=\"{{ project_admin }}-incident-service\"}) by (pod)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Max non heap {{pod}}",
+                "refId": "B"
+            },
+            {
+                "expr": "sum(jvm_memory_committed_bytes{area=\"nonheap\",job=\"{{ project_admin }}-incident-service\"}) by (pod)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Committed non heap {{pod}}",
+                "refId": "C"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Memory Usage Non Heap",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": false
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "OpenShift Monitoring",
+            "description": "Container Memory usage as reported by OpenShift",
+            "fill": 1,
+            "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 16,
+            "y": 0
+            },
+            "id": 8,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "sum(container_memory_working_set_bytes{pod=~'{{ project_admin }}-incident-service-.*',namespace='{{ project_admin }}-er-demo',container='',}) BY (pod, namespace)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "{{pod}}",
+                "refId": "A"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Memory OpenShift",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "CPU usage as reported by the JVM",
+            "fill": 1,
+            "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 9
+            },
+            "id": 4,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "system_cpu_usage{job=\"{{ project_admin }}-incident-service\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "System {{pod}}",
+                "refId": "A"
+            },
+            {
+                "expr": "process_cpu_usage{job=\"{{ project_admin }}-incident-service\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Process {{pod}}",
+                "refId": "B"
+            },
+            {
+                "expr": "avg_over_time(process_cpu_usage{job=\"{{ project_admin }}-incident-service\"}[15m])",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Process Avg 15m {{pod}}",
+                "refId": "C"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "CPU Usage JVM",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "format": "percent",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": false
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "OpenShift Monitoring",
+            "description": "Total CPU usage as reported by OpenShift in millicore",
+            "fill": 1,
+            "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 9
+            },
+            "id": 6,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "pod:container_cpu_usage:sum{namespace=\"{{ project_admin }}-er-demo\", pod=~\"{{ project_admin }}-incident-service-.*\"}*1000",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "CPU total {{pod}}",
+                "refId": "A"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "CPU Usage OpenShift",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "decimals": null,
+                "format": "short",
+                "label": "millicore",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "fill": 1,
+            "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 18
+            },
+            "id": 10,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "rate(jvm_gc_pause_seconds_count{job=\"{{ project_admin }}-incident-service\"}[1m])*60",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "GC Rate {{action}} {{cause}} {{pod}}",
+                "refId": "A"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "GC Rate per Minute",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "format": "short",
+                "label": "Rate per minute",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "",
+            "fill": 1,
+            "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 18
+            },
+            "id": 11,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "(rate(jvm_gc_pause_seconds_sum{job=\"{{ project_admin }}-incident-service\"}[1m])/rate(jvm_gc_pause_seconds_count{job=\"{{ project_admin }}-incident-service\"}[1m]))*1000",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "{{action}} {{cause}} {{pod}}",
+                "refId": "A"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "GC Duration",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "format": "short",
+                "label": "milliseconds",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Latency of HTTP POST incident created calls in milliseconds",
+            "fill": 1,
+            "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 26
+            },
+            "id": 14,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "(incident_service:http:server:sum:rate1m{uri=\"/incidents\", method=\"POST\"}/incident_service:http:server:count:rate1m{uri=\"/incidents\", method=\"POST\"})*1000",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "{{pod}}: {{status}}",
+                "refId": "A"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "HTTP Incidents Created Latency",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "decimals": null,
+                "format": "short",
+                "label": "milliseconds",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Number of incidents created per second",
+            "fill": 1,
+            "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 26
+            },
+            "id": 13,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "incident_service:http:server:count:rate1m{uri=\"/incidents\", method=\"POST\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "{{pod}}: {{status}}",
+                "refId": "A"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "HTTP Incidents Created Throughput",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "decimals": null,
+                "format": "short",
+                "label": "per second",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Latency of data access operations in milliseconds",
+            "fill": 1,
+            "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 34
+            },
+            "id": 30,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "(incident_service:dao:sum:rate1m{operation=\"create\"}/incident_service:dao:count:rate1m{operation=\"create\"})*1000",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Create {{pod}}",
+                "refId": "A"
+            },
+            {
+                "expr": "(incident_service:dao:sum:rate1m{operation=\"merge\"}/incident_service:dao:count:rate1m{operation=\"merge\"})*1000",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Update {{pod}}",
+                "refId": "B"
+            },
+            {
+                "expr": "(incident_service:dao:sum:rate1m{operation=\"findByIncidentId\"}/incident_service:dao:count:rate1m{operation=\"findByIncidentId\"})*1000",
+                "format": "time_series",
+                "intervalFactor": 1,
+                "legendFormat": "FindById {{pod}}",
+                "refId": "C"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Incident Service Dao Latency",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "decimals": null,
+                "format": "short",
+                "label": "milliseconds",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Latency of incidents created",
+            "fill": 1,
+            "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 34
+            },
+            "id": 31,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "incident_service:dao:count:rate1m{operation=\"create\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Create {{pod}}",
+                "refId": "A"
+            },
+            {
+                "expr": "incident_service:dao:count:rate1m{operation=\"merge\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Merge {{pod}}",
+                "refId": "B"
+            },
+            {
+                "expr": "incident_service:dao:count:rate1m{operation=\"findByIncidentId\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Find {{pod}}",
+                "refId": "C"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Incident Service Dao Throughput",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "decimals": null,
+                "format": "short",
+                "label": "per second",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Max connections, average active connections over the last minute",
+            "fill": 1,
+            "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 42
+            },
+            "id": 12,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "avg_over_time(jdbc_connections_active{job=\"{{ project_admin }}-incident-service\"}[1m])",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Avg Active {{pod}}",
+                "refId": "A"
+            },
+            {
+                "expr": "jdbc_connections_max{job=\"{{ project_admin }}-incident-service\"}",
+                "format": "time_series",
+                "intervalFactor": 1,
+                "legendFormat": "Max {{pod}}",
+                "refId": "B"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "JDBC Connection Pool",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "decimals": null,
+                "format": "short",
+                "label": "number",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "description": "",
+            "fill": 1,
+            "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 42
+            },
+            "id": 28,
+            "interval": "",
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+            {
+                "alias": "Offset lag",
+                "color": "#F2CC0C",
+                "fill": 0,
+                "yaxis": 1
+            },
+            {
+                "alias": "Msg in",
+                "color": "#FF780A",
+                "fill": 0,
+                "yaxis": 2
+            },
+            {
+                "alias": "Msg consumed",
+                "color": "#3274D9",
+                "fill": 0,
+                "yaxis": 2
+            }
+            ],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "sum(kafka_consumergroup_lag{consumergroup=\"incident-service\", topic=\"topic-incident-command\"})",
+                "format": "time_series",
+                "instant": false,
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Offset lag",
+                "refId": "A"
+            },
+            {
+                "expr": "sum(rate(kafka_topic_partition_current_offset{topic=\"topic-incident-command\"}[1m]))",
+                "format": "time_series",
+                "intervalFactor": 1,
+                "legendFormat": "Msg in",
+                "refId": "B"
+            },
+            {
+                "expr": "sum(delta(kafka_consumergroup_current_offset{consumergroup=\"incident-service\", topic=\"topic-incident-command\"}[1m])/60)",
+                "format": "time_series",
+                "intervalFactor": 1,
+                "legendFormat": "Msg consumed",
+                "refId": "C"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Consumer Group Lag over Messages In/Consumed topic-incident-command",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "format": "short",
+                "label": "lag in offsets",
+                "logBase": 1,
+                "max": null,
+                "min": "0",
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": "msg per sec",
+                "logBase": 1,
+                "max": null,
+                "min": "0",
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "description": "Left: average and maximum time taken for a fetch request, measured in milliseconds.\nRight: number of fetch requests per second.",
+            "fill": 1,
+            "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 50
+            },
+            "id": 18,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+            {
+                "alias": "/Avg Fetch/",
+                "yaxis": 1
+            },
+            {
+                "alias": "/Max Fetch/",
+                "yaxis": 1
+            },
+            {
+                "alias": "/Fetch Rate/",
+                "yaxis": 2
+            }
+            ],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "avg(kafka_consumer_fetch_latency_avg_seconds{job=\"{{ project_admin }}-incident-service\"} * 1000) by(pod)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Avg Fetch {{pod}}",
+                "refId": "B"
+            },
+            {
+                "expr": "avg(kafka_consumer_fetch_latency_max_seconds{job=\"{{ project_admin }}-incident-service\"} * 1000) by(pod)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Max Fetch {{pod}}",
+                "refId": "A"
+            },
+            {
+                "expr": "sum(rate(kafka_consumer_fetch_total_requests_total{job=\"{{ project_admin }}-incident-service\"}[1m])) by(pod)",
+                "format": "time_series",
+                "intervalFactor": 1,
+                "legendFormat": "Fetch Rate {{pod}}",
+                "refId": "C"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Kafka Consumer Fetch Rate and Latency",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "format": "short",
+                "label": "Milliseconds",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": "Per second",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "description": "Right: rate of records consumed per second \nLeft: average number of record per request.",
+            "fill": 1,
+            "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 50
+            },
+            "id": 29,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+            {
+                "alias": "/request/",
+                "yaxis": 2
+            },
+            {
+                "alias": "/consumed/",
+                "yaxis": 1
+            }
+            ],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "avg(kafka_consumer_records_per_request_avg_records{job=\"{{ project_admin }}-incident-service\"}) by (pod, topic)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Records/request {{pod}}",
+                "refId": "B"
+            },
+            {
+                "expr": "sum(rate(kafka_consumer_records_consumed_total_records_total{job=\"{{ project_admin }}-incident-service\"}[1m])) by(pod, topic)",
+                "format": "time_series",
+                "intervalFactor": 1,
+                "legendFormat": "Records consumed {{pod}}",
+                "refId": "C"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Kafka Records Consumed",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "decimals": null,
+                "format": "short",
+                "label": "records per second",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": "records",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "aliasColors": {},
+            "bars": true,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Number of partitions for the topic-incident-command topic per pod",
+            "fill": 1,
+            "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 58
+            },
+            "id": 15,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+            },
+            "lines": false,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {},
+            "percentage": false,
+            "pluginVersion": "6.2.4",
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "expr": "sum(kafka_consumer_assigned_partitions{job=\"{{ project_admin }}-incident-service\"}) by(pod)",
+                "format": "time_series",
+                "instant": true,
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "{{pod}}",
+                "refId": "A"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Partitions topic-incident-command",
+            "tooltip": {
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "series",
+            "name": null,
+            "show": true,
+            "values": [
+                "total"
+            ]
+            },
+            "yaxes": [
+            {
+                "decimals": 0,
+                "format": "short",
+                "label": "partitions",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        }
+        ],
+        "refresh": "10s",
+        "schemaVersion": 18,
+        "style": "dark",
+        "tags": [],
+        "templating": {
+        "list": []
+        },
+        "time": {
+        "from": "now-1h",
+        "to": "now"
+        },
+        "timepicker": {
+        "refresh_intervals": [
+            "5s",
+            "10s",
+            "30s",
+            "1m",
+            "5m",
+            "15m",
+            "30m",
+            "1h",
+            "2h",
+            "1d"
+        ],
+        "time_options": [
+            "5m",
+            "15m",
+            "1h",
+            "6h",
+            "12h",
+            "24h",
+            "2d",
+            "7d",
+            "30d"
+        ]
+        },
+        "timezone": "",
+        "title": "Incident Service",
+        "version": 6
+    }
+  name: incident-service-dashboard.json

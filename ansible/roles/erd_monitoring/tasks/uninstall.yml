@@ -78,3 +78,11 @@
     name: incident-priority-service-prometheus-rules
     namespace: "{{ namespace_monitoring }}"
     kind: PrometheusRule
+
+- name: "delete incident service prometheus rules"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: incident-service-prometheus-rules
+    namespace: "{{ namespace_monitoring }}"
+    kind: PrometheusRule

@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: incident-service-prometheus-rules
+spec:
+  groups:
+    - name: incident-service.rules
+      rules:
+        - record: incident_service:http:server:sum:rate1m
+          expr: rate(http_server_requests_seconds_sum{job="{{ project_admin }}-incident-service"}[1m])
+        - record: incident_service:http:server:count:rate1m
+          expr: rate(http_server_requests_seconds_count{job="{{ project_admin }}-incident-service"}[1m])
+        - record: incident_service:dao:count:rate1m
+          expr: rate(incident_service_dao_seconds_count{job="{{ project_admin }}-incident-service"}[1m])
+        - record: incident_service:dao:sum:rate1m
+          expr: rate(incident_service_dao_seconds_sum{job="{{ project_admin }}-incident-service"}[1m])
