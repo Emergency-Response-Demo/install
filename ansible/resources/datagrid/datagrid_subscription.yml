@@ -1,0 +1,11 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: {{ datagrid_subscription_name }}
+spec:
+  channel: '{{ datagrid_operator_channel }}'
+  installPlanApproval: Automatic
+  name: {{ datagrid_subscription_name }}
+  source: {{ datagrid_catalog_source }}
+  sourceNamespace: {{ datagrid_catalog_source_namespace }}
+  startingCSV: {{ datagrid_operator_startingcsv }}

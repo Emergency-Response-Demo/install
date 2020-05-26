@@ -1,37 +1,108 @@
 ---
 
+
+- shell: |
+    {{ openshift_cli }} get deployment {{ datagrid_operator_name }} -o template --template={{ replica_status }} -n {{ namespace }}
+  register: resource_status
+  ignore_errors: true
+
+- block:
+
+  - name: "copy {{ resources_base_dir }}/datagrid/datagrid_operatorgroup.yml"
+    template:
+      src: "{{ resources_base_dir }}/datagrid/datagrid_operatorgroup.yml"
+      dest: "{{ work_dir }}/datagrid-operatorgroup.yml"
+
+  - name: "Create operatorgroup in {{ namespace }}"
+    k8s:
+      state: present
+      namespace: "{{ namespace }}"
+      src: "{{ work_dir }}/datagrid-operatorgroup.yml"
+
+  - name: get default channel for datagrid operator
+    shell: |-
+      oc get packagemanifests {{ datagrid_operator_package_name }} -o jsonpath='{.status.defaultChannel}'
+    register: datagrid_defaultchannel
+
+  - name: get currentCSV for default channel
+    shell: |-
+      oc get packagemanifests {{ datagrid_operator_package_name }} -o jsonpath='{.status.channels[?(@.name == "{{ datagrid_defaultchannel.stdout }}")].currentCSV}'
+    register: datagrid_currentCSV
+
+  - name: "copy {{ resources_base_dir }}/datagrid/datagrid_subscription.yml"
+    template:
+      src: "{{ resources_base_dir }}/datagrid/datagrid_subscription.yml"
+      dest: "{{ work_dir }}/datagrid-subscription.yml"
+    vars:
+      datagrid_operator_channel: "{{ datagrid_defaultchannel.stdout }}"
+      datagrid_operator_startingcsv: "{{ datagrid_currentCSV.stdout }}"
+
+  - name: "Create datagrid subscription"
+    k8s:
+      state: present
+      namespace: "{{ namespace }}"
+      src: "{{ work_dir }}/datagrid-subscription.yml"
+
+  - name: "Wait until datagrid operator is active"
+    shell: "oc get deployment {{ datagrid_operator_name }} -o template --template={{ json_template }} -n {{ namespace }}"
+    vars:
+      json_template: '\{\{.status.readyReplicas\}\}'
+    register: result
+    until: result.stdout == "1"
+    retries: 30
+    delay: 10
+    changed_when: false
+
+  when: >
+    resource_status.stdout is not defined or
+    resource_status.stdout is none or
+    resource_status.stdout != "1"
+
 # deploy datagrid
-- name: check if datagrid is deployed
-  oc_obj:
-    state: list
-    oc_binary: "{{ openshift_cli }}"
-    name: "{{ datagrid_application_name }}"
-    namespace: "{{ namespace }}"
-    kind: statefulset
-  register: result
+- shell: |
+    {{ openshift_cli }} get infinispan {{ datagrid_application_name }} -o json -n {{ namespace }}
+  register: resource_status
+  ignore_errors: true
 
-- name: deploy datagrid
-  shell: |
-    {{ openshift_cli }} process -f {{ datagrid_template }} \
-    -p APPLICATION_NAME={{ datagrid_application_name }} \
-    -p IMAGE={{ datagrid_image }} \
-    -p NUMBER_OF_INSTANCES={{ number_of_instances }} \
-    -p TOTAL_CONTAINER_MEM={{ total_container_memory }} \
-    -p TOTAL_CONTAINER_CPU={{ total_container_cpu }} \
-    -p CONTAINER_MEM_REQUEST={{ container_memory_request }} \
-    -p CONTAINER_CPU_REQUEST={{ container_cpu_request }} \
-    -p TOTAL_CONTAINER_STORAGE={{ total_container_storage }} \
-    -p APPLICATION_USER={{ datagrid_application_user }} \
-    -p APPLICATION_PASSWORD={{ datagrid_application_password }} \
-    | {{ openshift_cli }} create -f - -n {{ namespace }}
-  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
+- set_fact:
+    register_infinispan: "{{ resource_status.stdout |from_json |json_query('status.conditions[0].status') }}" 
+  ignore_errors: true
 
-- name: wait until datagrid is up and running
-  shell: "{{ openshift_cli }} get statefulset {{ datagrid_application_name }} -o template --template={{ json_template }} -n {{ namespace }}"
-  vars:
-    json_template: '\{\{.status.readyReplicas\}\}'
-  register: result
-  until: result.stdout == number_of_instances|quote
-  retries: 20
-  delay: 30
-  changed_when: false
+- block:
+
+  # set infinispan user credentials
+  - name: "copy {{ resources_base_dir }}/datagrid/connect_secret.yaml "
+    template:
+      src: "{{ resources_base_dir }}/datagrid/connect_secret.yaml"
+      dest: "{{ work_dir }}/connect_secret.yaml"
+  - name: "Create infinispan secret"
+    k8s:
+      state: present
+      namespace: "{{ namespace }}"
+      src: "{{ work_dir }}/connect_secret.yaml"
+
+  - name: "copy {{ resources_base_dir }}/datagrid/datagrid_cr.yml "
+    template:
+      src: "{{ resources_base_dir }}/datagrid/datagrid_cr.yml"
+      dest: "{{ work_dir }}/datagrid-cr.yml"
+
+  - name: "Create infinispan"
+    k8s:
+      state: present
+      namespace: "{{ namespace }}"
+      src: "{{ work_dir }}/datagrid-cr.yml"
+
+  - name: "wait until infinispan statefulset has started, replicas = {{ number_of_replicas }}"
+    shell: |
+      {{ openshift_cli }} get statefulset {{ datagrid_application_name }} -o template --template={{ json_template }} -n {{ namespace }}
+    vars:
+      json_template: '\{\{.status.currentReplicas\}\}'
+    register: infinispan_set_status
+    until: infinispan_set_status.stdout == "{{ number_of_replicas }}"
+    retries: 15
+    delay: 15 
+
+  when: >
+    register_infinispan is not defined or
+    register_infinispan is none or
+    register_infinispan != True
