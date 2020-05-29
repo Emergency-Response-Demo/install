@@ -1,4 +1,4 @@
-# buildah bud -f Dockerfile quay.io/jbride/jenkins_slave_upgraded_mvn:0.0.2 .
+# buildah bud -f Dockerfile quay.io/emergencyresponsedemo/jenkins_slave_upgraded_mvn:1.1 .
 
 FROM quay.io/openshift/origin-jenkins-agent-base:4.1.0
 
