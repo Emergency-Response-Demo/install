@@ -13,7 +13,7 @@ application_configmap: responder-simulator
 application_configmap_key: app-config.properties
 logging_configmap: responder-simulator-service-logging
 
-application_image: redhat-openjdk18-openshift:1.4
+application_image: redhat-openjdk18-openshift:1.7
 application_image_namespace: openshift
 
 buildconfig_name: "{{ application_name }}-binary"
