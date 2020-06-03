@@ -8,11 +8,18 @@
     namespace: "{{ namespace }}"
     kind: configmap
 
-- name: remove {{ process_service_postgresql_service_name }} secret
+- name: remove {{ process_service_postgresql_configmap }} configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    namespace: "{{ namespace }}"
+    name: "{{ process_service_postgresql_configmap }}"
+
+- name: remove {{ process_service_postgresql_credentials_secret }} secret
   oc_obj:
     state: absent
     oc_binary: "{{ openshift_cli }}"
-    name: "{{ process_service_postgresql_service_name }}"
+    name: "{{ process_service_postgresql_credentials_secret }}"
     namespace: "{{ namespace }}"
     kind: secret
 

@@ -24,8 +24,15 @@ kafka_responder_updated_event_topic: topic-responder-event
 kafka_update_incident_command_topic: topic-incident-command
 kafka_incident_assignment_event_topic: topic-incident-event
 
-process_service_postgresql_template: "{{ resources_dir }}/postgresql-persistent-template.yaml"
+process_service_postgresql_template: "postgresql.yml"
 process_service_postgresql_init_configmap: "{{ process_service_postgresql_service_name }}-init"
+process_service_postgresql_configmap: "{{ process_service_postgresql_service_name }}-config"
+process_service_postgresql_credentials_secret: "{{ process_service_postgresql_service_name }}"
+process_service_postgresql_image_stream_template: postgresql-is.yml
+process_service_postgresql_image_stream: postgres-10-decoderbufs
+process_service_postgresql_image_stream_tag: v1.1.2.Final
+process_service_postgresql_image_stream_namespace: "{{ namespace }}"
+process_service_postgresql_volume_capacity: 5Gi
 process_service_postgresql_max_connections: 100
 process_service_postgresql_max_prepared_transactions: 100
 process_service_postgresql_resources_requests_cpu: 100m
