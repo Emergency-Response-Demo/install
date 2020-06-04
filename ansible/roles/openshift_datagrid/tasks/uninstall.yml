@@ -1,37 +1,51 @@
 ---
 
+- name: "delete infinispan secret"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ datagrid_connect_secret }}"
+    namespace: "{{ namespace }}"
+    kind: secret  
+
 - name: "delete infinispan"
-  shell: |-
-      oc delete infinispan {{ datagrid_application_name }} -n {{ namespace }}
-  ignore_errors: true
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ datagrid_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: infinispan
 
 - name: "delete subscription {{ datagrid_subscription_name }}"
-  shell: |-
-      oc delete subscription {{ datagrid_subscription_name }} -n {{ namespace }}
-  ignore_errors: true
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ datagrid_subscription_name }}"
+    namespace: "{{ namespace }}"
+    kind: subscription
 
 - name: "delete operator group {{ datagrid_operator_package_name }}"
-  shell: |-
-      oc delete operatorgroup {{ datagrid_operator_package_name }}-operator -n {{ namespace }}
-  ignore_errors: true
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ datagrid_operatorgroup_name }}"
+    namespace: "{{ namespace }}"
+    kind: operatorgroup
 
 - name: get default channel for datagrid operator
   shell: |-
-    oc get packagemanifests {{ datagrid_operator_package_name }} -o jsonpath='{.status.defaultChannel}'
+    {{ openshift_cli }} get packagemanifests {{ datagrid_operator_package_name }} -o jsonpath='{.status.defaultChannel}'
   register: datagrid_defaultchannel
 
 - name: get currentCSV for default channel
   shell: |-
-    oc get packagemanifests {{ datagrid_operator_package_name }} -o jsonpath='{.status.channels[?(@.name == "{{ datagrid_defaultchannel.stdout }}")].currentCSV}'
+    {{ openshift_cli }} get packagemanifests {{ datagrid_operator_package_name }} -o jsonpath='{.status.channels[?(@.name == "{{ datagrid_defaultchannel.stdout }}")].currentCSV}'
   register: datagrid_currentCSV
 
 - name: "delete datagrid CSV {{ datagrid_currentCSV.stdout }} "
-  shell: |-
-      oc delete csv {{ datagrid_currentCSV.stdout }} -n {{ namespace }}
-  ignore_errors: true
-
-# Infinispan operater manages its CRD, so no need to explicitly delete the CRD here
-#- name: "delete infinispan crd"
-#  shell: |-
-#      oc delete crd infinispans.infinispan.org
-#  ignore_errors: true
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ datagrid_currentCSV.stdout }}"
+    namespace: "{{ namespace }}"
+    kind: csv
