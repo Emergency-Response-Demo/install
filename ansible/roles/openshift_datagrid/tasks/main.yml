@@ -1,50 +1,61 @@
 ---
 
-
-- shell: |
-    {{ openshift_cli }} get deployment {{ datagrid_operator_name }} -o template --template={{ replica_status }} -n {{ namespace }}
+- name: check if datagrid operator is deployed
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ datagrid_operator_name }}"
+    namespace: "{{ namespace }}"
+    kind: deployment
   register: resource_status
-  ignore_errors: true
 
 - block:
 
-  - name: "copy {{ resources_base_dir }}/datagrid/datagrid_operatorgroup.yml"
+  - name: "copy {{ resources_dir }}/datagrid_operatorgroup.yml"
     template:
-      src: "{{ resources_base_dir }}/datagrid/datagrid_operatorgroup.yml"
+      src: "{{ resources_dir }}/datagrid_operatorgroup.yml"
       dest: "{{ work_dir }}/datagrid-operatorgroup.yml"
 
   - name: "Create operatorgroup in {{ namespace }}"
-    k8s:
+    oc_obj:
       state: present
+      oc_binary: "{{ openshift_cli }}"
+      name: "{{ datagrid_operatorgroup_name }}"
       namespace: "{{ namespace }}"
-      src: "{{ work_dir }}/datagrid-operatorgroup.yml"
+      kind: operatorgroup
+      files:
+        - "{{ work_dir }}/datagrid-operatorgroup.yml"
 
   - name: get default channel for datagrid operator
     shell: |-
-      oc get packagemanifests {{ datagrid_operator_package_name }} -o jsonpath='{.status.defaultChannel}'
+      {{ openshift_cli }} get packagemanifests {{ datagrid_operator_package_name }} -o jsonpath='{.status.defaultChannel}'
     register: datagrid_defaultchannel
 
   - name: get currentCSV for default channel
     shell: |-
-      oc get packagemanifests {{ datagrid_operator_package_name }} -o jsonpath='{.status.channels[?(@.name == "{{ datagrid_defaultchannel.stdout }}")].currentCSV}'
+      {{ openshift_cli }} get packagemanifests {{ datagrid_operator_package_name }} -o jsonpath='{.status.channels[?(@.name == "{{ datagrid_defaultchannel.stdout }}")].currentCSV}'
     register: datagrid_currentCSV
 
-  - name: "copy {{ resources_base_dir }}/datagrid/datagrid_subscription.yml"
+  - name: "copy {{ resources_dir }}/datagrid_subscription.yml"
     template:
-      src: "{{ resources_base_dir }}/datagrid/datagrid_subscription.yml"
+      src: "{{ resources_dir }}/datagrid_subscription.yml"
       dest: "{{ work_dir }}/datagrid-subscription.yml"
     vars:
       datagrid_operator_channel: "{{ datagrid_defaultchannel.stdout }}"
       datagrid_operator_startingcsv: "{{ datagrid_currentCSV.stdout }}"
 
   - name: "Create datagrid subscription"
-    k8s:
+    oc_obj:
       state: present
+      oc_binary: "{{ openshift_cli }}"
+      name: "{{ datagrid_subscription_name }}"
       namespace: "{{ namespace }}"
-      src: "{{ work_dir }}/datagrid-subscription.yml"
+      kind: subscription
+      files:
+        - "{{ work_dir }}/datagrid-subscription.yml"
 
   - name: "Wait until datagrid operator is active"
-    shell: "oc get deployment {{ datagrid_operator_name }} -o template --template={{ json_template }} -n {{ namespace }}"
+    shell: "{{ openshift_cli }} get deployment {{ datagrid_operator_name }} -o template --template={{ json_template }} -n {{ namespace }}"
     vars:
       json_template: '\{\{.status.readyReplicas\}\}'
     register: result
@@ -54,43 +65,54 @@
     changed_when: false
 
   when: >
-    resource_status.stdout is not defined or
-    resource_status.stdout is none or
-    resource_status.stdout != "1"
+    resource_status.ansible_module_results.stderr is defined and resource_status.ansible_module_results.stderr != ""
 
 # deploy datagrid
-- shell: |
-    {{ openshift_cli }} get infinispan {{ datagrid_application_name }} -o json -n {{ namespace }}
+- name: check if datagrid is deployed
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ datagrid_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: infinispan
   register: resource_status
-  ignore_errors: true
 
 - set_fact:
-    register_infinispan: "{{ resource_status.stdout |from_json |json_query('status.conditions[0].status') }}" 
-  ignore_errors: true
+    register_infinispan: "{{ resource_status.ansible_module_results.results[0].status.conditions[0].status }}" 
+  when: resource_status.ansible_module_results.results[0].status is defined
 
 - block:
 
   # set infinispan user credentials
-  - name: "copy {{ resources_base_dir }}/datagrid/connect_secret.yaml "
+  - name: "copy {{ resources_dir }}/connect_secret.yml "
     template:
-      src: "{{ resources_base_dir }}/datagrid/connect_secret.yaml"
-      dest: "{{ work_dir }}/connect_secret.yaml"
-  - name: "Create infinispan secret"
-    k8s:
-      state: present
-      namespace: "{{ namespace }}"
-      src: "{{ work_dir }}/connect_secret.yaml"
+      src: "{{ resources_dir }}/connect_secret.yml"
+      dest: "{{ work_dir }}/connect_secret.yml"
 
-  - name: "copy {{ resources_base_dir }}/datagrid/datagrid_cr.yml "
+  - name: "Create infinispan secret"
+    oc_obj:
+      state: present
+      oc_binary: "{{ openshift_cli }}"
+      name: "{{ datagrid_connect_secret }}"
+      namespace: "{{ namespace }}"
+      kind: secret
+      files:
+        - "{{ work_dir }}/connect_secret.yml"
+
+  - name: "copy {{ resources_dir }}/datagrid_cr.yml "
     template:
-      src: "{{ resources_base_dir }}/datagrid/datagrid_cr.yml"
+      src: "{{ resources_dir }}/datagrid_cr.yml"
       dest: "{{ work_dir }}/datagrid-cr.yml"
 
   - name: "Create infinispan"
-    k8s:
+    oc_obj:
       state: present
+      oc_binary: "{{ openshift_cli }}"
+      name: "{{ datagrid_application_name }}"
       namespace: "{{ namespace }}"
-      src: "{{ work_dir }}/datagrid-cr.yml"
+      kind: infinispan
+      files:
+        - "{{ work_dir }}/datagrid-cr.yml"
 
   - name: "wait until infinispan statefulset has started, replicas = {{ number_of_replicas }}"
     shell: |
