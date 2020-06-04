@@ -1,0 +1,23 @@
+apiVersion: kafka.strimzi.io/v1alpha1
+kind: KafkaConnector
+metadata:
+  name: {{ kafka_connector_name }}
+  labels:
+    strimzi.io/cluster: {{ kafka_connect }}
+spec:
+  class: 'io.debezium.connector.postgresql.PostgresConnector'
+  tasksMax: {{ kafka_connector_tasks_max }}
+  config:
+    database.hostname: {{ kafka_connector_db_host }}
+    database.port: '{{ kafka_connector_db_port }}'
+    database.user: {{ kafka_connector_db_user }}
+    database.password: '{{ kafka_connector_db_password }}'
+    database.dbname: {{ kafka_connector_db_name }}
+    database.server.name: {{ kafka_connector_db_server_name }}
+    schema.whitelist: {{ kafka_connector_schema_whitelist }}
+    table.whitelist: {{ kafka_connector_table_whitelist }}
+    tombstones.on.delete : 'false'
+    transforms: router
+    transforms.router.type: io.debezium.transforms.outbox.EventRouter
+    transforms.router.table.fields.additional.placement: 'type:header:eventType'
+    transforms.router.route.topic.replacement: topic-${routedByValue}

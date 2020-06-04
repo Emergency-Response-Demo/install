@@ -40,6 +40,17 @@ process_service_postgresql_resources_requests_memory: 256Mi
 process_service_postgresql_resources_limits_cpu: 500m
 process_service_postgresql_resources_limits_memory: 512Mi
 
+kafka_connector_template: kafka-connector.yml
+kafka_connector_name: debezium-postgres-process-service
+kafka_connector_tasks_max: 1
+kafka_connector_db_host: "{{ process_service_postgresql_service_name }}.{{ namespace }}.svc"
+kafka_connector_db_port: 5432
+kafka_connector_db_user: postgres
+kafka_connector_db_name: "{{ process_service_postgresql_database }}"
+kafka_connector_db_server_name: rhpam1
+kafka_connector_schema_whitelist: public
+kafka_connector_table_whitelist: public.process_service_outbox
+
 process_service_postgresql_host: "{{ process_service_postgresql_service_name }}"
 
 narayana_dbcp_max_total: 20

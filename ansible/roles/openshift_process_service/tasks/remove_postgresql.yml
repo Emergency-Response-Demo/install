@@ -46,3 +46,11 @@
     name: "{{ process_service_postgresql_service_name }}"
     namespace: "{{ namespace }}"
     kind: pvc
+
+- name: remove postgresql imagestream
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ process_service_postgresql_image_stream }}"
+    namespace: "{{ process_service_postgresql_image_stream_namespace }}"
+    kind: is
