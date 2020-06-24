@@ -1,0 +1,31 @@
+---
+
+- name: Deploy Incident Service
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  run_once: true
+  vars_files:
+    - group_vars/services.yml
+    - group_vars/postgresql.yml
+    - group_vars/kafka_cluster.yml
+    - group_vars/tools.yml
+
+  tasks:
+    - set_fact:
+        namespace: "{{ namespace_services }}"
+        resources_dir: "{{ resources_base_dir }}/incident-service-quarkus"
+        work_dir_name: incident-service-quarkus
+    - include_role:
+        name: ../roles/openshift_incident_service_quarkus
+      when: >
+        ACTION is not defined or
+        ACTION is none or
+        ACTION|trim() == "" or
+        ACTION|trim() == "install"
+    - include_role:
+        name: ../roles/openshift_incident_service_quarkus
+        tasks_from: uninstall
+      when: >
+        ACTION is defined and
+        ACTION|trim() == "uninstall"

@@ -1,0 +1,34 @@
+---
+
+application_name: "{{ incident_service_quarkus_application_name }}"
+
+service_account: incident-service-quarkus
+
+resources_limits_cpu: 500m
+resources_limits_memory: 500Mi
+resources_requests_cpu: 100m
+resources_requests_memory: 200Mi
+
+application_configmap: incident-service-quarkus
+
+application_properties: application.properties
+
+application_image: redhat-openjdk18-openshift:1.6
+application_image_namespace: openshift
+
+buildconfig_name: "{{ application_name }}-binary"
+buildconfig_template: incident-service-quarkus-binary-buildconfig.yml
+
+imagestream_name: "{{ application_name }}"
+imagestream_template: incident-service-quarkus-imagestream.yml
+image_imagestream_template: incident-service-quarkus-image-is.yml
+
+application_template: incident-service-quarkus.yml
+
+kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
+kafka_bootstrap_port: 9092
+kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
+kafka_groupid: incident-service-quarkus
+
+kafka_incident_reported_event_topic: topic-incident-event
+kafka_update_incident_command_topic: topic-incident-command

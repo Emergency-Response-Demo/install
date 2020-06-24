@@ -103,3 +103,6 @@ disaster_service_git_branch=master
 
 datawarehouse_service_git_repo=https://github.com/Emergency-Response-Demo/datawarehouse.git
 datawarehouse_service_git_branch=master
+
+incident_service_quarkus_git_repo=https://github.com/Emergency-Response-Demo/incident-service-quarkus.git
+incident_service_quarkus_git_branch=master
