@@ -24,7 +24,7 @@ spec:
         - /opt/strimzi/bin/cluster_operator_run.sh
         env:
         - name: STRIMZI_NAMESPACE
-          value: "*"
+          value: "{{ cluster_operator_watch_namespaces }}"
         - name: STRIMZI_FULL_RECONCILIATION_INTERVAL_MS
           value: "120000"
         - name: STRIMZI_OPERATION_TIMEOUT_MS
