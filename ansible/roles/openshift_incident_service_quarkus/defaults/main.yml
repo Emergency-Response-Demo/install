@@ -4,6 +4,8 @@ application_name: "{{ incident_service_quarkus_application_name }}"
 
 service_account: incident-service
 
+expose_service: false
+
 resources_limits_cpu: 500m
 resources_limits_memory: 500Mi
 resources_requests_cpu: 100m
