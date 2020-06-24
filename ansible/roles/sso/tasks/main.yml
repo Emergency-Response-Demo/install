@@ -101,7 +101,7 @@
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: present
-    kind: Keycloak
+    kind: keycloaks.keycloak.org
     name: rhsso
     namespace: "{{ namespace }}"
     files:
