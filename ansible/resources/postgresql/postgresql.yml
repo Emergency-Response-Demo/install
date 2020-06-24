@@ -23,6 +23,7 @@ items:
     sessionAffinity: None
   status:
     loadBalancer: {}
+{% if postgresql_storage_type == "persistent" %}
 - kind: PersistentVolumeClaim
   apiVersion: v1
   metadata:
@@ -35,6 +36,7 @@ items:
     resources:
       requests:
         storage: {{ postgresql_pv_capacity }}
+{% endif %}
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
@@ -65,8 +67,8 @@ items:
         - postgresql
         from:
           kind: ImageStreamTag
-          name: postgresql:{{ postgresql_version }}
-          namespace: "{{ postgresql_is_namespace }}"
+          name: '{{ postgresql_imagestream_name }}:{{ postgresql_imagestream_tag }}'
+          namespace: "{{ postgresql_imagestream_namespace }}"
         lastTriggeredImage: ''
     - type: ConfigChange
     replicas: 1
@@ -116,6 +118,11 @@ items:
               secretKeyRef:
                 name: {{ postgresql_credentials_secret }}
                 key: database-name
+          - name: POSTGRESQL_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ postgresql_credentials_secret }}
+                key: database-admin-password        
           - name: POSTGRESQL_SERVICE
             value: {{ postgresql_application_name }}
           - name: POSTGRESQL_MAX_PREPARED_TRANSACTIONS
@@ -134,6 +141,8 @@ items:
             mountPath: "/var/lib/pgsql/data"
           - name: init-volume
             mountPath: /tmp/init-files
+          - name: conf-volume
+            mountPath: /opt/app-root/src/postgresql-cfg
           terminationMessagePath: "/dev/termination-log"
           imagePullPolicy: IfNotPresent
           capabilities: {}
@@ -142,11 +151,19 @@ items:
             privileged: false
         volumes:
         - name: "{{ postgresql_application_name }}-data"
+{% if postgresql_storage_type == "persistent" %}        
           persistentVolumeClaim:
             claimName: "{{ postgresql_application_name }}"
+{% else %}
+          emptyDir: {}
+{% endif %}
         - configMap:
             defaultMode: 493
             name: {{ postgresql_init_configmap }}
           name: init-volume
+        - configMap:
+            defaultMode: 493
+            name: {{ postgresql_conf_configmap }}
+          name: conf-volume
         restartPolicy: Always
         dnsPolicy: ClusterFirst

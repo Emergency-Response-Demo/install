@@ -1,13 +1,29 @@
 ---
 
-- name: create {{ postgresql_service_account }} service account
+- name: copy postgresql imagestream
+  template:
+    src: "{{ resources_dir }}/{{ postgresql_imagestream_template }}"
+    dest: "{{ work_dir }}/{{ postgresql_imagestream_template }}"
+  when: postgresql_image is defined and postgresql_image != ""
+
+- name: "create {{ postgresql_imagestream_name }} iamgestream in the {{ postgresql_imagestream_namespace }} project"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ postgresql_imagestream_name }}"
+    namespace: "{{ postgresql_imagestream_namespace }}"
+    kind: is
+    files:
+      - "{{ work_dir }}/{{ postgresql_imagestream_template }}"
+  when: postgresql_image is defined and postgresql_image != ""
+
+- name: "create {{ postgresql_service_account }} service account"
   oc_serviceaccount:
     oc_binary: "{{ openshift_cli }}"
     state: present
     name: "{{ postgresql_service_account }}"
     namespace: "{{ namespace }}"
 
-# postgresql
 - name: create work directory
   file:
     path: "{{ work_dir }}/{{ postgresql_init_configmap }}"
@@ -27,7 +43,7 @@
   with_items:
      - "{{ postgresql_init_scripts }}"
 
-- name: create {{ postgresql_init_configmap }} configmap
+- name: "create {{ postgresql_init_configmap }} configmap"
   oc_configmap:
     oc_binary: "{{ openshift_cli }}"
     state: present
@@ -35,6 +51,25 @@
     namespace: "{{ namespace }}"
     from_file:
       dir: "{{ work_dir }}/{{ postgresql_init_configmap }}"
+
+- name: create conf work directory
+  file:
+    path: "{{ work_dir }}/{{ postgresql_conf }}"
+    state: directory
+
+- name: copy postgresql configuration files
+  copy:
+    src: "{{ resources_dir }}/conf/{{ postgresql_conf_file }}"
+    dest: "{{ work_dir }}/{{ postgresql_conf }}/{{ postgresql_conf_file }}"
+
+- name: "create {{ postgresql_conf_configmap }} configmap"
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ postgresql_conf_configmap }}"
+    namespace: "{{ namespace }}"
+    from_file:
+      dir: "{{ work_dir }}/{{ postgresql_conf }}"
 
 - name: copy postgresql template
   template:
@@ -51,7 +86,8 @@
     from_literal:
       database-user: "{{ postgresql_username }}"
       database-password: "{{ postgresql_password }}"
-      database-name: "{{ postgresql_database }}"    
+      database-name: "{{ postgresql_database }}"
+      database-admin-password: "{{ lookup('password', '{{ work_dir }}/passwordfile chars=ascii_letters length=12') }}"
   
 - name: check if postgresql is deployed
   oc_obj:

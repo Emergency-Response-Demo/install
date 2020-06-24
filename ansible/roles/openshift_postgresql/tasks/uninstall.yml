@@ -28,7 +28,7 @@
   oc_secret:
     oc_binary: "{{ openshift_cli }}"
     namespace: "{{ namespace }}"
-    name: "{{ postgresql_application_name }}"
+    name: "{{ postgresql_credentials_secret }}"
     state: absent
 
 - name: delete postgresql init configmap
@@ -36,6 +36,13 @@
     oc_binary: "{{ openshift_cli }}"
     state: absent
     name: "{{ postgresql_init_configmap }}"
+    namespace: "{{ namespace }}"
+
+- name: delete postgresql conf configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ postgresql_conf_configmap }}"
     namespace: "{{ namespace }}"
 
 - name: delete {{ postgresql_service_account }} service account
