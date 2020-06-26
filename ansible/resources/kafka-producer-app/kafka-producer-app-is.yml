@@ -1,0 +1,9 @@
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  name: {{ imagestream_name }}
+  labels:
+    app: {{ application_name }}
+spec:
+  dockerImageRepository: {{ kafka_producer_app_image }}

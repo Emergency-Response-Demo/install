@@ -1,0 +1,127 @@
+---
+kind: List
+apiVersion: v1
+items:
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        app: {{ application_name }}
+        expose: "true"
+      annotations:
+      name: {{ application_name }}
+    spec:
+      ports:
+        - name: http
+          port: 8080
+          protocol: TCP
+          targetPort: 8080
+      selector:
+        app: {{ application_name }}
+      sessionAffinity: None
+      type: ClusterIP
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      labels:
+        app: {{ application_name }}
+      name: {{ application_name }}
+    spec:
+      port:
+        targetPort: 8080
+      to:
+        kind: Service
+        name: {{ application_name }}
+        weight: 100
+      wildcardPolicy: None
+  - apiVersion: apps.openshift.io/v1
+    kind: DeploymentConfig
+    metadata:
+      labels:
+        app: {{ application_name }}
+      name: {{ application_name }}
+    spec:
+      replicas: 1
+      revisionHistoryLimit: 2
+      selector:
+        app: {{ application_name }}
+      strategy:
+        activeDeadlineSeconds: 21600
+        resources: {}
+        rollingParams:
+          intervalSeconds: 1
+          maxSurge: 25%
+          maxUnavailable: 25%
+          timeoutSeconds: 3600
+          updatePeriodSeconds: 1
+        type: Rolling
+      template:
+        metadata:
+          labels:
+            app: {{ application_name }}
+        spec:
+          containers:
+            - env:
+                - name: KUBERNETES_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      apiVersion: v1
+                      fieldPath: metadata.namespace
+              imagePullPolicy: IfNotPresent
+              name: {{ application_name }}
+              ports:
+                - containerPort: 8080
+                  name: http
+                  protocol: TCP
+              livenessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /health
+                  port: 8080
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 10
+                timeoutSeconds: 3
+              readinessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /health
+                  port: 8080
+                  scheme: HTTP
+                initialDelaySeconds: 5
+                periodSeconds: 10
+                timeoutSeconds: 3
+              resources:
+                limits:
+                  cpu: {{ resources_limits_cpu }}
+                  memory: {{ resources_limits_memory }}
+                requests:
+                  cpu: {{ resources_requests_cpu }}
+                  memory: {{ resources_requests_memory }}
+              securityContext:
+                privileged: false
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+              volumeMounts:
+                - mountPath: /deployments/config
+                  name: config
+          dnsPolicy: ClusterFirst
+          restartPolicy: Always
+          schedulerName: default-scheduler
+          securityContext: {}
+          terminationGracePeriodSeconds: 30
+          volumes:
+            - configMap:
+                defaultMode: 420
+                name: {{ application_name }}
+              name: config
+      triggers:
+        - type: ConfigChange
+        - imageChangeParams:
+            automatic: true
+            containerNames:
+              - {{ application_name }}
+            from:
+              kind: ImageStreamTag
+              name: '{{ imagestream_name }}:{{ kafka_producer_app_tag }}'
+          type: ImageChange

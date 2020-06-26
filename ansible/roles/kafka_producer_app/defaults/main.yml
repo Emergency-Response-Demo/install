@@ -1,0 +1,27 @@
+---
+
+application_name: kafka-producer-app
+
+service_account: kafka-producer-app
+
+resources_limits_cpu: 200m
+resources_limits_memory: 200Mi
+resources_requests_cpu: 100m
+resources_requests_memory: 100Mi
+
+application_configmap: kafka-producer-app
+
+application_properties: application.properties
+
+imagestream_name: kafka-producer-app
+image_imagestream_template: kafka-producer-app-is.yml
+
+kafka_consumer_app_image:
+kafka_consumer_app_tag:
+
+application_template: kafka-producer-app.yml
+
+kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
+kafka_bootstrap_port: 9092
+kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
+kafka_topic: 
