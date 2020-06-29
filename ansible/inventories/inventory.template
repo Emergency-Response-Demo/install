@@ -21,8 +21,8 @@ emergency_response_theme_extension=https://github.com/Emergency-Response-Demo/em
 incident_service_image=quay.io/emergencyresponsedemo/incident-service
 incident_service_image_tag=2.3
 
-incident_service_quarkus_image=
-incident_service_quarkus_image_tag=
+incident_service_quarkus_image=quay.io/btison/erdemo-incident-service-quarkus
+incident_service_quarkus_image_tag=9c44c75
 
 responder_service_image=quay.io/emergencyresponsedemo/responder-service
 responder_service_image_tag=2.3
@@ -57,9 +57,13 @@ disaster_service_image_tag=2.3
 datawarehouse_service_image=quay.io/emergencyresponsedemo/datawarehouse
 datawarehouse_service_image_tag=2.3
 
-kafka_connect_image=quay.io/btison/strimzi-debezium-postgresql:1.4.0-1.1.2.Final
+kafka_consumer_app_image=quay.io/btison/kafka-consumer-app
+kafka_consumer_app_tag=latest
 
-postgresql_image:
+kafka_producer_app_image=quay.io/btison/kafka-producer-app
+kafka_producer_app_tag=latest
+
+kafka_connect_image=quay.io/btison/strimzi-debezium-postgresql:1.4.0-1.1.2.Final
 
 # source repos
 incident_service_git_repo=https://github.com/Emergency-Response-Demo/incident-service.git
