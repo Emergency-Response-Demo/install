@@ -17,6 +17,5 @@ postgresql_cpu_request: 100m
 
 postgresql_imagestream_template: postgresql-is.yml
 
-postgresql_conf: postgresql-cfg
 postgresql_conf_configmap: "{{ postgresql_application_name }}-conf"
 postgresql_conf_file: postgresql.conf
