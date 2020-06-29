@@ -88,20 +88,18 @@ items:
           - containerPort: 5432
             protocol: TCP
           readinessProbe:
-            timeoutSeconds: 1
-            initialDelaySeconds: 5
             exec:
               command:
-              - "/bin/sh"
-              - "-i"
-              - "-c"
-              - psql -h 127.0.0.1 -U {{ postgresql_username }} -q -d {{ postgresql_database }} -c
-                'SELECT 1'
-          livenessProbe:
+              - /usr/libexec/check-container
+            initialDelaySeconds: 5
             timeoutSeconds: 1
-            initialDelaySeconds: 30
-            tcpSocket:
-              port: 5432
+          livenessProbe:
+            exec:
+              command:
+              - /usr/libexec/check-container
+              - --live
+            initialDelaySeconds: 120
+            timeoutSeconds: 10
           env:
           - name: POSTGRESQL_USER
             valueFrom:
