@@ -165,6 +165,7 @@
     state: absent
     kind: crd
     name: grafanas.integreatly.org
+  when: uninstall_cluster_resources|bool == true
 
 - name: "delete clusterrole for get namespaces"
   oc_obj:
