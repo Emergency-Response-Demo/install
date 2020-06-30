@@ -5,10 +5,10 @@ namespace_services: "{{ project_admin }}-{{ project_name }}"
 assignment_rules_application_name: "{{ project_admin }}-assignment-rules"
 assignment_rules_model_application_name: "{{ project_admin }}-assignment-rules-model"
 incident_process_application_name: "{{ project_admin }}-incident-process"
-incident_service_application_name: "{{ project_admin }}-incident-service"
+incident_service_application_name: "incident-service"
 mission_service_application_name: "{{ project_admin }}-mission-service"
 process_service_application_name: "{{ project_admin }}-process-service"
-responder_service_application_name: "{{ project_admin }}-responder-service"
+responder_service_application_name: "responder-service"
 responder_simulator_service_application_name: "{{ project_admin }}-responder-simulator"
 emergency_console_application_name: "{{ project_admin }}-emergency-console"
 process_viewer_application_name: "{{ project_admin }}-process-viewer"
@@ -18,8 +18,6 @@ responder_client_application_name: "{{ project_admin }}-responder-client-app"
 disaster_service_application_name: "{{ project_admin }}-disaster-service"
 dw_application_name: "{{ project_admin }}-datawarehouse"
 dw_postgresql_application_name: dw-postgresql
-incident_service_quarkus_application_name: "incident-service"
-responder_service_quarkus_application_name: "responder-service"
 
 process_service_postgresql_username: rhpam
 process_service_postgresql_password: rhpam

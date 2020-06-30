@@ -173,6 +173,16 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/responder-service"
     work_dir_name: responder-service
+  when: deploy_from is defined and deploy_from == "source"
+
+- name: install responder service
+  import_role:
+    name: openshift_responder_service_quarkus
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/responder-service-quarkus"
+    work_dir_name: responder-service-quarkus
+  when: deploy_from is defined and deploy_from == "image"
 
 - name: install responder simulator service
   import_role:

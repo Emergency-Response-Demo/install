@@ -1,6 +1,6 @@
 ---
 
-application_name: "{{ responder_service_quarkus_application_name }}"
+application_name: "{{ responder_service_application_name }}"
 
 service_account: responder-service
 
