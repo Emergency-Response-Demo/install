@@ -15,8 +15,7 @@ application_configmap: incident-service
 
 application_properties: application.properties
 
-application_image: redhat-openjdk18-openshift:1.6
-application_image_namespace: openshift
+application_route_host_name: "{{ application_name }}.{{ namespace }}.{{ ocp_domain }}"
 
 imagestream_name: "{{ application_name }}"
 imagestream_template: incident-service-quarkus-imagestream.yml

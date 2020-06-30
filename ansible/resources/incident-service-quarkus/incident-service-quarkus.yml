@@ -29,6 +29,7 @@ items:
       app: {{ application_name }}
     name: {{ application_name }}
   spec:
+    host: {{ application_route_host_name }}
     port:
       targetPort: 8080
     to:
