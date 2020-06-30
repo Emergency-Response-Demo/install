@@ -27,6 +27,9 @@ incident_service_quarkus_image_tag=9c44c75
 responder_service_image=quay.io/emergencyresponsedemo/responder-service
 responder_service_image_tag=2.3
 
+responder_service_quarkus_image=quay.io/btison/erdemo-responder-service-quarkus
+responder_service_quarkus_image_tag=fce1861
+
 process_viewer_image=quay.io/emergencyresponsedemo/process-viewer
 process_viewer_image_tag=2.3
 

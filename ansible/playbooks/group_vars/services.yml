@@ -19,6 +19,7 @@ disaster_service_application_name: "{{ project_admin }}-disaster-service"
 dw_application_name: "{{ project_admin }}-datawarehouse"
 dw_postgresql_application_name: dw-postgresql
 incident_service_quarkus_application_name: "incident-service"
+responder_service_quarkus_application_name: "responder-service"
 
 process_service_postgresql_username: rhpam
 process_service_postgresql_password: rhpam
