@@ -1,0 +1,33 @@
+---
+
+application_name: apicurio-registry
+
+service_account: apicurio-registry-operator
+
+apicurio_registry_operator_role_template: operator-role.yml
+
+apicurio_registry_operator_rolebinding_template: operator-rolebinding.yml
+
+apicurio_registry_operator_crd_template: apicurio-registry-crd.yml
+
+apicurio_registry_operator_deployment: apicurio-registry-operator
+apicurio_registry_operator_template: apicurio-registry-operator.yml
+
+apicurio_registry_operator_image: apicurio/apicurio-registry-operator:0.0.3-dev
+
+apicurio_registry_kafka_streams_image: docker.io/apicurio/apicurio-registry-streams:1.2.2.Final
+
+apicurio_registry_kafka_topic_template: kafka-topic.yml
+apicurio_registry_kafka_topic_name_globalid: global-id-topic
+apicurio_registry_kafka_topic_name_storage: storage-topic
+apicurio_registry_kafka_cluster: "{{ kafka_cluster }}"
+apicurio_registry_kafka_topic_partitions: 50
+apicurio_registry_kafka_topic_replicas: 3
+apicurio_registry_kafka_topic_config: "{}"
+
+apicurio_registry_cr: apicurio-registry
+apicurio_registry_cr_template: apicurio-registry-cr.yml
+apicurio_registry_replicas: 1
+apicurio_registry_persistence: streams
+apicurio_registry_application_id: apicurio-registry
+apicurio_registry_kafka_bootstrap_servers: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc:9092"

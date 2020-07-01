@@ -1,0 +1,104 @@
+---
+
+- name: "create {{ service_account }} service account"
+  oc_serviceaccount:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ service_account }}"
+    namespace: "{{ namespace }}"
+
+- name: create role for apicurio registry operator
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: role
+    name: apicurio-registry-operator
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ resources_dir }}/{{ apicurio_registry_operator_role_template }}"
+
+- name: create rolebinding for apicurio registry operator
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: rolebinding
+    namespace: "{{ namespace }}"
+    name: apicurio-registry-operator
+    files:
+      - "{{ resources_dir }}/{{ apicurio_registry_operator_rolebinding_template }}"
+
+- name: create apicurio registry crd
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: CustomResourceDefinition
+    namespace: "{{ namespace }}"
+    name: apicurioregistries.apicur.io
+    files:
+      - "{{ resources_dir }}/{{ apicurio_registry_operator_crd_template }}"
+
+- name: copy apicurio registry depoyment template
+  template:
+    src: "{{ resources_dir }}/{{ apicurio_registry_operator_template }}"
+    dest: "{{ work_dir }}/{{ apicurio_registry_operator_template }}"
+
+- name: create apicurio operator deployment
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: deployment
+    name: "{{ apicurio_registry_operator_deployment }}"
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/{{ apicurio_registry_operator_template }}"
+
+- name: wait until apicurio registry operator is active
+  shell: "{{ openshift_cli }} get deployment {{ apicurio_registry_operator_deployment }} -o template --template={{ json_template }} -n {{ namespace }}"
+  vars:
+    json_template: '\{\{.status.readyReplicas\}\}'
+  register: result
+  until: result.stdout == "1"
+  retries: 30
+  delay: 10
+
+- name: copy apicurio kafka topic templates
+  template:
+    src: "{{ resources_dir }}/{{ apicurio_registry_kafka_topic_template }}"
+    dest: "{{ work_dir }}/{{ item }}.yml"
+  vars:
+    kafka_topic_name: "{{ item }}"
+    kafka_topic_kafka_cluster: "{{ apicurio_registry_kafka_cluster }}"
+    kafka_topic_partitions: "{{ apicurio_registry_kafka_topic_partitions }}"
+    kafka_topic_replicas: "{{ apicurio_registry_kafka_topic_replicas }}"
+    kafka_topic_config: "{{ apicurio_registry_kafka_topic_config }}"
+  loop:
+    - "{{ apicurio_registry_kafka_topic_name_globalid }}"
+    - "{{ apicurio_registry_kafka_topic_name_storage }}"
+
+- name: create kafka topics for apicurio registry
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: kafkatopic
+    namespace: "{{ namespace_kafka_cluster }}"
+    name: "{{ item }}"
+    files:
+      - "{{ work_dir }}/{{ item }}.yml"
+  loop:
+    - "{{ apicurio_registry_kafka_topic_name_globalid }}"
+    - "{{ apicurio_registry_kafka_topic_name_storage }}"
+
+- name: copy apicurio cr template
+  template:
+    src: "{{ resources_dir }}/{{ apicurio_registry_cr_template }}"
+    dest: "{{ work_dir }}/{{ apicurio_registry_cr_template }}"
+
+- name: deploy apicurio registry cr
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: ApicurioRegistry
+    namespace: "{{ namespace }}"
+    name: "{{ apicurio_registry_cr }}"
+    files: 
+      - "{{ work_dir }}/{{ apicurio_registry_cr_template }}"

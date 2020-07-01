@@ -1,0 +1,15 @@
+---
+apiVersion: apicur.io/v1alpha1
+kind: ApicurioRegistry
+metadata:
+  name: {{ apicurio_registry_cr }}
+spec:
+  configuration:
+    persistence: {{ apicurio_registry_persistence }}
+{% if apicurio_registry_persistence == 'streams' %}
+    streams:
+      bootstrapServers: {{ apicurio_registry_kafka_bootstrap_servers }}
+      applicationId: {{ apicurio_registry_application_id }}
+{% endif %}
+  deployment:
+    replicas: {{ apicurio_registry_replicas }}
