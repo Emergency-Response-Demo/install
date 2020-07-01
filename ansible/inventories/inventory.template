@@ -19,46 +19,46 @@ emergency_response_theme_extension=https://github.com/Emergency-Response-Demo/em
 
 # images
 incident_service_image=quay.io/emergencyresponsedemo/incident-service
-incident_service_image_tag=2.3
+incident_service_image_tag=2.4
 
 incident_service_quarkus_image=quay.io/btison/erdemo-incident-service-quarkus
 incident_service_quarkus_image_tag=9c44c75
 
 responder_service_image=quay.io/emergencyresponsedemo/responder-service
-responder_service_image_tag=2.3
+responder_service_image_tag=2.4
 
 responder_service_quarkus_image=quay.io/btison/erdemo-responder-service-quarkus
 responder_service_quarkus_image_tag=fce1861
 
 process_viewer_image=quay.io/emergencyresponsedemo/process-viewer
-process_viewer_image_tag=2.3
+process_viewer_image_tag=2.4
 
 incident_priority_service_image=quay.io/emergencyresponsedemo/incident-priority-service
-incident_priority_service_image_tag=2.3
+incident_priority_service_image_tag=2.4
 
 process_service_image=quay.io/emergencyresponsedemo/process-service
-process_service_image_tag=2.3
+process_service_image_tag=2.4
 
 disaster_simulator_service_image=quay.io/emergencyresponsedemo/disaster-simulator
-disaster_simulator_service_image_tag=2.3
+disaster_simulator_service_image_tag=2.4
 
 mission_service_image=quay.io/emergencyresponsedemo/mission-service
 mission_service_image_tag=1cafabd
 
 responder_simulator_image=quay.io/emergencyresponsedemo/responder-simulator
-responder_simulator_image_tag=2.3
+responder_simulator_image_tag=2.4
 
 emergency_console_image=quay.io/emergencyresponsedemo/emergency-console
-emergency_console_image_tag=2.3
+emergency_console_image_tag=2.4
 
-responder_client_app_image=quay.io/emergencyresponsedemo/emergency-response-client-app
-responder_client_app_image_tag=2.3
+responder_client_app_image=quay.io/emergencyresponsedemo/responder-client-app
+responder_client_app_image_tag=2.4
 
 disaster_service_image=quay.io/emergencyresponsedemo/disaster-service
-disaster_service_image_tag=2.3
+disaster_service_image_tag=2.4
 
 datawarehouse_service_image=quay.io/emergencyresponsedemo/datawarehouse
-datawarehouse_service_image_tag=2.3
+datawarehouse_service_image_tag=2.4
 
 kafka_consumer_app_image=quay.io/btison/kafka-consumer-app
 kafka_consumer_app_tag=latest
