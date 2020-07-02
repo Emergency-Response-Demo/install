@@ -1,6 +1,6 @@
 ---
 
-- name: deploy apicurio registry cr
+- name: remove apicurio registry cr
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
