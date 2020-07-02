@@ -14,7 +14,7 @@
     - "{{ resources_dir }}/postgresql/*.sh"
     - "{{ resources_dir }}/postgresql/sql/*.sql"
 
-- name: create {{ process_service_postgresql_init_configmap }} configmap
+- name: "create {{ process_service_postgresql_init_configmap }} configmap"
   oc_configmap:
     oc_binary: "{{ openshift_cli }}"
     state: present
@@ -23,22 +23,28 @@
     from_file:
       dir: "{{ work_dir }}/{{ process_service_postgresql_init_configmap }}"
 
+- name: copy postgresql template
+  template:
+    src: "{{ resources_dir }}/{{ process_service_postgresql_template }}"
+    dest: "{{ work_dir }}/postgresql.yml"
+
 # deploy postgresql
+- name: check if postgresql is deployed
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ process_service_postgresql_service_name }}"
+    namespace: "{{ namespace }}"
+    kind: dc
+  register: result
+
 - name: deploy postgresql
-  shell: |
-    {{ openshift_cli }} new-app -f {{ process_service_postgresql_template }} \
-        --param=APPLICATION_NAME={{ application_name }} \
-        --param=DATABASE_SERVICE_NAME={{ process_service_postgresql_service_name }} \
-        --param=POSTGRESQL_USER={{ process_service_postgresql_username }} \
-        --param=POSTGRESQL_PASSWORD={{ process_service_postgresql_password }} \
-        --param=POSTGRESQL_DATABASE={{ process_service_postgresql_database }} \
-        --param=POSTGRESQL_MAX_CONNECTIONS={{ process_service_postgresql_max_connections }} \
-        --param=POSTGRESQL_MAX_PREPARED_TRANSACTIONS={{ process_service_postgresql_max_prepared_transactions }} \
-        --param=POSTGRESQL_REQUEST_CPU={{ process_service_postgresql_resources_requests_cpu }} \
-        --param=POSTGRESQL_REQUEST_MEMORY={{ process_service_postgresql_resources_requests_memory }} \
-        --param=POSTGRESQL_LIMIT_CPU={{ process_service_postgresql_resources_limits_cpu }} \
-        --param=POSTGRESQL_LIMIT_MEMORY={{ process_service_postgresql_resources_limits_memory }} \
-        -n {{ namespace }}
+  oc_list:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/postgresql.yml"
 
 - name: wait until postgresql database is up and running
   shell: "{{ openshift_cli }} get dc {{ process_service_postgresql_service_name }} -o template --template={{ json_template }} -n {{ namespace }}"

@@ -1,0 +1,169 @@
+---
+kind: List
+apiVersion: v1
+items:
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: "{{ process_service_postgresql_service_name }}"
+    annotations:
+      template.openshift.io/expose-username: "{.data['database-user']}"
+      template.openshift.io/expose-password: "{.data['database-password']}"
+      template.openshift.io/expose-database_name: "{.data['database-name']}"
+    labels:
+      app: {{ application_name }} 
+  stringData:
+    database-user: "{{ process_service_postgresql_username }}"
+    database-password: {{ process_service_postgresql_password }}
+    database-name: {{ process_service_postgresql_database }}
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "{{ process_service_postgresql_service_name }}"
+    annotations:
+      template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
+    labels:
+      app: {{ application_name }}
+  spec:
+    ports:
+    - name: postgresql
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
+      nodePort: 0
+    selector:
+      name: "{{ process_service_postgresql_service_name }}"
+    type: ClusterIP
+    sessionAffinity: None
+  status:
+    loadBalancer: {}
+{% if process_service_postgresql_storage_type == "persistent" %}
+- kind: PersistentVolumeClaim
+  apiVersion: v1
+  metadata:
+    name: "{{ process_service_postgresql_service_name }}"
+    labels:
+      app: {{ application_name }}
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: "{{ process_service_postgresql_volume_capacity }}"
+{% endif %}
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: "{{ process_service_postgresql_service_name }}"
+    labels:
+      app: {{ application_name }}
+  spec:
+    strategy:
+      recreateParams:
+        post:
+          execNewPod:
+            command: 
+            - /bin/bash
+            - /tmp/init-files/wait_for_postgresql.sh
+            - /tmp/init-files/create_rhpam_database.sh
+            containerName: postgresql
+            volumes:
+            - init-volume
+          failurePolicy: Abort
+        timeoutSeconds: 600
+      resources: {}
+      type: Recreate
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - postgresql
+        from:
+          kind: ImageStreamTag
+          name: {{ process_service_postgresql_imagestream }}:{{ process_service_postgresql_imagestream_tag }}
+          namespace: "{{ process_service_postgresql_imagestream_namespace }}"
+        lastTriggeredImage: ''
+    - type: ConfigChange
+    replicas: 1
+    selector:
+      name: "{{ process_service_postgresql_service_name }}"
+    template:
+      metadata:
+        labels:
+          name: "{{ process_service_postgresql_service_name }}"
+          app: {{ application_name }}
+      spec:
+        containers:
+        - name: postgresql
+          image: " "
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - /usr/libexec/check-container
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          livenessProbe:
+            exec:
+              command:
+              - /usr/libexec/check-container
+              - --live
+            initialDelaySeconds: 120
+            timeoutSeconds: 10
+          env:
+          - name: POSTGRESQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: "{{ process_service_postgresql_service_name }}"
+                key: database-user
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: "{{ process_service_postgresql_service_name }}"
+                key: database-password
+          - name: POSTGRESQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: "{{ process_service_postgresql_service_name }}"
+                key: database-name
+          - name: POSTGRESQL_SERVICE
+            value: {{ process_service_postgresql_service_name }}
+          - name: POSTGRESQL_MAX_PREPARED_TRANSACTIONS
+            value: "{{ process_service_postgresql_max_prepared_transactions }}"
+          - name: POSTGRESQL_MAX_CONNECTIONS
+            value: "{{ process_service_postgresql_max_connections }}"
+          resources:
+            requests:
+              cpu: "{{ process_service_postgresql_resources_requests_cpu }}"
+              memory: "{{ process_service_postgresql_resources_requests_memory }}"
+            limits:
+              cpu: "{{ process_service_postgresql_resources_limits_cpu }}"
+              memory: "{{ process_service_postgresql_resources_limits_memory }}"
+          volumeMounts:
+          - name: "{{ process_service_postgresql_service_name }}-data"
+            mountPath: "/var/lib/pgsql/data"
+          - name: init-volume
+            mountPath: /tmp/init-files
+          terminationMessagePath: "/dev/termination-log"
+          imagePullPolicy: IfNotPresent
+          capabilities: {}
+          securityContext:
+            capabilities: {}
+            privileged: false
+        volumes:
+        - name: "{{ process_service_postgresql_service_name }}-data"
+{% if process_service_postgresql_storage_type == "persistent" %} 
+          persistentVolumeClaim:
+            claimName: "{{ process_service_postgresql_service_name }}"
+{% else %}
+          emptyDir: {}
+{% endif %}
+        - configMap:
+            defaultMode: 493
+            name: {{ process_service_postgresql_service_name }}-init
+          name: init-volume
+        restartPolicy: Always
+        dnsPolicy: ClusterFirst
