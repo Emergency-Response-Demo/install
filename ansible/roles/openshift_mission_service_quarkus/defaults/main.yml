@@ -1,0 +1,32 @@
+---
+
+application_name: "{{ mission_service_application_name }}"
+
+service_account: mission-service
+
+resources_limits_cpu: 500m
+resources_limits_memory: 500Mi
+resources_requests_cpu: 200m
+resources_requests_memory: 250Mi
+
+application_configmap: mission-service
+
+application_properties: application.properties
+
+imagestream_name: "{{ application_name }}"
+image_imagestream_template: mission-service-image-is.yml
+
+application_template: mission-service.yml
+
+kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
+kafka_bootstrap_port: 9092
+kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
+kafka_groupid: mission-service
+
+kafka_mission_command_topic: topic-mission-command
+kafka_mission_event_topic: topic-mission-event
+kafka_responder_location_update_topic: topic-responder-location-update
+kafka_responder_command_topic: topic-responder-command
+
+datagrid_server_list: "{{ datagrid_application_name }}.{{ namespace_datagrid }}.svc:11222"
+datagrid_cache_name: mission 

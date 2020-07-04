@@ -45,6 +45,9 @@ disaster_simulator_service_image_tag=2.4
 mission_service_image=quay.io/emergencyresponsedemo/mission-service
 mission_service_image_tag=1cafabd
 
+mission_service_quarkus_image=quay.io/btison/erdemo-mission-service-quarkus
+mission_service_image_tag=latest
+
 responder_simulator_image=quay.io/emergencyresponsedemo/responder-simulator
 responder_simulator_image_tag=2.4
 
