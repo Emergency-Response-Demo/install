@@ -1,0 +1,16 @@
+---
+
+apicurito_operatorgroup_template: operatorgroup.yml
+apicurito_operatorgroup_name: "{{ operatorgroup_tools }}"
+
+apicurito_operator_packagemanifest: apicurito
+
+apicurito_subscription_starting_csv: ""
+apicurito_subscription_automatic_installplan_approval: false
+apicurito_subscription_template: subscription.yml
+apicurito_subscription_name: apicurito
+
+apicurito_template: apicurito-cr.yml
+apicurito_name: apicurito-service
+apicurito_num_replicas: 1
+apicurito_image: apicurio/apicurito-ui:latest

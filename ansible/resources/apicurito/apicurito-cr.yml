@@ -1,0 +1,8 @@
+---
+apiVersion: apicur.io/v1alpha1
+kind: Apicurito
+metadata:
+  name: {{ apicurito_name }}
+spec:
+  size: {{ apicurito_num_replicas }}
+  image: {{ apicurito_image }}
