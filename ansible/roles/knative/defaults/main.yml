@@ -1,0 +1,9 @@
+---
+
+serverless_operator_packagemanifest: serverless-operator
+
+serverless_subscription_starting_csv: ""
+serverless_subscription_automatic_installplan_approval: false
+serverless_subscription_template: subscription.yml
+serverless_subscription_name: serverless-operator
+serverless_operator_subscription_channel: 4.4

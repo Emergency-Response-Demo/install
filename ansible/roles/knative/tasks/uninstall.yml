@@ -1,0 +1,52 @@
+---
+
+- name: "get all install plans in openshift-operators namespace"
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    kind: InstallPlan
+    namespace: openshift-operators
+  register: r_serverless_install_plan
+
+- name: set serverless install plan name
+  set_fact:
+    install_plan_name: "{{ r_serverless_install_plan.ansible_module_results.results[0]['items'] | to_json | from_json | json_query(query) }}"
+  vars:
+    query: >-
+      [?starts_with(spec.clusterServiceVersionNames[0], 'serverless-operator')].metadata.name|[0]
+
+- name: find all serverless related CSVs
+  set_fact:
+    serverless_csvs: "{{ r_serverless_install_plan.ansible_module_results.results[0]['items'] | to_json | from_json | json_query(query) }}"
+  vars:
+    query: >-
+      [?starts_with(spec.clusterServiceVersionNames[0], 'serverless-operator')].spec.clusterServiceVersionNames
+
+- name: delete all serverless related csv
+  when: serverless_csvs | length > 0
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    kind: ClusterServiceVersion
+    name: "{{ item }}"
+    namespace: openshift-operators
+  loop: "{{ serverless_csvs[0] }}"
+
+- name: "delete subscription for serverless operator "
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ serverless_subscription_name }}"
+    namespace: openshift-operators
+    kind: Subscription
+
+- name: "remove serverless installplan"
+  when:
+  - install_plan_name is defined
+  - install_plan_name | default("") | length > 0
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    kind: InstallPlan
+    namespace: openshift-operators
+    name: "{{ install_plan_name }}"
