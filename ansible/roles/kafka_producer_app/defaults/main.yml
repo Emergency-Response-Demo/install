@@ -9,15 +9,12 @@ resources_limits_memory: 200Mi
 resources_requests_cpu: 100m
 resources_requests_memory: 100Mi
 
-application_configmap: kafka-producer-app
+application_configmap: "{{ application_name }}"
 
 application_properties: application.properties
 
 imagestream_name: kafka-producer-app
 image_imagestream_template: kafka-producer-app-is.yml
-
-kafka_consumer_app_image:
-kafka_consumer_app_tag:
 
 application_template: kafka-producer-app.yml
 
