@@ -157,6 +157,16 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/mission-service"
     work_dir_name: mission-service
+  when: deploy_from is defined and deploy_from == "source"
+
+- name: install mission service
+  import_role:
+    name: openshift_mission_service_quarkus
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/mission-service-quarkus"
+    work_dir_name: mission-service-quarkus
+  when: deploy_from is defined and deploy_from == "image"
 
 - name: install process service
   import_role:

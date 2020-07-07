@@ -91,6 +91,17 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/mission-service"
     work_dir_name: mission-service
+  when: deploy_from is defined and deploy_from == "source"
+
+- name: uninstall mission service
+  import_role:
+    name: openshift_mission_service
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/mission-service"
+    work_dir_name: mission-service
+  when: deploy_from is defined and deploy_from == "image"
 
 - name: uninstall incident service
   import_role:
