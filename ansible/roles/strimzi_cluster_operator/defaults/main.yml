@@ -68,4 +68,4 @@ cluster_operator_resources_cpu_limit: 1000m
 cluster_operator_resources_memory_request: 256Mi
 cluster_operator_resources_cpu_request: 200m
 
-cluster_operator_watch_namespaces: "*"
+cluster_operator_watch_namespaces: "{{ namespace_strimzi_operator }}"
