@@ -7,7 +7,6 @@ items:
   metadata:
     labels:
       app: {{ application_name }}
-      monitoring: prometheus
       expose: "true"
     name: {{ application_name }}
   spec:
