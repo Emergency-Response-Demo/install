@@ -6,7 +6,6 @@ sa_cluster_operator_template: 010-ServiceAccount-strimzi-cluster-operator.yaml
 clusterrole_cluster_operator_role: strimzi-cluster-operator-namespaced
 clusterrole_cluster_operator_role_template: 020-ClusterRole-strimzi-cluster-operator-role.yaml
 
-rolebinding_cluster_operator: strimzi-cluster-operator
 rolebinding_cluster_operator_template: 020-RoleBinding-strimzi-cluster-operator.yaml
 
 clusterrole_cluster_operator_role_global: strimzi-cluster-operator-global
@@ -18,19 +17,17 @@ clusterrolebinding_cluster_operator_template: 021-ClusterRoleBinding-strimzi-clu
 clusterrole_kafka_broker: strimzi-kafka-broker
 clusterrole_kafka_broker_template: 030-ClusterRole-strimzi-kafka-broker.yaml
 
-clusterrolebinding_cluster_operator_kafka: "strimzi-cluster-operator-kafka-broker-delegation-{{ namespace_strimzi_operator }}"
+clusterrolebinding_cluster_operator_kafka: "strimzi-kafka-broker-delegation-{{ namespace_strimzi_operator }}"
 clusterrolebinding_cluster_operator_kafka_template: 030-ClusterRoleBinding-strimzi-cluster-operator-kafka-broker-delegation.yaml
 
 clusterrole_entity_operator: strimzi-entity-operator
 clusterrole_entity_operator_template: 031-ClusterRole-strimzi-entity-operator.yaml
 
-rolebinding_entity_operator: strimzi-cluster-operator-entity-operator-delegation
 rolebinding_entity_operator_template: 031-RoleBinding-strimzi-cluster-operator-entity-operator-delegation.yaml
 
 clusterrole_topic_operator: strimzi-topic-operator
 clusterrole_topic_operator_template: 032-ClusterRole-strimzi-topic-operator.yaml
 
-rolebinding_topic_operator: strimzi-cluster-operator-topic-operator-delegation
 rolebinding_topic_operator_template: 032-RoleBinding-strimzi-cluster-operator-topic-operator-delegation.yaml
 
 crd_kafka: kafkas.kafka.strimzi.io

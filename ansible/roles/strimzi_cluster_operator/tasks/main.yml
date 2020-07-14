@@ -198,7 +198,7 @@
   oc_adm_policy_user:
     oc_binary: "{{ openshift_cli }}"
     state: present
-    rolebinding_name: strimzi-cluster-operator-namespaced
+    rolebinding_name: strimzi-cluster-operator-namespaced-{{ namespace }}
     resource_kind: cluster-role
     resource_name: "{{ clusterrole_cluster_operator_role }}"
     user: "system:serviceaccount:{{ namespace_strimzi_operator }}:{{ sa_cluster_operator }}"
@@ -207,7 +207,7 @@
   oc_adm_policy_user:
     oc_binary: "{{ openshift_cli }}"
     state: present
-    rolebinding_name: strimzi-cluster-operator-entity-operator-delegation
+    rolebinding_name: strimzi-entity-operator-delegation-{{ namespace }}
     resource_kind: cluster-role
     resource_name: "{{ clusterrole_entity_operator }}"
     user: "system:serviceaccount:{{ namespace_strimzi_operator }}:{{ sa_cluster_operator }}"
@@ -216,7 +216,7 @@
   oc_adm_policy_user:
     oc_binary: "{{ openshift_cli }}"
     state: present
-    rolebinding_name: strimzi-cluster-operator-topic-operator-delegation
+    rolebinding_name: strimzi-topic-operator-delegation-{{ namespace }}
     resource_kind: cluster-role
     resource_name: "{{ clusterrole_topic_operator }}"
     user: "system:serviceaccount:{{ namespace_strimzi_operator }}:{{ sa_cluster_operator }}"

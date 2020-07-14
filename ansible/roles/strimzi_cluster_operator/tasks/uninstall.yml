@@ -147,19 +147,19 @@
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: strimzi-cluster-operator-namespaced
+    name: strimzi-cluster-operator-namespaced-{{ namespace }}
     kind: clusterrolebinding
 
 - name: remove entity operator clusterrole binding
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: strimzi-cluster-operator-entity-operator-delegation
+    name: strimzi-entity-operator-delegation-{{ namespace }}
     kind: clusterrolebinding
 
 - name: remove topic operator clusterrolebinding
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: strimzi-cluster-operator-topic-operator-delegation
+    name: strimzi-topic-operator-delegation-{{ namespace }}
     kind: clusterrolebinding
