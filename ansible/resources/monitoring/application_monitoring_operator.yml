@@ -15,21 +15,13 @@ spec:
       serviceAccountName: application-monitoring-operator
       containers:
         - name: application-monitoring-operator
-          image: quay.io/integreatly/application-monitoring-operator:v1.1.5
+          image: quay.io/integreatly/application-monitoring-operator:v1.2.1
           ports:
             - containerPort: 8383
               name: metrics
           command:
             - application-monitoring-operator
           imagePullPolicy: Always
-          readinessProbe:
-            exec:
-              command:
-                - stat
-                - /tmp/operator-sdk-ready
-            initialDelaySeconds: 4
-            periodSeconds: 10
-            failureThreshold: 1
           env:
             - name: TEMPLATE_PATH
               value: /usr/local/bin/templates
