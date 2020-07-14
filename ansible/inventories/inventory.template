@@ -22,7 +22,7 @@ incident_service_image=quay.io/emergencyresponsedemo/incident-service
 incident_service_image_tag=2.4
 
 incident_service_quarkus_image=quay.io/btison/erdemo-incident-service-quarkus
-incident_service_quarkus_image_tag=9c44c75
+incident_service_quarkus_image_tag=b9a6742
 
 responder_service_image=quay.io/emergencyresponsedemo/responder-service
 responder_service_image_tag=2.4
