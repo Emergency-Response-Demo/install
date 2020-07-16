@@ -7,6 +7,7 @@
   run_once: true
   vars_files:
     - group_vars/services.yml
+    - group_vars/kafka_cluster.yml
     - group_vars/tools.yml
 
   tasks:
