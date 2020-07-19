@@ -22,13 +22,13 @@ incident_service_image=quay.io/emergencyresponsedemo/incident-service
 incident_service_image_tag=2.4
 
 incident_service_quarkus_image=quay.io/btison/erdemo-incident-service-quarkus
-incident_service_quarkus_image_tag=b9a6742
+incident_service_quarkus_image_tag=eae5b70
 
 responder_service_image=quay.io/emergencyresponsedemo/responder-service
 responder_service_image_tag=2.4
 
 responder_service_quarkus_image=quay.io/btison/erdemo-responder-service-quarkus
-responder_service_quarkus_image_tag=cd27701
+responder_service_quarkus_image_tag=dc8f45a
 
 process_viewer_image=quay.io/emergencyresponsedemo/process-viewer
 process_viewer_image_tag=2.4
