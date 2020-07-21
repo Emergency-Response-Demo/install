@@ -26,7 +26,7 @@ items:
       app: {{ application_name }}
     name: {{ application_name }}
   spec:
-    host: {{ responder_client_application_name }}.{{ ocp_domain }}
+    host: '{{ project_admin }}-{{ responder_client_application_name }}.{{ ocp_domain }}'
     port:
       targetPort: 8080
     to:
@@ -97,7 +97,7 @@ items:
             - name: TOKEN
               value: {{ responder_client_app_config_map_token }}
             - name: SERVER_URL
-              value: "https://{{ emergency_console_application_name }}.{{ ocp_domain }}"
+              value: "https://{{ project_admin }}-{{ emergency_console_application_name }}.{{ ocp_domain }}"
             imagePullPolicy: IfNotPresent
             name: {{ application_name }}
             ports:

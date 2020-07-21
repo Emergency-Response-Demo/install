@@ -26,7 +26,7 @@ items:
       app: {{ application_name }}
     name: {{ application_name }}
   spec:
-    host: {{ emergency_console_application_name }}.{{ ocp_domain }}
+    host: '{{ project_admin }}-{{ emergency_console_application_name }}.{{ ocp_domain }}'
     port:
       targetPort: 8080
     to:

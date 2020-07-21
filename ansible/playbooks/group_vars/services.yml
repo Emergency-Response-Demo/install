@@ -2,21 +2,21 @@
 
 namespace_services: "{{ project_admin }}-{{ project_name }}"
 
-assignment_rules_application_name: "{{ project_admin }}-assignment-rules"
-assignment_rules_model_application_name: "{{ project_admin }}-assignment-rules-model"
-incident_process_application_name: "{{ project_admin }}-incident-process"
+assignment_rules_application_name: "assignment-rules"
+assignment_rules_model_application_name: "assignment-rules-model"
+incident_process_application_name: "incident-process"
 incident_service_application_name: "incident-service"
 mission_service_application_name: "mission-service"
 process_service_application_name: "process-service"
 responder_service_application_name: "responder-service"
-responder_simulator_service_application_name: "{{ project_admin }}-responder-simulator"
-emergency_console_application_name: "{{ project_admin }}-emergency-console"
-process_viewer_application_name: "{{ project_admin }}-process-viewer"
-incident_priority_service_application_name: "{{ project_admin }}-incident-priority-service"
-disaster_simulator_service_application_name: "{{ project_admin }}-disaster-simulator"
-responder_client_application_name: "{{ project_admin }}-responder-client-app"
-disaster_service_application_name: "{{ project_admin }}-disaster-service"
-dw_application_name: "{{ project_admin }}-datawarehouse"
+responder_simulator_service_application_name: "responder-simulator"
+emergency_console_application_name: "emergency-console"
+process_viewer_application_name: "process-viewer"
+incident_priority_service_application_name: "incident-priority-service"
+disaster_simulator_service_application_name: "disaster-simulator"
+responder_client_application_name: "responder-client-app"
+disaster_service_application_name: "disaster-service"
+dw_application_name: "datawarehouse"
 dw_postgresql_application_name: dw-postgresql
 
 process_service_postgresql_username: rhpam
