@@ -71,7 +71,7 @@ topic_operator_liveness_probe_timeout_seconds: 5
 
 user_operator_requests_cpu: 150m
 user_operator_requests_memory: 150M
-user_operator_limits_cpu: 250m
+user_operator_limits_cpu: 500m
 user_operator_limits_memory: 250M
 
 user_operator_readiness_probe_initial_delay_seconds: 10
