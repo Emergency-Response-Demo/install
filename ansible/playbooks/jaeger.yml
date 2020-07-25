@@ -1,0 +1,28 @@
+---
+
+- name: Deploy Jaeger Operator and Custom Resource
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  run_once: true
+  vars_files:
+    - group_vars/services.yml
+
+  tasks:
+    - set_fact:
+        namespace: "{{ namespace_services }}"
+        work_dir_name: jaeger
+        resources_dir: "{{ resources_base_dir }}/jaeger"
+    - include_role:
+        name: jaeger
+      when: >
+        ACTION is not defined or
+        ACTION is none or
+        ACTION|trim() == "" or
+        ACTION|trim() == "create"
+    - include_role:
+        name: jaeger
+        tasks_from: uninstall
+      when: >
+        ACTION is defined and
+        ACTION|trim() == "uninstall"

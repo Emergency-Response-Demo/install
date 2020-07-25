@@ -1,0 +1,11 @@
+---
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: "jaeger"
+spec:
+  strategy: allInOne
+  allInOne:
+    image: {{ jaeger_all_in_one_image }}
+  storage:
+    type: badger

@@ -1,0 +1,77 @@
+---
+
+- name: create jaeger crd
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: crd
+    name: jaegers.jaegertracing.io
+    files:
+      - "{{ resources_dir }}/{{ jaeger_crd_template }}"
+
+- name: "create jaeger operator service account"
+  oc_serviceaccount:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: jaeger-operator
+    namespace: "{{ namespace }}"
+
+- name: "create jaeger operator role"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    kind: role
+    name: jaeger-operator
+    files:
+      - "{{ resources_dir }}/{{ jaeger_operator_role_template }}"
+
+- name: "create jaeger operator role binding"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    kind: rolebinding
+    name: jaeger-operator
+    files:
+      - "{{ resources_dir }}/{{ jaeger_operator_rolebinding_template }}"
+      
+- name: "copy jaeger operator template"
+  template:
+    src: "{{ resources_dir }}/{{ jaeger_operator_template }}"
+    dest: "{{ work_dir }}/{{ jaeger_operator_template }}"
+
+- name: "deploy jaeger operator"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: deployment
+    name: jaeger-operator
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/{{ jaeger_operator_template }}"
+
+- name: "wait until operator is deployed"
+  shell: "{{ openshift_cli }} get deployment jaeger-operator -o template --template={{ json_template }} -n {{ namespace }}"
+  vars:
+    json_template: '\{\{.status.readyReplicas\}\}'
+  register: result
+  until: result.stdout == "1"
+  retries: 30
+  delay: 10
+  changed_when: false
+
+- name: "copy jaeger custom resource template"
+  template:
+    src: "{{ resources_dir }}/{{ jaeger_cr_template }}"
+    dest: "{{ work_dir }}/{{ jaeger_cr_template }}"
+
+- name: "create jaeger custom resource"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    kind: Jaeger
+    name: jaeger
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/{{ jaeger_cr_template }}"

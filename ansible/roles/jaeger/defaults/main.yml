@@ -1,0 +1,9 @@
+---
+
+jaeger_crd_template: jaeger-crd.yml
+jaeger_operator_role_template: jaeger-operator-role.yml
+jaeger_operator_rolebinding_template: jaeger-operator-rolebinding.yml
+jaeger_operator_template: jaeger-operator.yml
+jaeger_operator_image: registry.redhat.io/distributed-tracing/jaeger-rhel7-operator:1.17.5
+jaeger_cr_template: jaeger-cr.yml
+jaeger_all_in_one_image: registry.redhat.io/distributed-tracing/jaeger-all-in-one-rhel7:1.17.5
