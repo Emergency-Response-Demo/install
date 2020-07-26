@@ -6,11 +6,11 @@
   gather_facts: false
   run_once: true
   vars_files:
-    - group_vars/services.yml
+    - group_vars/monitoring.yml
 
   tasks:
     - set_fact:
-        namespace: "{{ namespace_services }}"
+        namespace: "{{ namespace_monitoring }}"
         work_dir_name: jaeger
         resources_dir: "{{ resources_base_dir }}/jaeger"
     - include_role:
