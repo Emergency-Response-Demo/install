@@ -257,6 +257,12 @@
     state: absent
     name: "{{ namespace_tools }}"
 
+- name: delete namespace metrics
+  oc_project:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ namespace_metrics }}"
+
 - name: delete namespace kafka operator
   oc_project:
     oc_binary: "{{ openshift_cli }}"
