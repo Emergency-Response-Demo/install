@@ -1,0 +1,5 @@
+---
+
+jaeger_operator_image: registry.redhat.io/distributed-tracing/jaeger-rhel7-operator:1.17.5
+jaeger_all_in_one_image: registry.redhat.io/distributed-tracing/jaeger-all-in-one-rhel7:1.17.5
+jaeger_agent_image: registry.redhat.io/distributed-tracing/jaeger-agent-rhel7:1.17.5
