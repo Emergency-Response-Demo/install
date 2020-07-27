@@ -1,0 +1,33 @@
+---
+
+application_name: "{{ incident_aggregation_service_name }}"
+
+service_account: "{{ application_name }}"
+
+expose_service: true
+
+resources_limits_cpu: 250m
+resources_limits_memory: 250Mi
+resources_requests_cpu: 100m
+resources_requests_memory: 100Mi
+
+application_configmap: "{{ application_name }}"
+
+application_properties: application.properties
+
+application_route_host_name: "incident-aggregation-{{ namespace }}.{{ ocp_domain }}"
+
+imagestream_name: "{{ application_name }}"
+image_imagestream_template: incident-aggregation-service-image-is.yml
+
+application_template: incident-aggregation-service.yml
+
+kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
+kafka_bootstrap_port: 9092
+kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
+kafka_streams_application_id: incident-aggregation
+kafka_topic_incident_event: topic-incident-event
+kafka_topic_mission_event: topic-mission-event
+kafka_streams_topics: "{{ kafka_topic_incident_event }},{{ kafka_topic_mission_event }}"
+
+disaster_service_url: http://{{ disaster_service_application_name }}.{{ namespace }}.svc:8080

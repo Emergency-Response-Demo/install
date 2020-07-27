@@ -1,0 +1,137 @@
+---
+kind: List
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: {{ application_name }}
+      expose: "true"
+    annotations:
+    name: {{ application_name }}
+  spec:
+    ports:
+      - name: http
+        port: 8080
+        protocol: TCP
+        targetPort: 8080
+    selector:
+      group: erd-services
+      app: {{ application_name }}
+    sessionAffinity: None
+    type: ClusterIP
+{% if expose_service|bool == true %}
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: {{ application_name }}
+    name: {{ application_name }}
+  spec:
+    host: {{ application_route_host_name }}
+    port:
+      targetPort: 8080
+    to:
+      kind: Service
+      name: {{ application_name }}
+      weight: 100
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect
+    wildcardPolicy: None
+{% endif %}
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: {{ application_name }}
+    name: {{ application_name }}
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 2
+    selector:
+      group: erd-services
+      app: {{ application_name }}
+    strategy:
+      type: Recreate
+      recreateParams:
+        timeoutSeconds: 600
+      resources: {}
+      activeDeadlineSeconds: 21600
+    template:
+      metadata:
+        labels:
+          group: erd-services
+          app: {{ application_name }}
+      spec:
+        containers:
+          - env:
+              - name: POD_IP
+                valueFrom: 
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: status.podIP
+            imagePullPolicy: IfNotPresent
+            name: {{ application_name }}
+            ports:
+              - containerPort: 8080
+                name: http
+                protocol: TCP
+            livenessProbe:
+              failureThreshold: 3
+              httpGet:
+                path: /health/live
+                port: 8080
+                scheme: HTTP
+              initialDelaySeconds: 10
+              periodSeconds: 30
+              successThreshold: 1
+              timeoutSeconds: 1
+            readinessProbe:
+              failureThreshold: 3
+              httpGet:
+                path: /health/ready
+                port: 8080
+                scheme: HTTP
+              initialDelaySeconds: 3
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 1
+            resources:
+              limits:
+                cpu: '{{ resources_limits_cpu }}'
+                memory: '{{ resources_limits_memory }}'
+              requests:
+                cpu: '{{ resources_requests_cpu }}'
+                memory: '{{ resources_requests_memory }}'
+            securityContext:
+              privileged: false
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+              - mountPath: /deployments/config
+                name: config
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: {{ service_account }}
+        serviceAccountName: {{ service_account }}
+        terminationGracePeriodSeconds: 30
+        volumes:
+          - configMap:
+              defaultMode: 420
+              name: {{ application_configmap }}
+            name: config
+    triggers:
+      - type: ConfigChange
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+            - {{ application_name }}
+          from:
+            kind: ImageStreamTag
+            name: "{{ imagestream_name }}:{{ application_image_tag }}"
+            namespace: {{ namespace }}
+        type: ImageChange

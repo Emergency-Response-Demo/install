@@ -69,6 +69,9 @@ kafka_consumer_app_tag=latest
 kafka_producer_app_image=quay.io/btison/kafka-producer-app
 kafka_producer_app_tag=latest
 
+incident_aggregation_service_image=quay.io/btison/erdemo-incident-aggregation-service
+incident_aggregation_service_image_tag=latest
+
 kafka_connect_image=quay.io/btison/strimzi-debezium-postgresql:1.4.0-1.1.2.Final
 
 # source repos
