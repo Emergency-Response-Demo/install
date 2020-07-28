@@ -60,7 +60,15 @@
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ application_name }}"
+    name: "{{ application_configmap }}"
+    namespace: "{{ namespace }}"
+    kind: configmap
+
+- name: delete logging configmap
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ logging_configmap }}"
     namespace: "{{ namespace }}"
     kind: configmap
 

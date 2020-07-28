@@ -4,7 +4,7 @@ application_name: pgadmin4
 
 pgadmin4_template: "{{ resources_dir }}/pgadmin4.yml"
 
-pgadmin4_image: crunchydata/crunchy-pgadmin4:centos7-9.6.8-1.8.2
+pgadmin4_image: crunchydata/crunchy-pgadmin4:centos7-12.3-4.3.2
 
 resources_limits_cpu: 100m
 resources_limits_memory: 200Mi
