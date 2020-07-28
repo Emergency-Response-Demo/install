@@ -1,0 +1,9 @@
+---
+
+- name: remove kafka connector
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ kafka_connector_name }}"
+    namespace: "{{ namespace_kafka_cluster }}"
+    kind: KafkaConnector

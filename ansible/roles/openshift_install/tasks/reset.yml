@@ -37,6 +37,15 @@
   shell: "{{ openshift_cli }} scale --replicas=0 dc {{ process_viewer_application_name }} -n {{ namespace_services }}"  
 
 # uninstall kafka
+- name: uninstall Kafka Connect
+  import_role:
+    name: openshift_kafka_connect
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_kafka_cluster }}"
+    resources_dir: "{{ resources_base_dir }}/kafka-connect"
+    work_dir_name: kafka-connect
+
 - name: uninstall kafka topics
   import_role:
     name: openshift_kafka_topics
@@ -128,6 +137,15 @@
     namespace: "{{ namespace_postgresql }}"
     resources_dir: "{{ resources_base_dir }}/postgresql"
     work_dir_name: postgresql
+
+# install Kafka Connect
+- name: install Kafka Connect
+  import_role:
+    name: openshift_kafka_connect
+  vars:
+    namespace: "{{ namespace_kafka_cluster }}"
+    resources_dir: "{{ resources_base_dir }}/kafka-connect"
+    work_dir_name: kafka-connect
 
 # install postgresql process service
 - name: install process service

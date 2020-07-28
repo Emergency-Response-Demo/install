@@ -5,11 +5,11 @@ items:
 - kind: Service
   apiVersion: v1
   metadata:
-    name: {{ postgresql_application_name }}
+    name:  {{ process_service_postgresql_service_name }}
     annotations:
       template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
     labels:
-      app: {{ postgresql_application_name }}
+      app: {{ application_name }}
   spec:
     ports:
     - name: postgresql
@@ -18,7 +18,7 @@ items:
       targetPort: 5432
       nodePort: 0
     selector:
-      name: {{ postgresql_application_name }}
+      name: {{ process_service_postgresql_service_name }}
     type: ClusterIP
     sessionAffinity: None
   status:
@@ -26,21 +26,21 @@ items:
 - kind: PersistentVolumeClaim
   apiVersion: v1
   metadata:
-    name: {{ postgresql_application_name }}
+    name: {{ process_service_postgresql_service_name }}
     labels:
-      app: {{ postgresql_application_name }}
+      app: {{ application_name }}
   spec:
     accessModes:
     - ReadWriteOnce
     resources:
       requests:
-        storage: {{ postgresql_pv_capacity }}
+        storage: {{ process_service_postgresql_volume_capacity }}
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
-    name: {{ postgresql_application_name }}
+    name: {{ process_service_postgresql_service_name }}
     labels:
-      app: {{ postgresql_application_name }}
+      app: {{ application_name }}
   spec:
     strategy:
       recreateParams:
@@ -49,7 +49,7 @@ items:
             command: 
             - /bin/bash
             - /tmp/init-files/wait_for_postgresql.sh
-            - /tmp/init-files/create_erd_database.sh
+            - /tmp/init-files/create_rhpam_database.sh
             containerName: postgresql
             volumes:
             - init-volume
@@ -65,20 +65,18 @@ items:
         - postgresql
         from:
           kind: ImageStreamTag
-          name: postgresql:{{ postgresql_version }}
-          namespace: "{{ postgresql_is_namespace }}"
-        lastTriggeredImage: ''
+          name: "{{ process_service_postgresql_image_stream }}:{{ process_service_postgresql_image_stream_tag }}"
+          namespace: {{ process_service_postgresql_image_stream_namespace }}
     - type: ConfigChange
     replicas: 1
     selector:
-      name: {{ postgresql_application_name }}
+      name: {{ process_service_postgresql_service_name }}
     template:
       metadata:
         labels:
-          name: {{ postgresql_application_name }}
-          app: {{ postgresql_application_name }}
+          name: {{ process_service_postgresql_service_name }}
+          app: {{ application_name }}
       spec:
-        serviceAccountName: "{{ postgresql_service_account }}"
         containers:
         - name: postgresql
           image: " "
@@ -93,7 +91,7 @@ items:
             timeoutSeconds: 1
           livenessProbe:
             timeoutSeconds: 10
-            initialDelaySeconds: 30
+            initialDelaySeconds: 120
             exec:
               command:
               - /usr/libexec/check-container
@@ -102,36 +100,43 @@ items:
           - name: POSTGRESQL_USER
             valueFrom:
               secretKeyRef:
-                name: {{ postgresql_credentials_secret }}
+                name: {{ process_service_postgresql_credentials_secret }}
                 key: database-user
           - name: POSTGRESQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ postgresql_credentials_secret }}
+                name: {{ process_service_postgresql_credentials_secret }}
                 key: database-password
           - name: POSTGRESQL_DATABASE
             valueFrom:
               secretKeyRef:
-                name: {{ postgresql_credentials_secret }}
+                name: {{ process_service_postgresql_credentials_secret }}
                 key: database-name
+          - name: POSTGRESQL_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ process_service_postgresql_credentials_secret }}
+                key: database-admin-password   
           - name: POSTGRESQL_SERVICE
-            value: {{ postgresql_application_name }}
+            value: {{ process_service_postgresql_service_name }}
           - name: POSTGRESQL_MAX_PREPARED_TRANSACTIONS
-            value: "{{ postgresql_max_prepared_transactions }}"
+            value: "{{ process_service_postgresql_max_prepared_transactions }}"
           - name: POSTGRESQL_MAX_CONNECTIONS
-            value: "{{ postgresql_max_connections }}"
+            value: "{{ process_service_postgresql_max_connections }}"
           resources:
             requests:
-              cpu: '{{ postgresql_cpu_request }}'
-              memory: '{{ postgresql_memory_request }}'
+              cpu: "{{ process_service_postgresql_resources_requests_cpu }}"
+              memory: "{{ process_service_postgresql_resources_requests_memory }}"
             limits:
-              cpu: '{{ postgresql_cpu_limit }}'
-              memory: '{{ postgresql_memory_limit }}'
+              cpu: "{{ process_service_postgresql_resources_limits_cpu }}"
+              memory: "{{ process_service_postgresql_resources_limits_memory }}"
           volumeMounts:
-          - name: "{{ postgresql_application_name }}-data"
+          - name: "{{ process_service_postgresql_service_name }}-data"
             mountPath: "/var/lib/pgsql/data"
           - name: init-volume
             mountPath: /tmp/init-files
+          - name: conf-volume
+            mountPath: /opt/app-root/src/postgresql-cfg
           terminationMessagePath: "/dev/termination-log"
           imagePullPolicy: IfNotPresent
           capabilities: {}
@@ -139,12 +144,16 @@ items:
             capabilities: {}
             privileged: false
         volumes:
-        - name: "{{ postgresql_application_name }}-data"
+        - name: "{{ process_service_postgresql_service_name }}-data"
           persistentVolumeClaim:
-            claimName: "{{ postgresql_application_name }}"
+            claimName: {{ process_service_postgresql_service_name }}
         - configMap:
             defaultMode: 493
-            name: {{ postgresql_init_configmap }}
+            name: "{{ process_service_postgresql_service_name }}-init"
           name: init-volume
+        - configMap:
+            defaultMode: 493
+            name: {{ process_service_postgresql_configmap }}
+          name: conf-volume
         restartPolicy: Always
         dnsPolicy: ClusterFirst

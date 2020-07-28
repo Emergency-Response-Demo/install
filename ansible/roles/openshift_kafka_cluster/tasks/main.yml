@@ -10,5 +10,5 @@
   register: result
   until: result.stdout == "1"
   retries: 30
-  delay: 10
+  delay: 15
   changed_when: false
