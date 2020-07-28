@@ -1,0 +1,30 @@
+---
+
+application_name: "{{ incident_finder_service_name }}"
+
+service_account: "{{ application_name }}"
+
+expose_service: true
+
+resources_limits_cpu: 250m
+resources_limits_memory: 250Mi
+resources_requests_cpu: 100m
+resources_requests_memory: 100Mi
+
+application_configmap: "{{ application_name }}"
+
+application_properties: application.properties
+
+application_route_host_name: "incident-finder-{{ namespace }}.{{ ocp_domain }}"
+
+imagestream_name: "{{ application_name }}"
+image_imagestream_template: incident-finder-service-image-is.yml
+
+application_template: incident-finder-service.yml
+
+incident_service_host: "{{ incident_service_application_name}}.{{ namespace }}.svc"
+incident_service_port: 8080
+incident_service_url: "{{ incident_service_host }}:{{ incident_service_port }}"
+incident_aggregation_service_host: "{{ incident_aggregation_service_name }}.{{ namespace }}.svc"
+incident_aggregation_service_port: 8080
+incident_aggregation_service_url: "{{ incident_aggregation_service_host}}:{{ incident_aggregation_service_port }}"

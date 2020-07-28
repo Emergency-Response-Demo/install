@@ -19,6 +19,7 @@ disaster_service_application_name: "disaster-service"
 dw_application_name: "datawarehouse"
 dw_postgresql_application_name: dw-postgresql
 incident_aggregation_service_name: incident-aggregation-service
+incident_finder_service_name: incident-finder-service
 
 process_service_postgresql_username: rhpam
 process_service_postgresql_password: rhpam
