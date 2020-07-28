@@ -85,6 +85,14 @@
     resources_dir: "{{ resources_base_dir }}/postgresql"
     work_dir_name: postgresql
 
+- name: install Kafka Connect
+  import_role:
+    name: openshift_kafka_connect
+  vars:
+    namespace: "{{ namespace_kafka_cluster }}"
+    resources_dir: "{{ resources_base_dir }}/kafka-connect"
+    work_dir_name: kafka-connect
+
 - name: install sso realm
   import_role:
     name: sso_realm

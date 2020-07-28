@@ -13,6 +13,8 @@
 - import_tasks: deploy_postgresql.yml
   when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
 
+- import_tasks: deploy_kafka_connector.yml
+
 # application configmap
 - name: copy configmap files from template
   template: src={{ item }} dest={{ work_dir }}/{{ item | basename }}

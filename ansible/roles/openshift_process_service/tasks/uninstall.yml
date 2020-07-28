@@ -81,3 +81,5 @@
     kind: rolebinding
 
 - include_tasks: remove_postgresql.yml
+
+- include_tasks: remove_kafka_connector.yml

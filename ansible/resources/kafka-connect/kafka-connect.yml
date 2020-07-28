@@ -1,0 +1,38 @@
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaConnect
+metadata:
+  name: {{ kafka_connect }}
+  annotations:
+    strimzi.io/use-connector-resources: 'true'
+spec:
+  version: {{ kafka_connect_version }}
+  replicas: {{ kafka_connect_replicas }}
+  bootstrapServers: {{ kafka_bootstrap_address }}
+  image: {{ kafka_connect_image }}
+  config:
+    group.id: {{ kafka_connect }}
+    offset.storage.topic: {{ kafka_connect }}-offsets
+    config.storage.topic: {{ kafka_connect }}-configs
+    status.storage.topic: {{ kafka_connect }}-status
+    key.converter: org.apache.kafka.connect.json.JsonConverter
+    value.converter: org.apache.kafka.connect.json.JsonConverter
+    key.converter.schemas.enable: false
+    value.converter.schemas.enable: false
+    config.storage.replication.factor: 3
+    offset.storage.replication.factor: 3
+    status.storage.replication.factor: 3
+  resources:
+    requests:
+      cpu: '{{ kafka_connect_requests_cpu }}'
+      memory: '{{ kafka_connect_requests_memory }}'
+    limits:
+      cpu: '{{ kafka_connect_limits_cpu }}'
+      memory: '{{ kafka_connect_limits_memory }}'
+  livenessProbe:
+    initialDelaySeconds: {{ kafka_connect_liveness_probe_initial_delay_seconds }}
+    timeoutSeconds: {{ kafka_connect_liveness_probe_timeout_seconds }}
+  readinessProbe:
+    initialDelaySeconds: {{ kafka_connect_readiness_probe_initial_delay_seconds }}
+    timeoutSeconds: {{ kafka_connect_readiness_probe_timeout_seconds }}
+  jvmOptions:
+    gcLoggingEnabled: false

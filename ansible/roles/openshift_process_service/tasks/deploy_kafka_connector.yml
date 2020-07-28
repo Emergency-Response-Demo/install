@@ -1,0 +1,28 @@
+---
+
+- name: get postgresql credentials secret
+  oc_secret:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    namespace: "{{ namespace }}"
+    decode: true
+    name: "{{ process_service_postgresql_credentials_secret }}"
+  register: postgresql_credentials
+
+- set_fact:
+    kafka_connector_db_password: "{{ postgresql_credentials.ansible_module_results.decoded[\"database-admin-password\"] }}"
+
+- name: copy kafka connector template
+  template:
+    src: "{{ resources_dir }}/{{ kafka_connector_template }}"
+    dest: "{{ work_dir }}/{{ kafka_connector_template }}"
+
+- name: deploy kafka connector
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ kafka_connector_name }}"
+    namespace: "{{ namespace_kafka_cluster }}"
+    kind: KafkaConnector
+    files:
+      - "{{ work_dir }}/{{ kafka_connector_template }}"

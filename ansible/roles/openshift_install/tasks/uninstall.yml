@@ -188,6 +188,15 @@
     work_dir_name: jenkins
     resources_dir: "{{ resources_base_dir }}/jenkins"
 
+- name: uninstall Kafka Connect
+  import_role:
+    name: openshift_kafka_connect
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_kafka_cluster }}"
+    resources_dir: "{{ resources_base_dir }}/kafka-connect"
+    work_dir_name: kafka-connect
+
 - name: uninstall kafka topics
   import_role:
     name: openshift_kafka_topics
