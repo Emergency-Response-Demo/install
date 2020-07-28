@@ -1,8 +1,6 @@
 apiVersion: integreatly.org/v1alpha1
 kind: GrafanaDataSource
 metadata:
-  finalizers:
-  - grafana.cleanup
   name: ds-dw-postgresql
 spec:
   datasources:
