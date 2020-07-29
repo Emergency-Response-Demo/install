@@ -9,7 +9,7 @@ resources_limits_memory: 500Mi
 resources_requests_cpu: 200m
 resources_requests_memory: 250Mi
 
-application_configmap: mission-service
+application_configmap: "{{ mission_service_application_configmap }}"
 
 application_properties: application.properties
 

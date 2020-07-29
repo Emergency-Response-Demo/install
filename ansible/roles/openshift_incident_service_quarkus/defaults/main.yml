@@ -11,7 +11,7 @@ resources_limits_memory: 500Mi
 resources_requests_cpu: 100m
 resources_requests_memory: 200Mi
 
-application_configmap: incident-service
+application_configmap: "{{ incident_service_application_configmap }}"
 
 application_properties: application.properties
 

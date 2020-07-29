@@ -9,7 +9,7 @@ resources_limits_memory: 1536Mi
 resources_requests_cpu: 100m
 resources_requests_memory: 256Mi
 
-application_configmap: responder-simulator
+application_configmap: "{{ responder_simulator_service_application_configmap }}"
 application_configmap_key: app-config.properties
 logging_configmap: responder-simulator-service-logging
 

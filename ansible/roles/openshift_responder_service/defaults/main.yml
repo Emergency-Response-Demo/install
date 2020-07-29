@@ -9,7 +9,7 @@ resources_limits_memory: 1536Mi
 resources_requests_cpu: 100m
 resources_requests_memory: 256Mi
 
-application_configmap: responder-service
+application_configmap: "{{ responder_service_application_configmap }}"
 logging_configmap: responder-service-logging
 
 application_properties: application.properties

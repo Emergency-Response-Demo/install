@@ -9,7 +9,7 @@ resources_limits_memory: 500Mi
 resources_requests_cpu: 200m
 resources_requests_memory: 200Mi
 
-application_configmap: disaster-service
+application_configmap: "{{ disaster_service_application_configmap }}"
 logging_configmap: disaster-service-logging
 sso_configmap: sso-config
 

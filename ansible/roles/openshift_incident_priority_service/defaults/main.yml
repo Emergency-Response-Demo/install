@@ -9,7 +9,7 @@ resources_limits_memory: 500Mi
 resources_requests_cpu: 200m
 resources_requests_memory: 200Mi
 
-application_configmap: incident-priority-service
+application_configmap: "{{ incident_priority_service_application_configmap }}"
 logging_configmap: incident-priority-service-logging
 sso_configmap: sso-config
 

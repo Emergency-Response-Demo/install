@@ -29,3 +29,11 @@ process_service_postgresql_service_name: process-service-postgresql
 dw_postgresql_username: naps
 dw_postgresql_password: naps
 dw_postgresql_database: datawarehouse
+
+incident_service_application_configmap: incident-service
+responder_service_application_configmap: responder-service
+mission_service_application_configmap: mission-service
+process_service_application_configmap: process-service
+incident_priority_service_application_configmap: incident-priority-service
+responder_simulator_service_application_configmap: responder-simulator
+disaster_service_application_configmap: disaster-service

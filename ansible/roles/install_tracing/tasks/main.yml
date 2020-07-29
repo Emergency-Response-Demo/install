@@ -1,0 +1,540 @@
+---
+
+- name: install jaeger
+  import_role:
+    name: jaeger
+  vars:
+    namespace: "{{ namespace_monitoring }}"
+    work_dir_name: jaeger
+    resources_dir: "{{ resources_base_dir }}/jaeger"
+
+- name: wait until the jaeger ca configmap is available
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    name: jaeger-service-ca
+    namespace: "{{ namespace_monitoring }}"
+    kind: configmap
+  register: result
+  until: result.ansible_module_results.results[0].data is defined and result.ansible_module_results.results[0].data != ""
+  retries: 30
+  delay: 10
+
+- name: extract certificate from jaeger configmap
+  shell: '{{ openshift_cli }} get configmap jaeger-service-ca -n {{ namespace_monitoring }} -o jsonpath="{.data.service-ca\.crt}"'
+  register: r_jaeger_ca
+
+- name: "create configmap with jaeger ca in {{ namespace_services }}"
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace_services }}"
+    name: "jaeger-service-ca"
+    from_literal:
+      service-ca.crt: "{{ r_jaeger_ca.stdout }}"
+  
+- name: get configmap for incident service
+  shell: '{{ openshift_cli }} get configmap {{ incident_service_application_configmap }} -n {{ namespace_services }} -o jsonpath="{.data.application\.properties}"'
+  register: r_incident_service_application_properties
+
+- name: write incident service application.properties to temporary file
+  copy: 
+    content: "{{ r_incident_service_application_properties.stdout }}" 
+    dest: "{{ work_dir }}/incident-service-application.properties"
+
+- name: append tracing properties to application.properties file
+  blockinfile:
+    path: "{{ work_dir }}/incident-service-application.properties"
+    block: |
+      quarkus.jaeger.agent-host-port=localhost:6831
+      quarkus.jaeger.sampler-manager-host-port=localhost:5778
+      quarkus.jaeger.service-name=incident-service
+
+- name: update incident service application configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ incident_service_application_configmap }}"
+    namespace: "{{ namespace_services }}"
+    update: true
+    from_file:
+      application.properties: "{{ work_dir }}/incident-service-application.properties"
+
+- name: get labels from incident service deploymentconfig
+  oc_label:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    kind: deploymentconfig
+    name: "{{ incident_service_application_name }}"
+    namespace: "{{ namespace_services }}"
+  register: r_incident_service_dc_labels
+
+- set_fact:
+    r_incident_service_dc_labels_tracing: "{{ r_incident_service_dc_labels.ansible_module_results.labels[0] | to_json | from_json | json_query(query) }}"
+  vars:
+    query: "[tracing]"
+
+- name: patch incident service deployment config
+  shell: >
+    oc patch dc {{ incident_service_application_name }} --type='json' -p '[{"op": "add", "path": "/spec/template/spec/containers/1", 
+    value: {"name": "jaeger-agent", "ports": [{"name": "zk-compact-trft",  "containerPort": 5775, "protocol": "UDP"},
+    {"name": "config-rest", "containerPort": 5778, "protocol": "TCP"},{"name": "jg-compact-trft", "containerPort": 6831, "protocol": "UDP"},
+    {"name": "jg-binary-trft", "containerPort": 6832, "protocol": "UDP"},{"name": "admin-http", "containerPort": 14271, "protocol": "TCP"}],
+    "imagePullPolicy": "IfNotPresent", "volumeMounts": [{"name": "jaeger-service-ca", "readOnly": true, "mountPath": "/etc/pki/ca-trust/source/service-ca"}], 
+    "image": "{{ jaeger_agent_image }}", "args": ["--reporter.grpc.host-port=jaeger-collector-headless.{{ namespace_monitoring }}.svc:14250", "--reporter.type=grpc", 
+    "--reporter.grpc.tls.ca=/etc/pki/ca-trust/source/service-ca/service-ca.crt", "--reporter.grpc.tls.enabled=true", 
+    "--reporter.grpc.tls.server-name=jaeger-collector-headless.{{ namespace_monitoring }}.svc.cluster.local"]}}, 
+    {"op": "add", "path": "/spec/template/spec/volumes/1", "value": {"name": "jaeger-service-ca", 
+    "configMap": {"name": "jaeger-service-ca", "items": [{"key": "service-ca.crt", "path": "service-ca.crt"}], "defaultMode": 420}} }, 
+    {"op": "replace", "path": "/spec/triggers/1/imageChangeParams/from/name", "value": "{{ incident_service_application_name }}:{{ incident_service_quarkus_tracing_image_tag }}"}]' 
+    -n {{ namespace_services }}
+  when: r_incident_service_dc_labels_tracing[0] != "true"
+
+- name: add label to incident service deploymentconfig
+  oc_label:
+    oc_binary: "{{ openshift_cli }}"
+    state: add
+    kind: deploymentconfig
+    name: "{{ incident_service_application_name }}"
+    namespace: "{{ namespace_services }}"
+    labels:
+      - key: tracing
+        value: "true"
+
+- name: get configmap for responder service
+  shell: '{{ openshift_cli }} get configmap {{ responder_service_application_configmap }} -n {{ namespace_services }} -o jsonpath="{.data.application\.properties}"'
+  register: r_responder_service_application_properties
+
+- name: write responder service application.properties to temporary file
+  copy: 
+    content: "{{ r_responder_service_application_properties.stdout }}" 
+    dest: "{{ work_dir }}/responder-service-application.properties"
+
+- name: append tracing properties to application.properties file
+  blockinfile:
+    path: "{{ work_dir }}/responder-service-application.properties"
+    block: |
+      quarkus.jaeger.agent-host-port=localhost:6831
+      quarkus.jaeger.sampler-manager-host-port=localhost:5778
+      quarkus.jaeger.service-name=responder-service
+
+- name: update responder service application configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ responder_service_application_configmap }}"
+    namespace: "{{ namespace_services }}"
+    update: true
+    from_file:
+      application.properties: "{{ work_dir }}/responder-service-application.properties"
+
+- name: get labels from responder service deploymentconfig
+  oc_label:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    kind: deploymentconfig
+    name: "{{ responder_service_application_name }}"
+    namespace: "{{ namespace_services }}"
+  register: r_responder_service_dc_labels
+
+- set_fact:
+    r_responder_service_dc_labels_tracing: "{{ r_responder_service_dc_labels.ansible_module_results.labels[0] | to_json | from_json | json_query(query) }}"
+  vars:
+    query: "[tracing]"
+
+- name: patch responder service deployment config
+  shell: >
+    oc patch dc {{ responder_service_application_name }} --type='json' -p '[{"op": "add", "path": "/spec/template/spec/containers/1", 
+    value: {"name": "jaeger-agent", "ports": [{"name": "zk-compact-trft",  "containerPort": 5775, "protocol": "UDP"},
+    {"name": "config-rest", "containerPort": 5778, "protocol": "TCP"},{"name": "jg-compact-trft", "containerPort": 6831, "protocol": "UDP"},
+    {"name": "jg-binary-trft", "containerPort": 6832, "protocol": "UDP"},{"name": "admin-http", "containerPort": 14271, "protocol": "TCP"}],
+    "imagePullPolicy": "IfNotPresent", "volumeMounts": [{"name": "jaeger-service-ca", "readOnly": true, "mountPath": "/etc/pki/ca-trust/source/service-ca"}], 
+    "image": "{{ jaeger_agent_image }}", "args": ["--reporter.grpc.host-port=jaeger-collector-headless.{{ namespace_monitoring }}.svc:14250", "--reporter.type=grpc", 
+    "--reporter.grpc.tls.ca=/etc/pki/ca-trust/source/service-ca/service-ca.crt", "--reporter.grpc.tls.enabled=true", 
+    "--reporter.grpc.tls.server-name=jaeger-collector-headless.{{ namespace_monitoring }}.svc.cluster.local"]}}, 
+    {"op": "add", "path": "/spec/template/spec/volumes/1", "value": {"name": "jaeger-service-ca", 
+    "configMap": {"name": "jaeger-service-ca", "items": [{"key": "service-ca.crt", "path": "service-ca.crt"}], "defaultMode": 420}} }, 
+    {"op": "replace", "path": "/spec/triggers/1/imageChangeParams/from/name", "value": "{{ responder_service_application_name }}:{{ responder_service_quarkus_tracing_image_tag }}"}]' 
+    -n {{ namespace_services }}
+  when: r_responder_service_dc_labels_tracing[0] != "true"
+
+- name: add label to responder service deploymentconfig
+  oc_label:
+    oc_binary: "{{ openshift_cli }}"
+    state: add
+    kind: deploymentconfig
+    name: "{{ responder_service_application_name }}"
+    namespace: "{{ namespace_services }}"
+    labels:
+      - key: tracing
+        value: "true"
+
+- name: get configmap for mission service
+  shell: '{{ openshift_cli }} get configmap {{ mission_service_application_configmap }} -n {{ namespace_services }} -o jsonpath="{.data.application\.properties}"'
+  register: r_mission_service_application_properties
+
+- name: write mission service application.properties to temporary file
+  copy: 
+    content: "{{ r_mission_service_application_properties.stdout }}" 
+    dest: "{{ work_dir }}/mission-service-application.properties"
+
+- name: append tracing properties to application.properties file
+  blockinfile:
+    path: "{{ work_dir }}/mission-service-application.properties"
+    block: |
+      quarkus.jaeger.agent-host-port=localhost:6831
+      quarkus.jaeger.sampler-manager-host-port=localhost:5778
+      quarkus.jaeger.service-name=mission-service
+
+- name: update mission service application configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ mission_service_application_configmap }}"
+    namespace: "{{ namespace_services }}"
+    update: true
+    from_file:
+      application.properties: "{{ work_dir }}/mission-service-application.properties"
+
+- name: get labels from mission service deploymentconfig
+  oc_label:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    kind: deploymentconfig
+    name: "{{ mission_service_application_name }}"
+    namespace: "{{ namespace_services }}"
+  register: r_mission_service_dc_labels
+
+- set_fact:
+    r_mission_service_dc_labels_tracing: "{{ r_mission_service_dc_labels.ansible_module_results.labels[0] | to_json | from_json | json_query(query) }}"
+  vars:
+    query: "[tracing]"
+
+- name: patch mission service deployment config
+  shell: >
+    oc patch dc {{ mission_service_application_name }} --type='json' -p '[{"op": "add", "path": "/spec/template/spec/containers/1", 
+    value: {"name": "jaeger-agent", "ports": [{"name": "zk-compact-trft",  "containerPort": 5775, "protocol": "UDP"},
+    {"name": "config-rest", "containerPort": 5778, "protocol": "TCP"},{"name": "jg-compact-trft", "containerPort": 6831, "protocol": "UDP"},
+    {"name": "jg-binary-trft", "containerPort": 6832, "protocol": "UDP"},{"name": "admin-http", "containerPort": 14271, "protocol": "TCP"}],
+    "imagePullPolicy": "IfNotPresent", "volumeMounts": [{"name": "jaeger-service-ca", "readOnly": true, "mountPath": "/etc/pki/ca-trust/source/service-ca"}], 
+    "image": "{{ jaeger_agent_image }}", "args": ["--reporter.grpc.host-port=jaeger-collector-headless.{{ namespace_monitoring }}.svc:14250", "--reporter.type=grpc", 
+    "--reporter.grpc.tls.ca=/etc/pki/ca-trust/source/service-ca/service-ca.crt", "--reporter.grpc.tls.enabled=true", 
+    "--reporter.grpc.tls.server-name=jaeger-collector-headless.{{ namespace_monitoring }}.svc.cluster.local"]}}, 
+    {"op": "add", "path": "/spec/template/spec/volumes/1", "value": {"name": "jaeger-service-ca", 
+    "configMap": {"name": "jaeger-service-ca", "items": [{"key": "service-ca.crt", "path": "service-ca.crt"}], "defaultMode": 420}} }, 
+    {"op": "replace", "path": "/spec/triggers/1/imageChangeParams/from/name", "value": "{{ mission_service_application_name }}:{{ mission_service_quarkus_tracing_image_tag }}"}]' 
+    -n {{ namespace_services }}
+  when: r_mission_service_dc_labels_tracing[0] != "true"
+
+- name: add label to mission service deploymentconfig
+  oc_label:
+    oc_binary: "{{ openshift_cli }}"
+    state: add
+    kind: deploymentconfig
+    name: "{{ mission_service_application_name }}"
+    namespace: "{{ namespace_services }}"
+    labels:
+      - key: tracing
+        value: "true"
+
+- name: get configmap for process service
+  shell: '{{ openshift_cli }} get configmap {{ process_service_application_configmap }} -n {{ namespace_services }} -o jsonpath="{.data.application\.properties}"'
+  register: r_process_service_application_properties
+
+- name: write process service application.properties to temporary file
+  copy: 
+    content: "{{ r_process_service_application_properties.stdout }}" 
+    dest: "{{ work_dir }}/process-service-application.properties"
+
+- name: append tracing properties to application.properties file
+  blockinfile:
+    path: "{{ work_dir }}/process-service-application.properties"
+    block: |
+      opentracing.jaeger.enabled=true
+      opentracing.jaeger.service-name=process-service
+      opentracing.jaeger.udp-sender.host=localhost
+      opentracing.jaeger.udp-sender.port=6831
+      opentracing.jaeger.remote-controlled-sampler.host=localhost
+      opentracing.jaeger.remote-controlled-sampler.port=5778
+      #opentracing.jaeger.log-spans=true
+      opentracing.spring.web.enabled=false
+      opentracing.spring.web.client.enabled=true
+
+- name: get configmap for process service
+  shell: '{{ openshift_cli }} get configmap {{ process_service_application_configmap }} -n {{ namespace_services }} -o jsonpath="{.data.jbpm-quartz\.properties}"'
+  register: r_process_service_quartz_properties
+
+- name: write process service quartz properties to temporary file
+  copy: 
+    content: "{{ r_process_service_quartz_properties.stdout }}" 
+    dest: "{{ work_dir }}/process-service-jbpm-quartz.properties"
+
+- name: update process service application configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ process_service_application_configmap }}"
+    namespace: "{{ namespace_services }}"
+    update: true
+    from_file:
+      application.properties: "{{ work_dir }}/process-service-application.properties"
+      jbpm-quartz.properties: "{{ work_dir }}/process-service-jbpm-quartz.properties"
+
+- name: get labels from process service deploymentconfig
+  oc_label:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    kind: deploymentconfig
+    name: "{{ process_service_application_name }}"
+    namespace: "{{ namespace_services }}"
+  register: r_process_service_dc_labels
+
+- set_fact:
+    r_process_service_dc_labels_tracing: "{{ r_process_service_dc_labels.ansible_module_results.labels[0] | to_json | from_json | json_query(query) }}"
+  vars:
+    query: "[tracing]"
+
+- name: patch process service deployment config
+  shell: >
+    oc patch dc {{ process_service_application_name }} --type='json' -p '[{"op": "add", "path": "/spec/template/spec/containers/1", 
+    value: {"name": "jaeger-agent", "ports": [{"name": "zk-compact-trft",  "containerPort": 5775, "protocol": "UDP"},
+    {"name": "config-rest", "containerPort": 5778, "protocol": "TCP"},{"name": "jg-compact-trft", "containerPort": 6831, "protocol": "UDP"},
+    {"name": "jg-binary-trft", "containerPort": 6832, "protocol": "UDP"},{"name": "admin-http", "containerPort": 14271, "protocol": "TCP"}],
+    "imagePullPolicy": "IfNotPresent", "volumeMounts": [{"name": "jaeger-service-ca", "readOnly": true, "mountPath": "/etc/pki/ca-trust/source/service-ca"}], 
+    "image": "{{ jaeger_agent_image }}", "args": ["--reporter.grpc.host-port=jaeger-collector-headless.{{ namespace_monitoring }}.svc:14250", "--reporter.type=grpc", 
+    "--reporter.grpc.tls.ca=/etc/pki/ca-trust/source/service-ca/service-ca.crt", "--reporter.grpc.tls.enabled=true", 
+    "--reporter.grpc.tls.server-name=jaeger-collector-headless.{{ namespace_monitoring }}.svc.cluster.local"]}}, 
+    {"op": "add", "path": "/spec/template/spec/volumes/2", "value": {"name": "jaeger-service-ca", 
+    "configMap": {"name": "jaeger-service-ca", "items": [{"key": "service-ca.crt", "path": "service-ca.crt"}], "defaultMode": 420}} }, 
+    {"op": "replace", "path": "/spec/triggers/1/imageChangeParams/from/name", "value": "{{ process_service_application_name }}:{{ process_service_tracing_image_tag }}"}]' 
+    -n {{ namespace_services }}
+  when: r_process_service_dc_labels_tracing[0] != "true"
+
+- name: add label to process service deploymentconfig
+  oc_label:
+    oc_binary: "{{ openshift_cli }}"
+    state: add
+    kind: deploymentconfig
+    name: "{{ process_service_application_name }}"
+    namespace: "{{ namespace_services }}"
+    labels:
+      - key: tracing
+        value: "true"
+
+- name: get configmap for incident priority service
+  shell: '{{ openshift_cli }} get configmap {{ incident_priority_service_application_configmap }} -n {{ namespace_services }} -o jsonpath="{.data.application-config\.yaml}"'
+  register: r_incident_priority_service_application_properties
+
+- name: write incident priority service application-config.yml to temporary file
+  copy: 
+    content: "{{ r_incident_priority_service_application_properties.stdout }}" 
+    dest: "{{ work_dir }}/incident-priority-service-application-config.yaml"
+
+- name: append tracing properties to application-config.yml file
+  blockinfile:
+    path: "{{ work_dir }}/incident-priority-service-application-config.yaml"
+    block: |
+      # tracing
+      tracing:
+        service-name: incident-priority-service
+        reporter-log-spans: true
+        sampler-type: remote
+        sampler-manager-host-port: localhost:5778
+        agent-host: localhost
+        agent-port: 6831
+
+- name: update incident priority service application configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ incident_priority_service_application_configmap }}"
+    namespace: "{{ namespace_services }}"
+    update: true
+    from_file:
+      application-config.yaml: "{{ work_dir }}/incident-priority-service-application-config.yaml"
+
+- name: get labels from incident priority service deploymentconfig
+  oc_label:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    kind: deploymentconfig
+    name: "{{ incident_priority_service_application_name }}"
+    namespace: "{{ namespace_services }}"
+  register: r_incident_priority_service_dc_labels
+
+- set_fact:
+    r_incident_priority_service_dc_labels_tracing: "{{ r_incident_priority_service_dc_labels.ansible_module_results.labels[0] | to_json | from_json | json_query(query) }}"
+  vars:
+    query: "[tracing]"
+
+- name: patch incident priority service deployment config
+  shell: >
+    oc patch dc {{ incident_priority_service_application_name }} --type='json' -p '[{"op": "add", "path": "/spec/template/spec/containers/1", 
+    value: {"name": "jaeger-agent", "ports": [{"name": "zk-compact-trft",  "containerPort": 5775, "protocol": "UDP"},
+    {"name": "config-rest", "containerPort": 5778, "protocol": "TCP"},{"name": "jg-compact-trft", "containerPort": 6831, "protocol": "UDP"},
+    {"name": "jg-binary-trft", "containerPort": 6832, "protocol": "UDP"},{"name": "admin-http", "containerPort": 14271, "protocol": "TCP"}],
+    "imagePullPolicy": "IfNotPresent", "volumeMounts": [{"name": "jaeger-service-ca", "readOnly": true, "mountPath": "/etc/pki/ca-trust/source/service-ca"}], 
+    "image": "{{ jaeger_agent_image }}", "args": ["--reporter.grpc.host-port=jaeger-collector-headless.{{ namespace_monitoring }}.svc:14250", "--reporter.type=grpc", 
+    "--reporter.grpc.tls.ca=/etc/pki/ca-trust/source/service-ca/service-ca.crt", "--reporter.grpc.tls.enabled=true", 
+    "--reporter.grpc.tls.server-name=jaeger-collector-headless.{{ namespace_monitoring }}.svc.cluster.local"]}}, 
+    {"op": "add", "path": "/spec/template/spec/volumes/1", "value": {"name": "jaeger-service-ca", 
+    "configMap": {"name": "jaeger-service-ca", "items": [{"key": "service-ca.crt", "path": "service-ca.crt"}], "defaultMode": 420}} }, 
+    {"op": "replace", "path": "/spec/triggers/1/imageChangeParams/from/name", "value": "{{ incident_priority_service_application_name }}:{{ incident_priority_service_tracing_image_tag }}"}]' 
+    -n {{ namespace_services }}
+  when: r_incident_priority_service_dc_labels_tracing[0] != "true"
+
+- name: add label to incident priority service deploymentconfig
+  oc_label:
+    oc_binary: "{{ openshift_cli }}"
+    state: add
+    kind: deploymentconfig
+    name: "{{ incident_priority_service_application_name }}"
+    namespace: "{{ namespace_services }}"
+    labels:
+      - key: tracing
+        value: "true"
+
+- name: get configmap for responder simulator
+  shell: '{{ openshift_cli }} get configmap {{ responder_simulator_service_application_configmap }} -n {{ namespace_services }} -o jsonpath="{.data.app-config\.properties}"'
+  register: r_responder_simulator_service_application_properties
+
+- name: write responder simulator application-config.yml to temporary file
+  copy: 
+    content: "{{ r_responder_simulator_service_application_properties.stdout }}" 
+    dest: "{{ work_dir }}/responder-simulator-service-app-config.properties"
+
+- name: append tracing properties to app-config.properties file
+  blockinfile:
+    path: "{{ work_dir }}/responder-simulator-service-app-config.properties"
+    block: |
+      # tracing
+      tracing.service-name=responder-simulator-service
+      tracing.reporter-log-spans=true
+      tracing.sampler-type=remote
+      tracing.sampler-manager-host-port=localhost:5778
+      tracing.agent-host=localhost 
+      tracing.agent-port=6831
+
+- name: update responder simulator application configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ responder_simulator_service_application_configmap }}"
+    namespace: "{{ namespace_services }}"
+    update: true
+    from_file:
+      app-config.properties: "{{ work_dir }}/responder-simulator-service-app-config.properties"
+
+- name: get labels from responder simulator deploymentconfig
+  oc_label:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    kind: deploymentconfig
+    name: "{{ responder_simulator_service_application_name }}"
+    namespace: "{{ namespace_services }}"
+  register: r_responder_simulator_service_dc_labels
+
+- set_fact:
+    r_responder_simulator_service_dc_labels_tracing: "{{ r_responder_simulator_service_dc_labels.ansible_module_results.labels[0] | to_json | from_json | json_query(query) }}"
+  vars:
+    query: "[tracing]"
+
+- name: patch responder simulator deployment config
+  shell: >
+    oc patch dc {{ responder_simulator_service_application_name }} --type='json' -p '[{"op": "add", "path": "/spec/template/spec/containers/1", 
+    value: {"name": "jaeger-agent", "ports": [{"name": "zk-compact-trft",  "containerPort": 5775, "protocol": "UDP"},
+    {"name": "config-rest", "containerPort": 5778, "protocol": "TCP"},{"name": "jg-compact-trft", "containerPort": 6831, "protocol": "UDP"},
+    {"name": "jg-binary-trft", "containerPort": 6832, "protocol": "UDP"},{"name": "admin-http", "containerPort": 14271, "protocol": "TCP"}],
+    "imagePullPolicy": "IfNotPresent", "volumeMounts": [{"name": "jaeger-service-ca", "readOnly": true, "mountPath": "/etc/pki/ca-trust/source/service-ca"}], 
+    "image": "{{ jaeger_agent_image }}", "args": ["--reporter.grpc.host-port=jaeger-collector-headless.{{ namespace_monitoring }}.svc:14250", "--reporter.type=grpc", 
+    "--reporter.grpc.tls.ca=/etc/pki/ca-trust/source/service-ca/service-ca.crt", "--reporter.grpc.tls.enabled=true", 
+    "--reporter.grpc.tls.server-name=jaeger-collector-headless.{{ namespace_monitoring }}.svc.cluster.local"]}}, 
+    {"op": "add", "path": "/spec/template/spec/volumes/1", "value": {"name": "jaeger-service-ca", 
+    "configMap": {"name": "jaeger-service-ca", "items": [{"key": "service-ca.crt", "path": "service-ca.crt"}], "defaultMode": 420}} }, 
+    {"op": "replace", "path": "/spec/triggers/1/imageChangeParams/from/name", "value": "{{ responder_simulator_service_application_name }}:{{ responder_simulator_service_tracing_image_tag }}"}]' 
+    -n {{ namespace_services }}
+  when: r_responder_simulator_service_dc_labels_tracing[0] != "true"
+
+- name: add label to responder simulator deploymentconfig
+  oc_label:
+    oc_binary: "{{ openshift_cli }}"
+    state: add
+    kind: deploymentconfig
+    name: "{{ responder_simulator_service_application_name }}"
+    namespace: "{{ namespace_services }}"
+    labels:
+      - key: tracing
+        value: "true"
+
+- name: get configmap for disaster service
+  shell: '{{ openshift_cli }} get configmap {{ disaster_service_application_configmap }} -n {{ namespace_services }} -o jsonpath="{.data.application-config\.yaml}"'
+  register: r_disaster_service_application_properties
+
+- name: write disaster service application-config.yml to temporary file
+  copy: 
+    content: "{{ r_disaster_service_application_properties.stdout }}" 
+    dest: "{{ work_dir }}/disaster-service-application-config.yaml"
+
+- name: append tracing properties to application-config.yml file
+  blockinfile:
+    path: "{{ work_dir }}/disaster-service-application-config.yaml"
+    block: |
+      # tracing
+      tracing:
+        service-name: disaster-service
+        reporter-log-spans: true
+        sampler-type: remote
+        sampler-manager-host-port: localhost:5778
+        agent-host: localhost
+        agent-port: 6831
+
+- name: update disaster service application configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ disaster_service_application_configmap }}"
+    namespace: "{{ namespace_services }}"
+    update: true
+    from_file:
+      application-config.yaml: "{{ work_dir }}/disaster-service-application-config.yaml"
+
+- name: get labels from disaster service deploymentconfig
+  oc_label:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    kind: deploymentconfig
+    name: "{{ disaster_service_application_name }}"
+    namespace: "{{ namespace_services }}"
+  register: r_disaster_service_dc_labels
+
+- set_fact:
+    r_disaster_service_dc_labels_tracing: "{{ r_disaster_service_dc_labels.ansible_module_results.labels[0] | to_json | from_json | json_query(query) }}"
+  vars:
+    query: "[tracing]"
+
+- name: patch disaster service deployment config
+  shell: >
+    oc patch dc {{ disaster_service_application_name }} --type='json' -p '[{"op": "add", "path": "/spec/template/spec/containers/1", 
+    value: {"name": "jaeger-agent", "ports": [{"name": "zk-compact-trft",  "containerPort": 5775, "protocol": "UDP"},
+    {"name": "config-rest", "containerPort": 5778, "protocol": "TCP"},{"name": "jg-compact-trft", "containerPort": 6831, "protocol": "UDP"},
+    {"name": "jg-binary-trft", "containerPort": 6832, "protocol": "UDP"},{"name": "admin-http", "containerPort": 14271, "protocol": "TCP"}],
+    "imagePullPolicy": "IfNotPresent", "volumeMounts": [{"name": "jaeger-service-ca", "readOnly": true, "mountPath": "/etc/pki/ca-trust/source/service-ca"}], 
+    "image": "{{ jaeger_agent_image }}", "args": ["--reporter.grpc.host-port=jaeger-collector-headless.{{ namespace_monitoring }}.svc:14250", "--reporter.type=grpc", 
+    "--reporter.grpc.tls.ca=/etc/pki/ca-trust/source/service-ca/service-ca.crt", "--reporter.grpc.tls.enabled=true", 
+    "--reporter.grpc.tls.server-name=jaeger-collector-headless.{{ namespace_monitoring }}.svc.cluster.local"]}}, 
+    {"op": "add", "path": "/spec/template/spec/volumes/1", "value": {"name": "jaeger-service-ca", 
+    "configMap": {"name": "jaeger-service-ca", "items": [{"key": "service-ca.crt", "path": "service-ca.crt"}], "defaultMode": 420}} }, 
+    {"op": "replace", "path": "/spec/triggers/1/imageChangeParams/from/name", "value": "{{ disaster_service_application_name }}:{{ disaster_service_tracing_image_tag }}"}]' 
+    -n {{ namespace_services }}
+  when: r_disaster_service_dc_labels_tracing[0] != "true"
+
+- name: add label to disaster service deploymentconfig
+  oc_label:
+    oc_binary: "{{ openshift_cli }}"
+    state: add
+    kind: deploymentconfig
+    name: "{{ disaster_service_application_name }}"
+    namespace: "{{ namespace_services }}"
+    labels:
+      - key: tracing
+        value: "true"

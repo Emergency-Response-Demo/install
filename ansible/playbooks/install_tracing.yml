@@ -1,0 +1,23 @@
+---
+
+- name: Add tracing to Emergency Response Demo
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  run_once: true
+  vars_files:
+    - group_vars/services.yml
+    - group_vars/monitoring.yml
+    - group_vars/jaeger.yml
+    - group_vars/tracing.yml
+
+  tasks:
+    - set_fact:
+        work_dir_name: tracing
+    - include_role:
+        name: ../roles/install_tracing
+      when: >
+        ACTION is not defined or
+        ACTION is none or
+        ACTION|trim() == "" or
+        ACTION|trim() == "install"

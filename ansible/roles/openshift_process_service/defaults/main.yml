@@ -2,7 +2,7 @@
 
 application_name: "{{ process_service_application_name }}"
 
-application_configmap: process-service
+application_configmap: "{{ process_service_application_configmap }}"
 logging_configmap: process-service-logging
 
 resources_limits_cpu: 1000m
