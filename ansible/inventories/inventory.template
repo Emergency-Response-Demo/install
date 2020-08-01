@@ -52,7 +52,7 @@ responder_simulator_image=quay.io/emergencyresponsedemo/responder-simulator
 responder_simulator_image_tag=2.4
 
 emergency_console_image=quay.io/emergencyresponsedemo/emergency-console
-emergency_console_image_tag=2.4
+emergency_console_image_tag=2e83f60
 
 responder_client_app_image=quay.io/emergencyresponsedemo/responder-client-app
 responder_client_app_image_tag=2.4
