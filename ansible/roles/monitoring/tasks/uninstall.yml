@@ -132,7 +132,7 @@
     oc_binary: "{{ openshift_cli }}"
     state: absent
     kind: clusterrolebinding
-    name: grafana-operator
+    name: grafana-operator{{ namespace_postfix }}
     namespace: "{{ namespace }}"
 
 - name: "delete Grafana clusterrole"
