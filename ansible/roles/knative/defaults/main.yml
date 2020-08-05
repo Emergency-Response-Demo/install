@@ -1,0 +1,18 @@
+---
+
+subscription_template: subscription.yml
+
+
+serverless_operator_packagemanifest: serverless-operator
+
+serverless_subscription_starting_csv: ""
+serverless_subscription_automatic_installplan_approval: false
+serverless_subscription_name: serverless-operator
+serverless_operator_subscription_channel: 4.4
+
+knative_kafka_operator_packagemanifest: knative-kafka-operator
+
+knative_kafka_subscription_starting_csv: ""
+knative_kafka_subscription_automatic_installplan_approval: false
+knative_kafka_subscription_name: knative-kafka-operator
+knative_kafka_operator_subscription_channel: alpha

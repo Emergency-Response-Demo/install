@@ -1,0 +1,181 @@
+---
+
+- name: get packagemanifest for serverless operator
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    kind: packagemanifest
+    namespace: openshift-marketplace
+    name: "{{ serverless_operator_packagemanifest }}"
+  register: r_packagemanifest_serverless
+
+- name: set facts for serverless operator
+  set_fact:
+    serverless_operator_subscription_package_name: "{{ r_packagemanifest_serverless.ansible_module_results.results[0].status.packageName }}"
+    serverless_operator_subscription_catalog_source: "{{ r_packagemanifest_serverless.ansible_module_results.results[0].status.catalogSource }}"
+    serverless_operator_subscription_catalog_source_namespace: "{{ r_packagemanifest_serverless.ansible_module_results.results[0].status.catalogSourceNamespace }}"
+
+- name: "copy template for {{ serverless_subscription_name }} subscription resource"
+  template:
+    src: "{{ resources_dir }}/{{ subscription_template }}"
+    dest: "{{ work_dir }}/serverless-subscription.yml"
+  vars:
+    subscription_name: "{{ serverless_subscription_name }}"
+    subscription_catalog_source: "{{ serverless_operator_subscription_catalog_source }}"
+    subscription_catalog_source_namespace: "{{ serverless_operator_subscription_catalog_source_namespace }}"
+    subscription_channel: "{{ serverless_operator_subscription_channel }}"
+    subscription_package_name: "{{ serverless_operator_subscription_package_name }}"
+    subscription_automatic_installplan_approval: "{{ serverless_subscription_automatic_installplan_approval }}"
+    subscription_starting_csv: "{{ serverless_subscription_starting_csv }}"
+
+- name: "create subscription for serverless operator"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ serverless_subscription_name }}"
+    namespace: openshift-operators
+    kind: Subscription
+    files:
+      - "{{ work_dir }}/serverless-subscription.yml"
+
+- name: wait until installplan is created
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    kind: InstallPlan
+    namespace: openshift-operators
+  register: r_serverless_install_plan
+  retries: 30
+  delay: 5
+  until:
+    - r_serverless_install_plan.ansible_module_results.results | length > 0
+    - r_serverless_install_plan | to_json | from_json | json_query(jmesquery) | length > 0
+  vars:
+    jmesquery: "ansible_module_results.results[0].items[*].spec.clusterServiceVersionNames[] | [?contains(@, 'serverless-operator') == `true`]"
+
+- name: manually approve installplan
+  when: not serverless_subscription_automatic_installplan_approval
+  block:
+  - name: set install plan name
+    set_fact:
+      serverless_install_plan_name: "{{ r_serverless_install_plan.ansible_module_results.results[0]['items'] | to_json | from_json | json_query(query) }}"
+    vars:
+      query: >-
+        [?starts_with(spec.clusterServiceVersionNames[0], 'serverless-operator')].metadata.name|[0]
+
+  - name: approve installplan
+    shell: |
+      {{ openshift_cli }} patch installplan {{ serverless_install_plan_name }} --type='merge' -p '{"spec":{"approved":true}}' -n openshift-operators
+
+- name: find all serverless related CSVs
+  set_fact:
+    serverless_csvs: "{{ r_serverless_install_plan.ansible_module_results.results[0]['items'] | to_json | from_json | json_query(query) }}"
+  vars:
+    query: >-
+      [?starts_with(spec.clusterServiceVersionNames[0], 'serverless-operator')].spec.clusterServiceVersionNames
+
+- name: wait until all CSVs are succeeded
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"    
+    kind: ClusterServiceVersion
+    name: "{{ item }}"
+    namespace: openshift-operators
+  register: r_serverless_csv
+  retries: 180
+  delay: 10
+  until:
+  - r_serverless_csv.ansible_module_results.results[0].status.phase is defined
+  - r_serverless_csv.ansible_module_results.results[0].status.phase | length > 0
+  - r_serverless_csv.ansible_module_results.results[0].status.phase == "Succeeded"
+  loop: "{{ serverless_csvs[0] }}"
+
+- name: get packagemanifest for knative kafka operator
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    kind: packagemanifest
+    namespace: openshift-marketplace
+    name: "{{ knative_kafka_operator_packagemanifest }}"
+  register: r_packagemanifest_knative_kafka
+
+- name: set facts for knative kafka operator
+  set_fact:
+    knative_kafka_operator_subscription_package_name: "{{ r_packagemanifest_knative_kafka.ansible_module_results.results[0].status.packageName }}"
+    knative_kafka_operator_subscription_catalog_source: "{{ r_packagemanifest_knative_kafka.ansible_module_results.results[0].status.catalogSource }}"
+    knative_kafka_operator_subscription_catalog_source_namespace: "{{ r_packagemanifest_knative_kafka.ansible_module_results.results[0].status.catalogSourceNamespace }}"
+
+- name: "copy template for {{ knative_kafka_subscription_name }} subscription resource"
+  template:
+    src: "{{ resources_dir }}/{{ subscription_template }}"
+    dest: "{{ work_dir }}/knative-kafka-subscription.yml"
+  vars:
+    subscription_name: "{{ knative_kafka_subscription_name }}"
+    subscription_catalog_source: "{{ knative_kafka_operator_subscription_catalog_source }}"
+    subscription_catalog_source_namespace: "{{ knative_kafka_operator_subscription_catalog_source_namespace }}"
+    subscription_channel: "{{ knative_kafka_operator_subscription_channel }}"
+    subscription_package_name: "{{ knative_kafka_operator_subscription_package_name }}"
+    subscription_automatic_installplan_approval: "{{ knative_kafka_subscription_automatic_installplan_approval }}"
+    subscription_starting_csv: "{{ knative_kafka_subscription_starting_csv }}"
+
+- name: "create subscription for kafka knative operator"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ knative_kafka_subscription_name }}"
+    namespace: openshift-operators
+    kind: Subscription
+    files:
+      - "{{ work_dir }}/knative-kafka-subscription.yml"
+
+- name: wait until installplan is created
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    kind: InstallPlan
+    namespace: openshift-operators
+  register: r_knative_kafka_install_plan
+  retries: 30
+  delay: 5
+  until:
+    - r_knative_kafka_install_plan.ansible_module_results.results | length > 0
+    - r_knative_kafka_install_plan | to_json | from_json | json_query(jmesquery) | length > 0
+  vars:
+    jmesquery: "ansible_module_results.results[0].items[*].spec.clusterServiceVersionNames[] | [?contains(@, 'knative-kafka-operator') == `true`]"
+
+- name: manually approve installplan
+  when: not knative_kafka_subscription_automatic_installplan_approval
+  block:
+  - name: set install plan name
+    set_fact:
+      knative_kafka_install_plan_name: "{{ r_knative_kafka_install_plan.ansible_module_results.results[0]['items'] | to_json | from_json | json_query(query) }}"
+    vars:
+      query: >-
+        [?starts_with(spec.clusterServiceVersionNames[0], 'knative-kafka-operator')].metadata.name|[0]
+
+  - name: approve installplan
+    shell: |
+      {{ openshift_cli }} patch installplan {{ knative_kafka_install_plan_name }} --type='merge' -p '{"spec":{"approved":true}}' -n openshift-operators
+
+- name: find all knative kafka related CSVs
+  set_fact:
+    knative_kafka_csvs: "{{ r_knative_kafka_install_plan.ansible_module_results.results[0]['items'] | to_json | from_json | json_query(query) }}"
+  vars:
+    query: >-
+      [?starts_with(spec.clusterServiceVersionNames[0], 'knative-kafka-operator')].spec.clusterServiceVersionNames
+
+- name: wait until all CSVs are succeeded
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"    
+    kind: ClusterServiceVersion
+    name: "{{ item }}"
+    namespace: openshift-operators
+  register: r_knative_kafka_csv
+  retries: 180
+  delay: 10
+  until:
+  - r_knative_kafka_csv.ansible_module_results.results[0].status.phase is defined
+  - r_knative_kafka_csv.ansible_module_results.results[0].status.phase | length > 0
+  - r_knative_kafka_csv.ansible_module_results.results[0].status.phase == "Succeeded"
+  loop: "{{ knative_kafka_csvs[0] }}"
