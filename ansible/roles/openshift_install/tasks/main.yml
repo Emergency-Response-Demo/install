@@ -239,6 +239,26 @@
     resources_dir: "{{ resources_base_dir }}/datawarehouse"
     work_dir_name: datawarehouse
 
+- name: install find service
+  import_role:
+    name: openshift_find_service
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/find-service"
+    work_dir_name: find-service
+  when: provision_find_service|bool
+
+
+- block:
+  - name: install find service
+    import_role:
+      name: openshift_find_service
+    vars:
+      namespace: "{{ namespace_services }}"
+      resources_dir: "{{ resources_base_dir }}/find-service"
+      work_dir_name: find-service
+  when: provision_find_service|bool
+
 - block:
   - name: start pipeline incident service
     shell: "{{ openshift_cli }} start-build {{ incident_service_application_name }}-pipeline -n {{ namespace_tools }}"
@@ -308,5 +328,9 @@
 
   - name: start pipeline datawarehouse service
     shell: "{{ openshift_cli }} start-build {{ dw_application_name }}-pipeline -n {{ namespace_tools }}"
+
+  - name: start pipeline find service
+    shell: "{{ openshift_cli }} start-build {{ find_application_name }}-pipeline -n {{ namespace_tools }}"
+    when: provision_find_service|bool
 
   when: deploy_from is defined and deploy_from == "source"

@@ -59,6 +59,9 @@ process_service_postgresql_image_stream_tag=2.5
 
 kafka_connect_image=quay.io/emergencyresponsedemo/strimzi-debezium-postgresql:1.4.0-1.1.2.Final
 
+find_service_image=quay.io/emergencyresponsedemo/find-service
+find_service_image_tag=2.5
+
 # source repos
 incident_service_git_repo=https://github.com/Emergency-Response-Demo/incident-service.git
 incident_service_git_branch=master
@@ -104,3 +107,6 @@ disaster_service_git_branch=master
 
 datawarehouse_service_git_repo=https://github.com/Emergency-Response-Demo/datawarehouse.git
 datawarehouse_service_git_branch=master
+
+find_service_git_repo=https://github.com/Emergency-Response-Demo/find-service.git
+find_service_git_branch=master

@@ -1,0 +1,98 @@
+---
+
+- name: copy build config template
+  template:
+    src: "{{ resources_dir }}/{{ buildconfig_template }}"
+    dest: "{{ work_dir }}/{{ buildconfig_template }}"
+
+- name: "create {{ buildconfig_template }} in the {{ namespace_tools }} project"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace_tools }}"
+    kind: buildconfig
+    name: "{{ buildconfig_name }}"
+    files:
+      - "{{ work_dir }}/{{ buildconfig_template }}"
+
+- name: copy source imagestream template
+  template:
+    src: "{{ resources_dir }}/{{ source_imagestream_template }}"
+    dest: "{{ work_dir }}/{{ source_imagestream_template }}"
+
+- name: create output source imagestream in the {{ namespace_tools }} project
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace_tools }}"
+    kind: imagestream
+    name: "{{ source_imagestream_name }}"
+    files:
+      - "{{ work_dir }}/{{ source_imagestream_template }}"
+
+- name: create output source imagestream in the {{ namespace }} project
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    kind: imagestream
+    name: "{{ source_imagestream_name }}"
+    files:
+      - "{{ work_dir }}/{{ source_imagestream_template }}"
+
+- name: give edit permissions to system:serviceaccount:{{ namespace_tools }}:jenkins in project {{ namespace }}
+  oc_adm_policy_user:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    rolebinding_name: jenkins-edit
+    namespace: "{{ namespace }}"
+    resource_kind: role
+    user: "system:serviceaccount:{{ namespace_tools }}:jenkins"
+    resource_name: edit
+
+- set_fact:
+    github_secret: "{{ lookup('password', work_dir + '/github chars=ascii_letters,digits length=8') }}"
+
+- set_fact:
+    generic_secret: "{{ lookup('password', work_dir + '/generic chars=ascii_letters,digits length=8') }}"
+
+- name: copy pipeline template
+  template:
+    src: "{{ resources_dir }}/{{ pipeline_buildconfig_template }}"
+    dest: "{{ work_dir }}/{{ pipeline_buildconfig_template }}"
+
+- name: create the {{ pipeline_buildconfig_name }} pipeline in the {{ namespace_tools }} project
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ pipeline_buildconfig_name }}"
+    namespace: "{{ namespace_tools }}"
+    kind: bc
+    files:
+      - "{{ work_dir }}/{{ pipeline_buildconfig_template }}"
+
+- set_fact:
+    application_image_tag: "latest"
+
+- name: copy application template
+  template:
+    src: "{{ resources_dir }}/{{ application_template }}"
+    dest: "{{ work_dir }}/{{ application_template }}"
+
+- name: check if {{ application_name }} application is deployed
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    namespace: "{{ namespace }}"
+    name: "{{ application_name }}"
+    kind: dc
+  register: result
+
+- name: deploy {{ application_name }} application
+  oc_list:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/{{ application_template }}"
+  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
