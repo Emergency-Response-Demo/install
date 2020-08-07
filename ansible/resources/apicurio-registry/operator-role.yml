@@ -39,6 +39,16 @@ rules:
       - statefulsets
     verbs:
       - '*'
+  - verbs:
+      - get
+      - list
+      - create
+      - update
+      - watch
+    apiGroups:
+      - policy
+    resources:
+      - poddisruptionbudgets
   - apiGroups:
       - monitoring.coreos.com
     resources:
