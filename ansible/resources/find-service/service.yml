@@ -59,8 +59,11 @@ items:
                   fieldPath: metadata.namespace
             - name: JAVA_OPTIONS
               value: >
-                -Dapplication.configmap={{ cm_name }}
                 -Dvertx.metrics.options.enabled=true -Dvertx.metrics.options.registryName=prometheus
+            - name: quarkus.kubernetes-config.config-maps
+              value: {{ cm_name }}
+            - name: quarkus.kubernetes-config.enabled
+              value: 'true'
             - name: AB_JOLOKIA_OFF
               value: 'true'
             imagePullPolicy: IfNotPresent
