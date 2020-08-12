@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  labels:
+    build: {{ pipeline_buildconfig_name }}
+  name: {{ pipeline_buildconfig_name }}
+  annotations:
+spec:
+  runPolicy: Serial
+  strategy:
+    jenkinsPipelineStrategy:
+      jenkinsfile: |-
+        def git_repo = "{{ find_service_git_repo }}"
+        def git_branch = "{{ find_service_git_branch }}"
+        def version = ""
+        def groupId = ""
+        def artifactId = ""
+        def commitId = ""
+        def namespace_jenkins = "{{ namespace_tools }}"
+        def namespace_app = "{{ namespace }}"
+        def app_build = "{{ buildconfig_name }}"
+        def app_imagestream = "{{ source_imagestream_name }}"
+        def app_name = "{{ application_name }}"
+
+        node ('maven-with-nexus') {
+          stage ('Compile') {
+            echo "Starting build"
+            git url: "${git_repo}", branch: "${git_branch}"
+            def pom = readMavenPom file: 'pom.xml'
+            version = pom.version
+            groupId = pom.groupId
+            artifactId = pom.artifactId
+            def commitIdFull = sh( script: 'git rev-parse HEAD', returnStdout: true )
+            commitId = commitIdFull[0..8]
+            echo "Building version ${version}, commitId ${commitId}"
+            sh "mvn clean compile -Dcom.redhat.xpaas.repo.redhatga=true -DskipTests"
+          }
+
+          stage ('Unit Tests') {
+          }
+
+          stage ('Build Application') {
+            sh "mvn package -DskipTests=true -Dcom.redhat.xpaas.repo.redhatga=true"
+          }
+
+          stage ('Maven Integration Tests') {
+            sh "mvn integration-test -DskipUTs=true -Dcom.redhat.xpaas.repo.redhatga=true"
+          }
+
+          stage ('Build Image') {
+
+            sh "mkdir deployFiles && cp -r target/lib deployFiles && cp target/*-runner.jar deployFiles/app.jar"
+
+            openshift.withCluster() { // Use "default" cluster or fallback to OpenShift cluster detection
+              def bc = openshift.selector("bc", "${app_build}")
+              def builds = bc.startBuild("--from-dir=deployFiles")
+              timeout (15) {
+                builds.watch {
+                  if ( it.count() == 0 ) {
+                    return false
+                  }
+                  // Print out the build's name and terminate the watch
+                  echo "Detected new builds created by buildconfig: ${it.names()}"
+                  return true
+                }
+                while (builds.object().status.phase != "Complete") {
+                  echo "${builds.names()} ;  status = ${builds.object().status.phase}"
+                  sleep 5
+                }
+              }
+            }
+          }
+
+          stage ('Deploy') {
+            openshift.withCluster() {
+              openshift.withProject( "${namespace_app}") {
+                openshift.tag("${namespace_jenkins}/${app_imagestream}:latest", "${namespace_app}/${app_imagestream}:latest")
+                openshift.tag("${namespace_jenkins}/${app_imagestream}:latest", "${namespace_jenkins}/${app_imagestream}:${commitId}")
+                openshift.tag("${namespace_app}/${app_imagestream}:latest", "${namespace_app}/${app_imagestream}:${commitId}")
+              }
+            }
+          }
+        }
+    type: JenkinsPipeline
+  triggers:
+  - github:
+      secret: {{ github_secret }}
+    type: GitHub
+  - generic:
+      secret: {{ generic_secret }}
+    type: Generic

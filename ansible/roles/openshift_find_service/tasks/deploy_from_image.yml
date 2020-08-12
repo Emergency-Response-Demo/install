@@ -1,0 +1,82 @@
+---
+
+- name: "copy imagestream template {{ binary_imagestream_template }}"
+  template:
+    src: "{{ resources_dir }}/{{ binary_imagestream_template }}"
+    dest: "{{ work_dir }}/{{ binary_imagestream_template }}"
+
+- name: "create {{ find_application_name }} imagestream in the {{ namespace }} project"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    kind: imagestream
+    name: "{{ find_application_name }}"
+    files:
+      - "{{ work_dir }}/{{ binary_imagestream_template }}"
+
+- set_fact:
+    application_image_url: "{{ find_service_image }}"
+    application_image_tag: "{{ find_service_image_tag }}"
+
+
+###########         Knative Service       #############
+- name: copy application template
+  template:
+    src: "{{ resources_dir }}/{{ knative_application_template }}"
+    dest: "{{ work_dir }}/{{ knative_application_template }}"
+
+- name: check if {{ find_application_name }} application is deployed
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    namespace: "{{ namespace }}"
+    name: "{{ find_application_name }}"
+    kind: kservice
+  register: result
+
+- name: deploy {{ find_application_name }} application
+  oc_list:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/{{ knative_application_template }}"
+  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
+#######################################################
+
+
+##########      OCP Deployment Config       ##############
+#- name: copy application template
+#  template:
+#    src: "{{ resources_dir }}/{{ application_template }}"
+#    dest: "{{ work_dir }}/{{ application_template }}"
+#
+#- name: check if {{ find_application_name }} application is deployed
+#  oc_obj:
+#    oc_binary: "{{ openshift_cli }}"
+#    state: list
+#    namespace: "{{ namespace }}"
+#    name: "{{ find_application_name }}"
+#    kind: dc
+#  register: result
+#
+#- name: deploy {{ find_application_name }} application
+#  oc_list:
+#    oc_binary: "{{ openshift_cli }}"
+#    state: present
+#    namespace: "{{ namespace }}"
+#    files:
+#      - "{{ work_dir }}/{{ application_template }}"
+#  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
+#
+#- name: "wait until {{ find_application_name }} is up and running"
+#  shell: "{{ openshift_cli }} get dc {{ find_application_name }} -o template --template={{ json_template }} -n {{ namespace }}"
+#  vars:
+#    json_template: '\{\{.status.readyReplicas\}\}'
+#  register: result
+#  until: result.stdout == "1"
+#  retries: 10
+#  delay: 30
+#  changed_when: false
+###################################################

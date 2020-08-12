@@ -1,0 +1,20 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: {{ application_name }}
+spec:
+  template:
+    spec:
+      containers:
+        - image: {{ application_image_url }}:{{ application_image_tag }}
+          volumeMounts:
+          - mountPath: /deployments/config
+            name: config
+      volumes:
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: application.properties
+            path: application.properties
+          name: {{ cm_name }}
+        name: config

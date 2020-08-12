@@ -1,0 +1,9 @@
+---
+  
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: {{ source_imagestream_name }}
+  labels:
+    app: {{ application_name }}
+spec: {}

@@ -1,0 +1,66 @@
+---
+- name: "delete kservice {{ find_application_name }}"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ find_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: kservice
+
+- name: remove buildconfig
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ buildconfig_name }}"
+    namespace: "{{ namespace_tools }}"
+    kind: buildconfig
+
+- name: delete the build pipeline
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ pipeline_buildconfig_name }}"
+    namespace: "{{ namespace_tools }}"
+    kind: bc
+
+- name: delete imagestream from the {{ namespace_tools }} project
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}" 
+    state: absent
+    name: "{{ application_name }}" 
+    namespace: "{{ namespace_tools }}" 
+    kind: imagestream
+
+- name: "delete {{ cm_name }} configmap"
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ cm_name }}"
+    namespace: "{{ namespace }}"
+
+# ###########     DeploymentConfig    ##############
+- name: "delete dc {{ find_application_name }}"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ find_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: deploymentconfig
+
+- name: "delete service {{ find_application_name }}"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ find_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: service
+
+- name: "delete imagestream {{ find_application_name }}"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ find_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: imagestream
+# ###############################################
+

@@ -1,0 +1,132 @@
+---
+
+kind: List
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: {{ find_application_name }}
+      expose: "true"
+      monitoring: prometheus-actuator
+    name: {{ find_application_name }}
+  spec:
+    ports:
+      - name: http
+        port: 8080
+        protocol: TCP
+        targetPort: 8080
+    selector:
+      group: erd-services
+      app: {{ find_application_name }}
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: {{ find_application_name }}
+    name: {{ find_application_name }}
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 2
+    selector:
+      group: erd-services
+      app: {{ find_application_name }}
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 3600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          group: erd-services
+          app: {{ find_application_name }}
+      spec:
+        containers:
+          - env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: JAVA_OPTIONS
+              value: >
+                -Dvertx.metrics.options.enabled=true -Dvertx.metrics.options.registryName=prometheus
+            - name: quarkus.kubernetes-config.config-maps
+              value: {{ cm_name }}
+            - name: quarkus.kubernetes-config.enabled
+              value: 'true'
+            - name: AB_JOLOKIA_OFF
+              value: 'true'
+            imagePullPolicy: IfNotPresent
+            name: {{ find_application_name }}
+            ports:
+              - containerPort: 9779
+                name: prometheus
+                protocol: TCP
+            livenessProbe:
+              failureThreshold: 3
+              httpGet:
+                path: /health/live
+                port: 8080
+                scheme: HTTP
+              initialDelaySeconds: 30
+              periodSeconds: 30
+              timeoutSeconds: 3
+            readinessProbe:
+              failureThreshold: 3
+              httpGet:
+                path: /health/ready
+                port: 8080
+                scheme: HTTP
+              initialDelaySeconds: 30
+              periodSeconds: 30
+              timeoutSeconds: 3
+            resources:
+              limits:
+                cpu: '500m'
+                memory: '500Mi'
+              requests:
+                cpu: '250m'
+                memory: '250Mi'
+            securityContext:
+              privileged: false
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /deployments/config
+              name: config
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: {{ find_application_name }}
+        serviceAccountName: {{ find_application_name }}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            items:
+            - key: application.properties
+              path: application.properties
+            name: {{ cm_name }}
+          name: config
+    triggers:
+      - type: ConfigChange
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+            - {{ find_application_name }}
+          from:
+            kind: ImageStreamTag
+            name: "{{ find_application_name }}:{{ application_image_tag }}"
+        type: ImageChange
+
