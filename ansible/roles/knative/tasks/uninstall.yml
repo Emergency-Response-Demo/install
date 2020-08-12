@@ -1,5 +1,21 @@
 ---
 
+- name: "remove knativeserving"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    kind: KnativeServing
+    namespace: "{{ namespace_knativeserving }}"
+    name: knative-serving
+
+
+- name: "Delete {{ namespace_knativeserving }} project"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    kind: Project
+    name: "{{ namespace_knativeserving }}"
+
 - name: "get all install plans in openshift-operators namespace"
   oc_obj:
     state: list
@@ -101,3 +117,4 @@
     kind: InstallPlan
     namespace: openshift-operators
     name: "{{ knative_kafka_install_plan_name }}"
+

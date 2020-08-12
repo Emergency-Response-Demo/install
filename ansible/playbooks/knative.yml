@@ -8,6 +8,7 @@
 
   tasks:
     - set_fact:
+        namespace: "{{ namespace_knativeserving }}"
         work_dir_name: knative
         resources_dir: "{{ resources_base_dir }}/knative"
     - include_role:

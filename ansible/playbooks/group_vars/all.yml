@@ -14,3 +14,6 @@ monitoring_label: prometheus
 
 uninstall_delete_project: false
 uninstall_cluster_resources: false
+
+namespace_knativeserving: knative-serving
+install_knative: true

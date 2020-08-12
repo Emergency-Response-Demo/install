@@ -77,6 +77,16 @@
     work_dir_name: pgadmin4
   when: install_tools is defined and install_tools|bool == true  
 
+- name: install knative
+  import_role:
+    name: knative
+  vars:
+    namespace: "{{ namespace_knativeserving }}"
+    resources_dir: "{{ resources_base_dir }}/knative"
+    work_dir_name: knative
+  when: install_knative is defined and install_knative|bool == true  
+
+
 - name: install postgresql
   import_role:
     name: openshift_postgresql

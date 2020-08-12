@@ -1,5 +1,7 @@
 ---
 
+
+
 - name: get packagemanifest for serverless operator
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
@@ -74,7 +76,7 @@
     query: >-
       [?starts_with(spec.clusterServiceVersionNames[0], 'serverless-operator')].spec.clusterServiceVersionNames
 
-- name: wait until all CSVs are succeeded
+- name: wait until all serverless CSVs are succeeded
   oc_obj:
     state: list
     oc_binary: "{{ openshift_cli }}"    
@@ -164,7 +166,7 @@
     query: >-
       [?starts_with(spec.clusterServiceVersionNames[0], 'knative-kafka-operator')].spec.clusterServiceVersionNames
 
-- name: wait until all CSVs are succeeded
+- name: wait until all knative kafka CSVs are succeeded
   oc_obj:
     state: list
     oc_binary: "{{ openshift_cli }}"    
@@ -179,3 +181,39 @@
   - r_knative_kafka_csv.ansible_module_results.results[0].status.phase | length > 0
   - r_knative_kafka_csv.ansible_module_results.results[0].status.phase == "Succeeded"
   loop: "{{ knative_kafka_csvs[0] }}"
+
+- name: "check if knative-serving exists"
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    name: "knative-serving"
+    namespace: "{{ namespace_knativeserving }}"
+    kind: KnativeServing
+  register: result
+
+- name: "deploy Knative Serving"
+  oc_list:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    namespace: "{{ namespace_knativeserving }}"
+    files:
+      - "{{ resources_dir }}/{{ knative_serving_template }}"
+  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
+
+- name: wait until Knative Serving has started
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"    
+    kind: KnativeServing
+    name: "knative-serving"
+    namespace: "{{ namespace_knativeserving }}"
+  register: r_knativeserving
+#- debug:
+#    msg: "msg = {{ r_knativeserving.ansible_module_results | json_query(jmesquery) }}"
+  retries: 60
+  delay: 15
+  until:
+  - r_knativeserving.ansible_module_results.status.conditions | length > 0
+  - r_knativeserving.ansible_module_results | json_query(jmesquery) == ['True']
+  vars:
+    jmesquery: "status.conditions[?type == 'Ready'].status"

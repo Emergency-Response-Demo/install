@@ -1,6 +1,7 @@
 ---
 
 subscription_template: subscription.yml
+knative_serving_template: knativeserving.yml
 
 
 serverless_operator_packagemanifest: serverless-operator
