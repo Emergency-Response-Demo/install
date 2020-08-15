@@ -16,6 +16,7 @@
       - "{{ work_dir }}/{{ binary_imagestream_template }}"
 
 - set_fact:
+    application_image_url: "{{ datawarehouse_service_image }}"
     application_image_tag: "{{ datawarehouse_service_image_tag }}"
 
 - name: copy application template

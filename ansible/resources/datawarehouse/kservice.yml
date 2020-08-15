@@ -1,0 +1,16 @@
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: {{ dw_application_name }}
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
+    spec:
+      serviceAccountName: {{ dw_application_name }}
+      containers:
+        - image: {{ application_image_url }}:{{ application_image_tag }}
+          env:
+            - name: JAVA_OPTIONS
+              value: "-Dvertx.metrics.options.enabled=true -Dvertx.metrics.options.registryName=prometheus -Dquarkus.kubernetes-config.enabled=true -Dquarkus.kubernetes-config.config-maps={{ cm_name }}"

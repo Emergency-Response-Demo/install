@@ -81,7 +81,7 @@
     src: "{{ resources_dir }}/{{ knative_application_template }}"
     dest: "{{ work_dir }}/{{ knative_application_template }}"
 
-- name: check if {{ find_application_name }} application is deployed
+- name: check if {{ find_application_name }} knative application is deployed
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: list
@@ -90,7 +90,7 @@
     kind: kservice
   register: result
 
-- name: deploy {{ find_application_name }} application
+- name: deploy {{ find_application_name }} knative application
   oc_list:
     oc_binary: "{{ openshift_cli }}"
     state: present

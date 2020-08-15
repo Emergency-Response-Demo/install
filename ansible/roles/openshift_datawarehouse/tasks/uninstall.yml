@@ -1,5 +1,38 @@
 ---
 
+- name: "delete kservice {{ dw_application_name }}"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ dw_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: kservice
+
+- name: "delete kafkasource {{ application_name }}-source"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ application_name }}-source"
+    namespace: "{{ namespace }}"
+    kind: kafkasource
+
+- name: "delete dc {{ dw_application_name }}"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ dw_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: deploymentconfig
+
+- name: "delete service {{ dw_application_name }}"
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ dw_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: service
+
+
 - name: delete postgresql dc
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
@@ -59,22 +92,6 @@
     name: "{{ dw_application_name }}"
     namespace: "{{ namespace }}"
     kind: imagestream
-
-- name: "delete dc {{ dw_application_name }}"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ dw_application_name }}"
-    namespace: "{{ namespace }}"
-    kind: deploymentconfig
-
-- name: "delete service {{ dw_application_name }}"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ dw_application_name }}"
-    namespace: "{{ namespace }}"
-    kind: service
 
 - name: remove buildconfig
   oc_obj:

@@ -1,0 +1,20 @@
+apiVersion: sources.knative.dev/v1alpha1
+kind: KafkaSource
+metadata:
+  name: {{ application_name }}-source
+spec:
+  consumerGroup: {{ application_name }}-serverless
+  bootstrapServers:
+   - {{ kafka_bootstrap_address }}
+  topics:
+   - topic-incident-command
+   - topic-incident-event
+   - topic-responder-command
+   - topic-mission-event
+   - topic-mission-command
+   - topic-responder-location-update 
+  sink:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: {{ application_name }}

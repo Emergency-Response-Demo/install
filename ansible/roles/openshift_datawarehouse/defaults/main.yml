@@ -43,3 +43,6 @@ application_template: datawarehouse-service.yml
 kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
 kafka_bootstrap_port: 9092
 kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
+
+knative_application_template: kservice.yml
+kafka_source_template: ksource.yml
