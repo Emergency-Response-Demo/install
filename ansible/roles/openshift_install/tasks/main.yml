@@ -218,14 +218,6 @@
     resources_dir: "{{ resources_base_dir }}/emergency-console"
     work_dir_name: emergency-console
 
-- name: install responder client app
-  import_role:
-    name: openshift_responder_client_app
-  vars:
-    namespace: "{{ namespace_services }}"
-    resources_dir: "{{ resources_base_dir }}/responder-client-app"
-    work_dir_name: responder-client-app
-
 - name: install disaster service
   import_role:
     name: openshift_disaster_service
