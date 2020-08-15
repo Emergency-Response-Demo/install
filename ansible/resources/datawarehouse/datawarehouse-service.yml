@@ -40,11 +40,7 @@ items:
                   fieldPath: metadata.namespace
             - name: JAVA_OPTIONS
               value: >
-                -Dvertx.metrics.options.enabled=true -Dvertx.metrics.options.registryName=prometheus
-            - name: quarkus.kubernetes-config.config-maps
-              value: {{ cm_name }}
-            - name: quarkus.kubernetes-config.enabled
-              value: 'true'
+                -Dvertx.metrics.options.enabled=true -Dvertx.metrics.options.registryName=prometheus -Dquarkus.kubernetes-config.config-maps={{ cm_name }} -Dquarkus.kubernetes-config.enabled=true
             - name: AB_JOLOKIA_OFF
               value: 'true'
             imagePullPolicy: IfNotPresent
@@ -82,9 +78,6 @@ items:
               privileged: false
             terminationMessagePath: /dev/termination-log
             terminationMessagePolicy: File
-            volumeMounts:
-            - mountPath: /deployments/config
-              name: config
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         schedulerName: default-scheduler
@@ -92,14 +85,6 @@ items:
         serviceAccount: {{ dw_application_name }}
         serviceAccountName: {{ dw_application_name }}
         terminationGracePeriodSeconds: 30
-        volumes:
-        - configMap:
-            defaultMode: 420
-            items:
-            - key: application.properties
-              path: application.properties
-            name: {{ cm_name }}
-          name: config
     triggers:
       - type: ConfigChange
       - imageChangeParams:
