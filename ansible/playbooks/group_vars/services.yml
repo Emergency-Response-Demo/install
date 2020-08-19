@@ -22,6 +22,8 @@ dw_postgresql_application_name: dw-postgresql
 provision_find_service: "false"
 find_application_name: "{{ project_admin }}-find-service"
 
+kafdrop_application_name: "{{ project_admin }}-kafdrop"
+
 
 process_service_postgresql_username: rhpam
 process_service_postgresql_password: rhpam
