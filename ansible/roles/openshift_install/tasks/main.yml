@@ -103,6 +103,16 @@
     resources_dir: "{{ resources_base_dir }}/kafka-connect"
     work_dir_name: kafka-connect
 
+# Dependent on knative
+- name: install kafdrop
+  import_role:
+    name: openshift_kafdrop
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/kafdrop"
+    work_dir_name: kafdrop
+  when: install_knative is defined and install_knative|bool == true
+
 - name: install sso realm
   import_role:
     name: sso_realm
@@ -249,6 +259,7 @@
     resources_dir: "{{ resources_base_dir }}/datawarehouse"
     work_dir_name: datawarehouse
 
+# Dependent on knative
 - name: install find service
   import_role:
     name: openshift_find_service
@@ -256,7 +267,7 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/find-service"
     work_dir_name: find-service
-  when: provision_find_service|bool
+  when: install_knative is defined and install_knative|bool == true and provision_find_service|bool 
 
 
 - block:

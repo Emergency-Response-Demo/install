@@ -1,0 +1,9 @@
+# This custom resource triggers the installation of the Knative Kafka components, and enables the Knative Kafka eventing source and channel.
+
+apiVersion: eventing.knative.dev/v1alpha1
+kind: KnativeEventingKafka
+metadata:
+  name: knative-eventing-kafka
+spec:
+  bootstrapServers: kafka-cluster-kafka-bootstrap.{{ namespace }}:9092
+  setAsDefaultChannelProvisioner: yes

@@ -1,0 +1,23 @@
+# oc run kafdrop --port 9000 --env KAFKA_BROKERCONNECT=kafka-cluster-kafka-brokers:9092 --env JVM_OPTS="-Xms32M -Xmx64M" --env SERVER_SERVLET_CONTEXTPATH="/" --env CMD_ARGS="--message.format=PROTOBUF --protobufdesc.directory=/var/protobuf_desc" --image=obsidiandynamics/kafdrop
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: {{ application_name }}
+spec:
+  template:
+    spec:
+      containers:
+        - image: {{ application_image }}
+          ports:
+          - containerPort: 9000
+          env:
+            - name: KAFKA_BROKERCONNECT
+              value: kafka-cluster-kafka-brokers.{{ namespace }}.svc:9092
+            - name: JVM_OPTS
+              value: "-Xms32M -Xmx64M"
+            - name: SERVER_SERVLET_CONTEXTPATH
+              value: "/"
+            - name: CMD_ARGS
+              value: "--message.format=PROTOBUF --protobufdesc.directory=/var/protobuf_desc"
+            

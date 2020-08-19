@@ -2,6 +2,8 @@
 
 subscription_template: subscription.yml
 knative_serving_template: knativeserving.yml
+knative_eventing_template: knativeeventing.yml
+knative_eventing_kafka_template: knativeeventingkafka.yml
 
 
 serverless_operator_packagemanifest: serverless-operator
