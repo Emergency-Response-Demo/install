@@ -1,5 +1,30 @@
 ---
 
+- name: "remove knativeeventingkafka"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    kind: KnativeEventingKafka
+    namespace: "{{ namespace_knativeeventing }}"
+    name: knative-eventing
+
+
+- name: "remove knativeeventing"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    kind: KnativeEventing
+    namespace: "{{ namespace_knativeeventing }}"
+    name: knative-eventing
+
+
+- name: "Delete {{ namespace_knativeeventing }} project"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    kind: Project
+    name: "{{ namespace_knativeeventing }}"
+
 - name: "remove knativeserving"
   oc_obj:
     state: absent
@@ -8,13 +33,13 @@
     namespace: "{{ namespace_knativeserving }}"
     name: knative-serving
 
-
 - name: "Delete {{ namespace_knativeserving }} project"
   oc_obj:
     state: absent
     oc_binary: "{{ openshift_cli }}"
     kind: Project
     name: "{{ namespace_knativeserving }}"
+
 
 - name: "get all install plans in openshift-operators namespace"
   oc_obj:

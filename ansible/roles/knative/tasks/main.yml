@@ -217,3 +217,81 @@
   - r_knativeserving.ansible_module_results | json_query(jmesquery) == ['True']
   vars:
     jmesquery: "status.conditions[?type == 'Ready'].status"
+
+- name: create project {{ namespace_knativeeventing }}
+  oc_project:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ namespace_knativeeventing }}"
+
+- name: "check if knative-eventing exists"
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    name: "knative-eventing"
+    namespace: "{{ namespace_knativeeventing }}"
+    kind: KnativeEventing
+  register: result
+
+- name: "deploy Knative Eventing"
+  oc_list:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    namespace: "{{ namespace_knativeeventing }}"
+    files:
+      - "{{ resources_dir }}/{{ knative_eventing_template }}"
+  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
+
+- name: wait until Knative Eventing has started
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"    
+    kind: KnativeEventing
+    name: "knative-eventing"
+    namespace: "{{ namespace_knativeeventing }}"
+  register: r_knativeeventing
+#- debug:
+#    msg: "msg = {{ r_knativeeventing.ansible_module_results | json_query(jmesquery) }}"
+  retries: 60
+  delay: 15
+  until:
+  - r_knativeeventing.ansible_module_results.status.conditions | length > 0
+  - r_knativeeventing.ansible_module_results | json_query(jmesquery) == ['True']
+  vars:
+    jmesquery: "status.conditions[?type == 'Ready'].status"
+
+- name: "check if knative-eventing-kafka exists"
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    name: "knative-eventing-kafka"
+    namespace: "{{ namespace_knativeeventing }}"
+    kind: KnativeEventingKafka
+  register: result
+
+- name: "deploy Knative Eventing Kafka"
+  oc_list:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    namespace: "{{ namespace_knativeeventing }}"
+    files:
+      - "{{ resources_dir }}/{{ knative_eventing_kafka_template }}"
+  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
+
+- name: wait until Knative Eventing Kafka has started
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"    
+    kind: KnativeEventingKafka
+    name: "knative-eventing-kafka"
+    namespace: "{{ namespace_knativeeventing }}"
+  register: r_knativeeventingkafka
+#- debug:
+#    msg: "msg = {{ r_knativeeventingkafka.ansible_module_results | json_query(jmesquery) }}"
+  retries: 60
+  delay: 15
+  until:
+  - r_knativeeventingkafka.ansible_module_results.status.conditions | length > 0
+  - r_knativeeventingkafka.ansible_module_results | json_query(jmesquery) == ['True']
+  vars:
+    jmesquery: "status.conditions[?type == 'Ready'].status"
