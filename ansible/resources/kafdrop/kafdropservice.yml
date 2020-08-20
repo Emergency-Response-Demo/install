@@ -18,6 +18,4 @@ spec:
               value: "-Xms32M -Xmx64M"
             - name: SERVER_SERVLET_CONTEXTPATH
               value: "/"
-            - name: CMD_ARGS
-              value: "--message.format=PROTOBUF --protobufdesc.directory=/var/protobuf_desc"
             
