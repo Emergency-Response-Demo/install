@@ -201,6 +201,16 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/responder-simulator-service"
     work_dir_name: responder-simulator-service
+  when: deploy_from is defined and deploy_from == "source"
+
+- name: install responder simulator
+  import_role:
+    name: responder_simulator_quarkus
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/responder-simulator-quarkus"
+    work_dir_name: responder-simulator-quarkus
+  when: deploy_from is defined and deploy_from == "image"
 
 - name: install disaster simulator service
   import_role:
