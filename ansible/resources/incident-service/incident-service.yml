@@ -63,7 +63,7 @@ items:
                 name: http
                 protocol: TCP
             livenessProbe:
-              failureThreshold: 3
+              failureThreshold: 5
               httpGet:
                 path: /actuator/health
                 port: 8080
@@ -72,7 +72,7 @@ items:
               periodSeconds: 30
               timeoutSeconds: 3
             readinessProbe:
-              failureThreshold: 3
+              failureThreshold: 5
               httpGet:
                 path: /actuator/health
                 port: 8080

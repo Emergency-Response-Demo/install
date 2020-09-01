@@ -258,6 +258,7 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/datawarehouse"
     work_dir_name: datawarehouse
+  when: install_knative is defined and install_knative|bool == true
 
 # Dependent on knative
 - name: install find service

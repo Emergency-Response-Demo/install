@@ -86,7 +86,7 @@
 
 
  
-######       Datawarehouse Warehouse Service        ########
+######       KNative Eventing Datawarehouse Warehouse Service        ########
 - name: create {{ dw_application_name }} service account
   oc_serviceaccount:
     oc_binary: "{{ openshift_cli }}"
@@ -121,8 +121,65 @@
 - import_tasks: deploy_from_source.yml
   when: deploy_from is defined and deploy_from == "source"
 
-- import_tasks: deploy_from_image.yml
+- set_fact:
+    application_image_url: "image-registry.openshift-image-registry.svc:5000/{{ namespace }}/{{ application_name }}"
+    application_image_tag: "latest"
+  when: deploy_from is defined and deploy_from == "source"
+
+
+- set_fact:
+    application_image_url: "{{ datawarehouse_service_image }}"
+    application_image_tag: "{{ datawarehouse_service_image_tag }}"
   when: deploy_from is defined and deploy_from == "image"
+
+- name: check if {{ application_name }} knative application is deployed
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    namespace: "{{ namespace }}"
+    name: "{{ application_name }}"
+    kind: kservice
+  register: result
+
+- name: copy knative template
+  template:
+    src: "{{ resources_dir }}/{{ knative_application_template }}"
+    dest: "{{ work_dir }}/{{ knative_application_template }}"
+  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
+
+- name: deploy {{ application_name }} knative application
+  oc_list:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/{{ knative_application_template }}"
+  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
+
+- name: check if {{ application_name }}-source kafka source is deployed
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: list
+    namespace: "{{ namespace }}"
+    name: "{{ application_name }}-source"
+    kind: kafkasource
+  register: ksresult
+
+- name: copy kafka source template
+  template:
+    src: "{{ resources_dir }}/{{ kafka_source_template }}"
+    dest: "{{ work_dir }}/{{ kafka_source_template }}"
+  when: ksresult.ansible_module_results.stderr is defined and ksresult.ansible_module_results.stderr != ""
+
+- name: deploy {{ application_name }}-source kafka source
+  oc_list:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/{{ kafka_source_template }}"
+  when: ksresult.ansible_module_results.stderr is defined and ksresult.ansible_module_results.stderr != ""
+
 
 
 

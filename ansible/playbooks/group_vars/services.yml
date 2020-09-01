@@ -19,7 +19,7 @@ disaster_service_application_name: "{{ project_admin }}-disaster-service"
 dw_application_name: "{{ project_admin }}-datawarehouse"
 dw_postgresql_application_name: dw-postgresql
 
-provision_find_service: "false"
+provision_find_service: "true"
 find_application_name: "{{ project_admin }}-find-service"
 
 kafdrop_application_name: "{{ project_admin }}-kafdrop"
