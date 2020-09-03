@@ -782,8 +782,8 @@
       "redirectUris": [
         "http://localhost:8080/*",
         "https://localhost:4200/*",
-        "https://{{ emergency_console_application_name }}.{{ ocp_domain }}/*",
-        "https://{{ responder_client_application_name }}.{{ ocp_domain }}/*"
+        "https://{{ project_admin }}-{{ emergency_console_application_name }}.{{ ocp_domain }}/*",
+        "https://{{ project_admin }}-{{ responder_client_application_name }}.{{ ocp_domain }}/*"
       ],
       "webOrigins": [
         "*"
@@ -909,7 +909,7 @@
       "secret": "{{ sso_vertx_client_secret }}",
       "redirectUris": [
         "http://localhost:8080/callback*",
-        "https://{{ incident_priority_service_application_name }}.{{ ocp_domain }}/callback*"
+        "https://{{ project_admin }}-{{ incident_priority_service_application_name }}.{{ ocp_domain }}/callback*"
       ],
       "webOrigins": [],
       "notBefore": 0,
