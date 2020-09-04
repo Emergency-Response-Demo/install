@@ -41,6 +41,7 @@ items:
     name: {{ process_service_postgresql_service_name }}
     labels:
       app: {{ application_name }}
+      app.kubernetes.io/part-of: datatier
   spec:
     strategy:
       recreateParams:

@@ -2,6 +2,8 @@ apiVersion: infinispan.org/v1
 kind: Infinispan
 metadata:
   name: {{ datagrid_application_name }}
+  labels:
+    app.kubernetes.io/part-of: datatier
 spec:
   replicas: {{ number_of_replicas }}
   container:

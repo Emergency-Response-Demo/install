@@ -20,9 +20,9 @@ dw_application_name: "datawarehouse"
 dw_postgresql_application_name: dw-postgresql
 
 provision_find_service: "true"
-find_application_name: "{{ project_admin }}-find-service"
+find_application_name: "find-service"
 
-kafdrop_application_name: "{{ project_admin }}-kafdrop"
+kafdrop_application_name: "kafdrop"
 
 
 process_service_postgresql_username: rhpam

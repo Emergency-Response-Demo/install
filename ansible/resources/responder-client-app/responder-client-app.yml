@@ -41,6 +41,7 @@ items:
   metadata:
     labels:
       app: {{ application_name }}
+      app.kubernetes.io/part-of: webtier
     name: {{ application_name }}
   spec:
     replicas: 1

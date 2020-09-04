@@ -26,6 +26,7 @@ items:
   metadata:
     labels:
       app: {{ application_name }}
+      app.kubernetes.io/part-of: bizservices
     name: {{ application_name }}
   spec:
     replicas: 1

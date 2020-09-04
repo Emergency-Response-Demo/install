@@ -2,6 +2,8 @@ apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
   name: {{ dw_application_name }}
+  labels:
+    app.kubernetes.io/part-of: monitoring
 spec:
   template:
     metadata:

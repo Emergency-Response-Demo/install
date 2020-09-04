@@ -41,6 +41,7 @@ items:
     name: {{ dw_postgresql_application_name }}
     labels:
       app: {{ dw_postgresql_application_name }}
+      app.kubernetes.io/part-of: datatier
   spec:
     strategy:
       recreateParams:

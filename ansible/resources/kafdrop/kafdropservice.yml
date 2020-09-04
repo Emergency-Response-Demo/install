@@ -4,6 +4,8 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: {{ application_name }}
+  labels:
+    app.kubernetes.io/part-of: monitoring
 spec:
   template:
     spec:
