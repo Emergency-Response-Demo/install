@@ -115,7 +115,7 @@
     vars:
       json_template: '\{\{.status.currentReplicas\}\}'
     register: infinispan_set_status
-    until: infinispan_set_status.stdout == "{{ number_of_replicas }}"
+    until: infinispan_set_status.stdout == number_of_replicas
     retries: 15
     delay: 15 
 

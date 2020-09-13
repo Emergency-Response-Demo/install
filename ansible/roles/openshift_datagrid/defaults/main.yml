@@ -11,7 +11,7 @@ replica_status: '\{\{.status.readyReplicas\}\}'
 
 datagrid_connect_secret: dg-connect-secret
 
-number_of_replicas: 3
+number_of_replicas: "3"
 total_container_memory: 512Mi
 total_container_cpu: 1000m
 
