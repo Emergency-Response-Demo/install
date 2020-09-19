@@ -46,3 +46,6 @@ kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port 
 
 knative_application_template: kservice.yml
 kafka_source_template: ksource.yml
+
+dw_incident_mapping_cache_template: "dw_incident_mapping_cache.yml"
+dw_responder_cache_template: "dw_responder_cache.yml"
