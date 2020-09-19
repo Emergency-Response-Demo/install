@@ -1,0 +1,10 @@
+apiVersion: infinispan.org/v2alpha1
+kind: Cache
+metadata:
+  name: DW_RESPONDER_MAP
+spec:
+  adminAuth: 
+    secretName: basic-auth
+  clusterName: {{ datagrid_application_name }}
+  name: DW_RESPONDER_MAP
+  templateName: org.infinispan.DIST_SYNC

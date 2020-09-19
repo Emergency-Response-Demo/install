@@ -11,6 +11,12 @@ spec:
     cpu: "{{ total_container_cpu }}"
     memory: {{ total_container_memory }}
   expose:
-    type: LoadBalancer
+    type: Route
+  service:
+    type: Cache
   security:
     endpointSecretName: dg-connect-secret
+    endpointEncryption:
+      type: service
+      certServiceName: service.beta.openshift.io
+      certSecretName: datagrid-tls-secret

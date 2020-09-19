@@ -84,6 +84,35 @@
 ########################################################
 
 
+############        Data Grid Caches        ###############
+ 
+- name: copy datagrid caches to support datawarehouse
+  template:
+    src: "{{ resources_dir }}/{{ dw_incident_mapping_cache_template }}"
+    dest: "{{ work_dir }}/{{ dw_incident_mapping_cache_template }}"
+  template:
+    src: "{{ resources_dir }}/{{ dw_responder_cache_template}}"
+    dest: "{{ work_dir }}/{{ dw_responder_cache_template }}"
+
+- name: "deploy {{ dw_incident_mapping_cache_template }}"
+  oc_list:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/{{ dw_incident_mapping_cache_template }}"
+
+- name: "deploy {{ dw_responder_cache_template }}"
+  oc_list:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/{{ dw_responder_cache_template }}"
+
+###########################################################
+
+
 
  
 ######       KNative Eventing Datawarehouse Warehouse Service        ########
