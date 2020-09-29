@@ -16,21 +16,21 @@
     namespace: "{{ namespace }}"
     kind: kafkasource
 
-- name: "delete dc {{ dw_application_name }}"
+- name: "delete cache {{ dw_incident_mapping_cache_name }}"
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ dw_application_name }}"
+    name: "{{ dw_incident_mapping_cache_name }}"
     namespace: "{{ namespace }}"
-    kind: deploymentconfig
+    kind: cache
 
-- name: "delete service {{ dw_application_name }}"
+- name: "delete cache {{ dw_responder_cache_name }}"
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ dw_application_name }}"
+    name: "{{ dw_responder_cache_name }}"
     namespace: "{{ namespace }}"
-    kind: service
+    kind: cache
 
 
 - name: delete postgresql dc

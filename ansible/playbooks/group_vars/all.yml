@@ -10,6 +10,8 @@ openshift_cli: oc
 
 project_name: er-demo
 
+project_admin: user1
+
 monitoring_label: prometheus
 
 uninstall_delete_project: false
