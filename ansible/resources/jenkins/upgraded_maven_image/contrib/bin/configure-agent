@@ -85,7 +85,3 @@ if [ -n "$MAVEN_MIRROR_URL" ]; then
   </mirror>"
   sed -i "s|<!-- ### configured mirrors ### -->|$xml|" $HOME/.m2/settings.xml
 fi
-
-CONTAINER_MEMORY_IN_BYTES=$(cat /sys/fs/cgroup/memory/memory.limit_in_bytes)
-CONTAINER_MEMORY_IN_MB=$((CONTAINER_MEMORY_IN_BYTES/2**20))
-
