@@ -28,7 +28,7 @@ jenkins_maven_slave_pvc: jenkins-maven-slave-repository
 jenkins_maven_slave_request_cpu: 200m
 jenkins_maven_slave_request_memory: 500Mi
 jenkins_maven_slave_limit_cpu: 1000m
-jenkins_maven_slave_limit_memory: 1Gi
+jenkins_maven_slave_limit_memory: 2Gi
 
 gogs_service: gogs
 gogs_service_port: 3000
