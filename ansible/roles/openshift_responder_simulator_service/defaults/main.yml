@@ -10,10 +10,10 @@ resources_requests_cpu: 100m
 resources_requests_memory: 256Mi
 
 application_configmap: responder-simulator
-application_configmap_key: app-config.properties
+application_configmap_key: application.properties
 logging_configmap: responder-simulator-service-logging
 
-application_image: redhat-openjdk18-openshift:1.7
+application_image: openjdk-11-rhel8:1.0
 application_image_namespace: openshift
 
 buildconfig_name: "{{ application_name }}-binary"
@@ -36,10 +36,16 @@ kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port 
 kafka_groupid: responder-sim
 
 kafka_mission_event_topic: topic-mission-event
+kafka_mission_event_groupid: responder-simulator
 kafka_responder_update_topic: topic-responder-location-update
+kafka_responder_event_topic: topic-responder-event
 
 responder_service_url: "{{ responder_service_application_name }}.{{ namespace }}.svc"
 responder_service_port: 8080
 responder_service_get_responder_path: "/responder/"
 
+infinispan_cache_responder_simulator: responder-simulator
+infinispan_streams_store: responder-store 
+
 logging_style: dev
+

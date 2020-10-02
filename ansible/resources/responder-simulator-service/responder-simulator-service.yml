@@ -74,18 +74,18 @@ items:
                 name: http
                 protocol: TCP
             livenessProbe:
-              failureThreshold: 3
+              failureThreshold: 6
               httpGet:
-                path: /metrics
+                path: /health/live
                 port: 8080
                 scheme: HTTP
               initialDelaySeconds: 10
               periodSeconds: 10
               timeoutSeconds: 1
             readinessProbe:
-              failureThreshold: 3
+              failureThreshold: 6
               httpGet:
-                path: /metrics
+                path: /health/live
                 port: 8080
                 scheme: HTTP
               initialDelaySeconds: 10
