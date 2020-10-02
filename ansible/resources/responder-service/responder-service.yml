@@ -57,6 +57,9 @@ items:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.namespace
+            - name: JAVA_OPTIONS
+              value: >
+                -Dvertx.metrics.options.enabled=true -Dvertx.metrics.options.registryName=prometheus -Dquarkus.kubernetes-config.config-maps={{ application_configmap }} -Dquarkus.kubernetes-config.enabled=true
             imagePullPolicy: IfNotPresent
             name: {{ application_name }}
             ports:
@@ -64,22 +67,22 @@ items:
                 name: http
                 protocol: TCP
             livenessProbe:
-              failureThreshold: 3
+              failureThreshold: 6
               httpGet:
-                path: /actuator/health
+                path: /health/live
                 port: 8080
                 scheme: HTTP
               initialDelaySeconds: 30
-              periodSeconds: 30
+              periodSeconds: 10
               timeoutSeconds: 3
             readinessProbe:
-              failureThreshold: 3
+              failureThreshold: 6
               httpGet:
-                path: /actuator/health
+                path: /health/live
                 port: 8080
                 scheme: HTTP
               initialDelaySeconds: 30
-              periodSeconds: 30
+              periodSeconds: 10
               timeoutSeconds: 3
             resources:
               limits:
