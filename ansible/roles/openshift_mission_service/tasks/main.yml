@@ -20,7 +20,7 @@
 - name: copy {{ application_configmap }} configmap template
   template:
     src: "{{ resources_dir }}/application.properties"
-    dest: "{{ work_dir }}/app-config.properties"
+    dest: "{{ work_dir }}/application.properties"
 
 - name: create {{ application_configmap }} application configmap
   oc_configmap:
@@ -29,7 +29,7 @@
     name: "{{ application_configmap }}"
     namespace: "{{ namespace }}"
     from_file:
-      dir: "{{ work_dir }}/app-config.properties"
+      dir: "{{ work_dir }}/application.properties"
 
 # logging configmap
 - name: set logging template fact

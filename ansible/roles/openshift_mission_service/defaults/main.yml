@@ -10,10 +10,10 @@ resources_requests_cpu: 250m
 resources_requests_memory: 250Mi
 
 application_configmap: mission-service
-application_configmap_key: app-config.properties
+application_configmap_key: application.properties
 logging_configmap: mission-service-logging
 
-application_image: redhat-openjdk18-openshift:1.7
+application_image: openjdk-11-rhel8:1.0
 application_image_namespace: openshift
 
 buildconfig_name: "{{ application_name }}-binary"
@@ -43,7 +43,10 @@ kafka_autocommit: 'true'
 
 datagrid_service: "{{ datagrid_application_name }}.{{ namespace_datagrid }}.svc"
 datagrid_port: 11222
+datagrid_cache_name: mission
 
 map_token: ""
 
 logging_style: dev
+
+kafka_groupid: mission-service
