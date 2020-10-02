@@ -14,7 +14,7 @@ logging_configmap: responder-service-logging
 
 application_properties: application.properties
 
-application_image: redhat-openjdk18-openshift:1.7
+application_image: openjdk-11-rhel8:1.0
 application_image_namespace: openshift
 
 buildconfig_name: "{{ application_name }}-binary"

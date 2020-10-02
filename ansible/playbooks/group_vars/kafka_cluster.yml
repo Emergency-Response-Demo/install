@@ -16,4 +16,6 @@ kafka_topics: >
    {"name": "topic-mission-event", "partitions": "15", "replicas": "3", "config": "{}"},
    {"name": "topic-responder-command", "partitions": "15", "replicas": "3", "config": "{}"},
    {"name": "topic-responder-event", "partitions": "15", "replicas": "3", "config": "{}"},
-   {"name": "topic-responder-location-update", "partitions": "15", "replicas": "3", "config": "{}"}]
+   {"name": "topic-responder-location-update", "partitions": "15", "replicas": "3", "config": "{}"},
+   {"name": "responder-simulator-kstreams-responder-store-changelog", "partitions": "15", "replicas": "3", 
+   "config": {"cleanup.policy": "compact", "message.timestamp.type": "CreateTime"}}]

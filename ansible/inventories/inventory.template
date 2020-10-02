@@ -19,57 +19,57 @@ emergency_response_theme_extension=https://github.com/Emergency-Response-Demo/em
 
 # images
 incident_service_image=quay.io/emergencyresponsedemo/incident-service
-incident_service_image_tag=2.6
+incident_service_image_tag=2.7
 
 responder_service_image=quay.io/emergencyresponsedemo/responder-service
-responder_service_image_tag=2.6
+responder_service_image_tag=2.7
 
 process_viewer_image=quay.io/emergencyresponsedemo/process-viewer
-process_viewer_image_tag=2.6
+process_viewer_image_tag=2.7
 
 incident_priority_service_image=quay.io/emergencyresponsedemo/incident-priority-service
-incident_priority_service_image_tag=2.6
+incident_priority_service_image_tag=2.7
 
 process_service_image=quay.io/emergencyresponsedemo/process-service
-process_service_image_tag=2.6
+process_service_image_tag=2.7
 
 disaster_simulator_service_image=quay.io/emergencyresponsedemo/disaster-simulator
-disaster_simulator_service_image_tag=2.6
+disaster_simulator_service_image_tag=2.7
 
 mission_service_image=quay.io/emergencyresponsedemo/mission-service
-mission_service_image_tag=2.6
+mission_service_image_tag=2.7
 
 responder_simulator_image=quay.io/emergencyresponsedemo/responder-simulator
-responder_simulator_image_tag=2.6
+responder_simulator_image_tag=2.7
 
 emergency_console_image=quay.io/emergencyresponsedemo/emergency-console
-emergency_console_image_tag=2.6
+emergency_console_image_tag=2.7
 
 responder_client_app_image=quay.io/emergencyresponsedemo/responder-client-app
-responder_client_app_image_tag=2.6
+responder_client_app_image_tag=2.7
 
 disaster_service_image=quay.io/emergencyresponsedemo/disaster-service
-disaster_service_image_tag=2.6
+disaster_service_image_tag=2.7
 
 datawarehouse_service_image=quay.io/emergencyresponsedemo/datawarehouse
-datawarehouse_service_image_tag=2.6
+datawarehouse_service_image_tag=2.7
 
 process_service_postgresql_image=quay.io/emergencyresponsedemo/postgres-10-decoderbufs-fedora
-process_service_postgresql_image_stream_tag=2.6
+process_service_postgresql_image_stream_tag=2.7
 
 kafka_connect_image=quay.io/emergencyresponsedemo/strimzi-debezium-postgresql:1.4.0-1.1.2.Final
 
 find_service_image=quay.io/emergencyresponsedemo/find-service
-find_service_image_tag=2.6
+find_service_image_tag=2.7
 
 # source repos
-incident_service_git_repo=https://github.com/Emergency-Response-Demo/incident-service.git
+incident_service_git_repo=https://github.com/Emergency-Response-Demo/incident-service-quarkus.git
 incident_service_git_branch=master
 
-responder_simulator_service_git_repo=https://github.com/Emergency-Response-Demo/responder-simulator.git
+responder_simulator_service_git_repo=https://github.com/Emergency-Response-Demo/responder-simulator-quarkus.git
 responder_simulator_service_git_branch=master
 
-responder_service_git_repo=https://github.com/Emergency-Response-Demo/responder-service.git
+responder_service_git_repo=https://github.com/Emergency-Response-Demo/responder-service-quarkus.git
 responder_service_git_branch=master
 
 incident_process_git_repo=https://github.com/Emergency-Response-Demo/incident-process-kjar.git
@@ -84,7 +84,7 @@ assignment_rules_model_git_branch=master
 process_service_git_repo=https://github.com/Emergency-Response-Demo/process-service.git
 process_service_git_branch=master
 
-mission_service_git_repo=https://github.com/Emergency-Response-Demo/mission-service.git
+mission_service_git_repo=https://github.com/Emergency-Response-Demo/mission-service-quarkus.git
 mission_service_git_branch=master
 
 emergency_console_git_repo=https://github.com/Emergency-Response-Demo/emergency-console.git
