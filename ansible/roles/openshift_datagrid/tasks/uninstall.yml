@@ -1,5 +1,14 @@
 ---
 
+- name: "delete infinispan route"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ datagrid_route_name }}"
+    namespace: "{{ namespace }}"
+    kind: route
+
+
 - name: "delete infinispan secret"
   oc_obj:
     state: absent

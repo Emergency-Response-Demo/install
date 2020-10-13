@@ -20,3 +20,5 @@ container_cpu_request: 500
 total_container_storage: 1
 
 datagrid_defaultchannel: 8.1.x
+
+datagrid_route_name: datagrid-service-external

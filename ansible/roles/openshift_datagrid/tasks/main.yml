@@ -64,8 +64,24 @@
     delay: 10
     changed_when: false
 
+  - name: "determine datagrid clusterrole name so as to patch in next step"
+    shell: |-
+      {{ openshift_cli }} get subscription datagrid -n {{ namespace }} -o jsonpath='{.spec.startingCSV}'
+    register: datagrid_clusterrole_name_suffix
+  - debug:
+      msg: "datagrid_clusterrole_name_suffix = {{ datagrid_clusterrole_name_suffix.stdout }}"
+  - shell: |-
+      {{ openshift_cli }} get clusterrole -o custom-columns=NAME:.metadata.name | grep {{ datagrid_clusterrole_name_suffix.stdout }}
+    register: datagrid_clusterrole_name
+  - debug:
+      msg: "datagrid_clusterrole_name = {{ datagrid_clusterrole_name.stdout }}"
+  - name: "disable TLS encryption in DataGrid operator"
+    shell: |-
+      {{ openshift_cli }} patch clusterrole {{ datagrid_clusterrole_name.stdout }} --type json -p '[{"op":"remove", "path":"/rules/1"}]' -n {{ namespace }}
+
   when: >
     resource_status.ansible_module_results.stderr is defined and resource_status.ansible_module_results.stderr != ""
+
 
 # deploy datagrid
 - name: check if datagrid is deployed
@@ -123,6 +139,10 @@
     until: infinispan_set_status.stdout == "{{ number_of_replicas }}"
     retries: 15
     delay: 15 
+
+  - name: "Create edge route for datagrid service"
+    shell: |
+      {{ openshift_cli }} create route edge {{ datagrid_route_name }} --service=datagrid-service  -n {{ namespace }}
 
   when: >
     register_infinispan is not defined or
