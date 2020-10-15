@@ -51,6 +51,9 @@ mission_service_quarkus_image_tag=3efc25e
 responder_simulator_image=quay.io/emergencyresponsedemo/responder-simulator
 responder_simulator_image_tag=2.4
 
+responder_simulator_quarkus_image=quay.io/btison/erdemo-responder-simulator-quarkus
+responder_simulator_quarkus_image_tag=599c564
+
 emergency_console_image=quay.io/emergencyresponsedemo/emergency-console
 emergency_console_image_tag=2e83f60
 
