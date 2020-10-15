@@ -28,7 +28,7 @@ responder_service_image=quay.io/emergencyresponsedemo/responder-service
 responder_service_image_tag=2.4
 
 responder_service_quarkus_image=quay.io/btison/erdemo-responder-service-quarkus
-responder_service_quarkus_image_tag=dc8f45a
+responder_service_quarkus_image_tag=90d9467
 
 process_viewer_image=quay.io/emergencyresponsedemo/process-viewer
 process_viewer_image_tag=2.7
