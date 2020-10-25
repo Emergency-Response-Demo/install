@@ -267,3 +267,13 @@
     namespace: "{{ namespace_sso }}"
     resources_dir: "{{ resources_base_dir }}/sso"
     work_dir_name: sso
+
+- name: uninstall knative operator
+  import_role:
+    name: knative
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_knativeserving }}"
+    resources_dir: "{{ resources_base_dir }}/knative"
+    work_dir_name: knative
+
