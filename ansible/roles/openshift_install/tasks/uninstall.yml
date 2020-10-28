@@ -169,6 +169,16 @@
     resources_dir: "{{ resources_base_dir }}/pgadmin4"
     work_dir_name: pgadmin4
 
+- name: "uninstall nexus when building from image from {{ namespace_nexus }}"
+  import_role:
+    name: openshift_nexus
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_nexus }}"
+    resources_dir: "{{ resources_base_dir }}/nexus"
+    work_dir_name: nexus
+  when: uninstall_cluster_resources|bool == true
+
 - name: uninstall nexus
   import_role:
     name: openshift_nexus
@@ -176,7 +186,7 @@
   vars:
     namespace: "{{ namespace_tools }}"
     resources_dir: "{{ resources_base_dir }}/nexus"
-    work_dir_name: nexuss
+    work_dir_name: nexus
   when: deploy_from is defined and deploy_from == "source"
 
 - name: uninstall jenkins
@@ -276,4 +286,11 @@
     namespace: "{{ namespace_knativeserving }}"
     resources_dir: "{{ resources_base_dir }}/knative"
     work_dir_name: knative
+
+- name: "delete namespace {{ namespace_nexus }}"
+  oc_project:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ namespace_nexus }}"
+  when: uninstall_cluster_resources|bool == true
 
