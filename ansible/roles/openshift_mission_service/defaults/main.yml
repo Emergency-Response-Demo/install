@@ -48,5 +48,3 @@ datagrid_cache_name: mission
 map_token: ""
 
 logging_style: dev
-
-kafka_groupid: mission-service
