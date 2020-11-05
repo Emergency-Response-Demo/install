@@ -169,7 +169,7 @@
 
 - name: "delete clusterrole for get namespaces"
   oc_obj:
-    state: present
+    state: absent
     oc_binary: "{{ openshift_cli }}"
     name: get-namespaces
     kind: clusterrole
