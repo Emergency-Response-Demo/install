@@ -28,9 +28,13 @@
 - name: scale down emergency console
   shell: "{{ openshift_cli }} scale --replicas=0 dc {{ emergency_console_application_name }} -n {{ namespace_services }}"
 
-# scale down responder client app
-- name: scale down responder client app
-  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ responder_client_application_name }} -n {{ namespace_services }}"
+# scale down disaster-service
+- name: scale down disaster service
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ disaster_service_application_name }} -n {{ namespace_services }}"
+
+# scale down datawarehouse
+- name: scale down datawarehouse
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ dw_application_name }} -n {{ namespace_services }}"
 
 # scale down process viewer
 - name: scale down process viewer
@@ -38,13 +42,7 @@
 
 # uninstall kafka
 - name: uninstall kafka topics
-  import_role:
-    name: openshift_kafka_topics
-    tasks_from: uninstall
-  vars:
-    namespace: "{{ namespace_kafka_cluster }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
-    work_dir_name: kafka-topics
+  shell: "{{ openshift_cli }} get kafkatopic --no-headers -n {{ namespace_kafka_cluster }} | awk '{print $1}' | xargs -I VAR {{ openshift_cli }} delete kafkatopic VAR -n {{ namespace_kafka_cluster }}"
 
 - name: uninstall kafka cluster
   import_role:
@@ -85,14 +83,14 @@
     work_dir_name: process-service
 
 # Recreate the SSO Realm
-- name: reset sso realm
-  import_role:
-    name: sso_realm
-    tasks_from: reset
-  vars:
-    namespace: "{{ namespace_services }}"
-    resources_dir: "{{ resources_base_dir }}/sso_realm"
-    work_dir_name: sso-realm
+# - name: reset sso realm
+#   import_role:
+#     name: sso_realm
+#     tasks_from: reset
+#   vars:
+#     namespace: "{{ namespace_services }}"
+#     resources_dir: "{{ resources_base_dir }}/sso_realm"
+#     work_dir_name: sso-realm
 
 # install kafka
 - name: install kafka cluster
@@ -163,13 +161,17 @@
 - name: scale down responder simulator service
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ responder_simulator_service_application_name }} -n {{ namespace_services }}"
 
-  # scale up emergency console
+# scale up emergency console
 - name: scale up emergency console
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ emergency_console_application_name }} -n {{ namespace_services }}"
 
-# scale up responder client app
-- name: scale up responder client app
-  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ responder_client_application_name }} -n {{ namespace_services }}"
+# scale up disaster service
+- name: scale up disaster service
+  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ disaster_service_application_name }} -n {{ namespace_services }}"
+
+# scale up datawarehouse
+- name: scale up datawarehouse
+  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ dw_application_name }} -n {{ namespace_services }}"
 
 # scale up process viewer
 - name: scale up process viewer
