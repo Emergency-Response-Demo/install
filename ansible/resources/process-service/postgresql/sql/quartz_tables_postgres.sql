@@ -148,14 +148,6 @@ CREATE TABLE qrtz_locks
     PRIMARY KEY (SCHED_NAME,LOCK_NAME)
 );
 
-INSERT INTO qrtz_locks
-  (SCHED_NAME, LOCK_NAME)
-  VALUES ('SpringBootScheduler','STATE_ACCESS');
-
-INSERT INTO qrtz_locks
-  (SCHED_NAME, LOCK_NAME)
-  VALUES ('SpringBootScheduler','TRIGGER_ACCESS');
-
 create index idx_qrtz_j_req_recovery on qrtz_job_details(SCHED_NAME,REQUESTS_RECOVERY);
 create index idx_qrtz_j_grp on qrtz_job_details(SCHED_NAME,JOB_GROUP);
 
