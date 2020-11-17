@@ -64,6 +64,7 @@
     delay: 10
     changed_when: false
 
+  # TO-DO:  Not precise enough.  Name of ClusterRole is found in installplan
   - name: "determine datagrid clusterrole name so as to patch in next step"
     shell: |-
       {{ openshift_cli }} get subscription datagrid -n {{ namespace }} -o jsonpath='{.spec.startingCSV}'
