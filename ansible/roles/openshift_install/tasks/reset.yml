@@ -52,7 +52,7 @@
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
     work_dir_name: kafka-topics
 
 - name: uninstall kafka cluster
@@ -109,7 +109,7 @@
     name: openshift_kafka_cluster
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
     work_dir_name: kafka-cluster
 
 - name: install kafka topics
@@ -117,7 +117,7 @@
     name: openshift_kafka_topics
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
     work_dir_name: kafka-topics
 
 # install datagrid

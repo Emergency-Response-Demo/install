@@ -20,3 +20,5 @@ uninstall_cluster_resources: false
 namespace_knativeserving: knative-serving
 namespace_knativeeventing: knative-eventing
 install_knative: true
+
+operatorgroup_name: er-demo-operators
