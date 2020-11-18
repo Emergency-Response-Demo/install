@@ -227,7 +227,7 @@
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
     work_dir_name: kafka-topics
 
 - name: uninstall kafka cluster
@@ -238,14 +238,14 @@
     namespace: "{{ namespace_kafka_cluster }}"
     work_dir_name: kafka-cluster
 
-- name: uninstall kafka operator
+- name: uninstall amq streams operator
   import_role:
-    name: openshift_strimzi_operator
+    name: amq_streams_operator
     tasks_from: uninstall
   vars:
-    namespace: "{{ namespace_strimzi_operator }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
-    work_dir_name: strimzi-operator
+    namespace: "{{ namespace_amq_streams_operator }}"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
+    work_dir_name: amq-streams-operator
 
 - name: uninstall monitoring stack
   import_role:
@@ -273,12 +273,6 @@
     oc_binary: "{{ openshift_cli }}"
     state: absent
     name: "{{ namespace_monitoring }}"
-
-- name: delete namespace kafka operator
-  oc_project:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: "{{ namespace_strimzi_operator }}"
 
 - name: uninstall sso realm
   import_role:

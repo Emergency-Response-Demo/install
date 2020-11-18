@@ -17,20 +17,20 @@
     work_dir_name: "{{ project_admin }}-monitoring"
   when: install_monitoring is defined and install_monitoring|bool == true
 
-- name: install kafka operator
+- name: install amq streams operator
   import_role:
-    name: openshift_strimzi_operator
+    name: amq_streams_operator
   vars:
-    namespace: "{{ namespace_strimzi_operator }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
-    work_dir_name: strimzi-operator
+    namespace: "{{ namespace_amq_streams_operator }}"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
+    work_dir_name: amq-streams-operator
 
 - name: install kafka cluster
   import_role:
     name: openshift_kafka_cluster
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
     work_dir_name: kafka-cluster
 
 - name: install kafka topics
@@ -38,7 +38,7 @@
     name: openshift_kafka_topics
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
     work_dir_name: kafka-topics
 
 - name: install jenkins

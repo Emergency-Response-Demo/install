@@ -1,6 +1,6 @@
 ---
 
-- name: Deploy Strimzi Operator
+- name: Deploy AMQ Streams Operator
   hosts: localhost
   connection: local
   gather_facts: false
@@ -10,18 +10,18 @@
 
   tasks:
     - set_fact:
-        namespace: "{{ namespace_strimzi_operator }}"
-        resources_dir: "{{ resources_base_dir }}/strimzi"
-        work_dir_name: strimzi-operator
+        namespace: "{{ namespace_amq_streams_operator }}"
+        resources_dir: "{{ resources_base_dir }}/amq-streams"
+        work_dir_name: amq-streams-operator
     - include_role:
-        name: openshift_strimzi_operator
+        name: amq_streams_operator
       when: >
         ACTION is not defined or
         ACTION is none or
         ACTION|trim() == "" or
         ACTION|trim() == "install"
     - include_role:
-        name: openshift_strimzi_operator
+        name: amq_streams_operator
         tasks_from: uninstall
       when: >
         ACTION is defined and

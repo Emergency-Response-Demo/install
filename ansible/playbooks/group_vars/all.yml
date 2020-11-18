@@ -16,3 +16,5 @@ monitoring_label: prometheus
 
 uninstall_delete_project: false
 uninstall_cluster_resources: false
+
+operatorgroup_name: er-demo-operators

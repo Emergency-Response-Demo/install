@@ -24,14 +24,6 @@
     namespace: "{{ namespace }}"
     kind: subscription
 
-- name: "delete operator group {{ datagrid_operator_package_name }}"
-  oc_obj:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    name: "{{ datagrid_operatorgroup_name }}"
-    namespace: "{{ namespace }}"
-    kind: operatorgroup
-
 - name: get currentCSV for default channel
   shell: |-
     {{ openshift_cli }} get packagemanifests {{ datagrid_operator_package_name }} -o jsonpath='{.status.channels[?(@.name == "{{ datagrid_defaultchannel }}")].currentCSV}'

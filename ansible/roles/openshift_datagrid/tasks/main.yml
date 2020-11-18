@@ -11,20 +11,12 @@
 
 - block:
 
-  - name: "copy {{ resources_dir }}/datagrid_operatorgroup.yml"
-    template:
-      src: "{{ resources_dir }}/datagrid_operatorgroup.yml"
-      dest: "{{ work_dir }}/datagrid-operatorgroup.yml"
-
   - name: "Create operatorgroup in {{ namespace }}"
-    oc_obj:
-      state: present
-      oc_binary: "{{ openshift_cli }}"
-      name: "{{ datagrid_operatorgroup_name }}"
-      namespace: "{{ namespace }}"
-      kind: operatorgroup
-      files:
-        - "{{ work_dir }}/datagrid-operatorgroup.yml"
+    import_role:
+      name: operatorgroup
+    vars:
+      operatorgroup_namespace: "{{ namespace }}"
+      operatorgroup_target_namespace: "{{ namespace }}"
 
   - name: get currentCSV for default channel
     shell: |-

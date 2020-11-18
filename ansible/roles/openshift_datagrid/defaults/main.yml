@@ -2,7 +2,6 @@
 
 # datagrid operator
 datagrid_operator_name: infinispan-operator
-datagrid_operatorgroup_name: datagrid-operator
 datagrid_subscription_name: datagrid
 datagrid_operator_package_name: datagrid
 datagrid_catalog_source: redhat-operators
