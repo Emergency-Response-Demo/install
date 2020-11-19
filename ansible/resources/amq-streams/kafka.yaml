@@ -7,8 +7,14 @@ spec:
     version: {{ kafka_version }}
     replicas: {{ kafka_replicas }}
     listeners:
-      plain: {}
-      tls: {}
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
     resources:
       requests:
         cpu: '{{ kafka_requests_cpu }}'
@@ -31,19 +37,47 @@ spec:
       lowercaseOutputName: true
       rules:
       # Special cases and very specific rules
-      - pattern : kafka.server<type=(.+), name=(.+), clientId=(.+), topic=(.+), partition=(.*)><>Value
+      - pattern: kafka.server<type=(.+), name=(.+), clientId=(.+), topic=(.+), partition=(.*)><>Value
         name: kafka_server_$1_$2
         type: GAUGE
         labels:
           clientId: "$3"
           topic: "$4"
           partition: "$5"
-      - pattern : kafka.server<type=(.+), name=(.+), clientId=(.+), brokerHost=(.+), brokerPort=(.+)><>Value
+      - pattern: kafka.server<type=(.+), name=(.+), clientId=(.+), brokerHost=(.+), brokerPort=(.+)><>Value
         name: kafka_server_$1_$2
         type: GAUGE
         labels:
           clientId: "$3"
           broker: "$4:$5"
+      - pattern: kafka.server<type=(.+), cipher=(.+), protocol=(.+), listener=(.+), networkProcessor=(.+)><>connections
+        name: kafka_server_$1_connections_tls_info
+        type: GAUGE
+        labels:
+          listener: "$2"
+          networkProcessor: "$3"
+          protocol: "$4"
+          cipher: "$5"
+      - pattern: kafka.server<type=(.+), clientSoftwareName=(.+), clientSoftwareVersion=(.+), listener=(.+), networkProcessor=(.+)><>connections
+        name: kafka_server_$1_connections_software
+        type: GAUGE
+        labels:
+          clientSoftwareName: "$2"
+          clientSoftwareVersion: "$3"
+          listener: "$4"
+          networkProcessor: "$5"
+      - pattern: "kafka.server<type=(.+), listener=(.+), networkProcessor=(.+)><>(.+):"
+        name: kafka_server_$1_$4
+        type: GAUGE
+        labels:
+          listener: "$2"
+          networkProcessor: "$3"
+      - pattern: kafka.server<type=(.+), listener=(.+), networkProcessor=(.+)><>(.+)
+        name: kafka_server_$1_$4
+        type: GAUGE
+        labels:
+          listener: "$2"
+          networkProcessor: "$3"
       # Some percent metrics use MeanRate attribute
       # Ex) kafka.server<type=(KafkaRequestHandlerPool), name=(RequestHandlerAvgIdlePercent)><>MeanRate
       - pattern: kafka.(\w+)<type=(.+), name=(.+)Percent\w*><>MeanRate
@@ -137,20 +171,6 @@ spec:
 {% if kafka_storage_type == "ephemeral" %}
       type: ephemeral
 {% endif %}
-    tlsSidecar:
-      resources:
-        requests:
-          cpu: '{{ kafka_tlssidecar_requests_cpu }}'
-          memory: '{{ kafka_tlssidecar_requests_memory }}'
-        limits:
-          cpu: '{{ kafka_tlssidecar_limits_cpu }}'
-          memory: '{{ kafka_tlssidecar_limits_memory }}'
-      livenessProbe:
-        initialDelaySeconds: {{ kafka_tlssidecar_liveness_probe_initial_delay_seconds }}
-        timeoutSeconds: {{ kafka_tlssidecar_liveness_probe_timeout_seconds }}
-      readinessProbe:
-        initialDelaySeconds: {{ kafka_tlssidecar_readiness_probe_initial_delay_seconds }}
-        timeoutSeconds: {{ kafka_tlssidecar_readiness_probe_timeout_seconds }}
   zookeeper:
     replicas: {{ zookeeper_replicas }}
     resources:
@@ -175,25 +195,30 @@ spec:
       # replicated Zookeeper
       - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+)><>(\\w+)"
         name: "zookeeper_$2"
+        type: GAUGE
       - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+), name1=replica.(\\d+)><>(\\w+)"
         name: "zookeeper_$3"
+        type: GAUGE
         labels:
           replicaId: "$2"
+      - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+), name1=replica.(\\d+), name2=(\\w+)><>(Packets\\w+)"
+        name: "zookeeper_$4"
+        type: COUNTER
+        labels:
+          replicaId: "$2"
+          memberType: "$3"
       - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+), name1=replica.(\\d+), name2=(\\w+)><>(\\w+)"
         name: "zookeeper_$4"
+        type: GAUGE
         labels:
           replicaId: "$2"
           memberType: "$3"
       - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+), name1=replica.(\\d+), name2=(\\w+), name3=(\\w+)><>(\\w+)"
         name: "zookeeper_$4_$5"
+        type: GAUGE
         labels:
           replicaId: "$2"
           memberType: "$3"
-      # standalone Zookeeper
-      - pattern: "org.apache.ZooKeeperService<name0=StandaloneServer_port(\\d+)><>(\\w+)"
-        name: "zookeeper_$2"
-      - pattern: "org.apache.ZooKeeperService<name0=StandaloneServer_port(\\d+), name1=(InMemoryDataTree)><>(\\w+)"
-        name: "zookeeper_$2_$3"
 {% endif %}
     storage:
 {% if zookeeper_storage_type == "persistent" %}
@@ -204,20 +229,6 @@ spec:
 {% if zookeeper_storage_type == "ephemeral" %}
       type: ephemeral
 {% endif %}
-    tlsSidecar:
-      resources:
-        requests:
-          cpu: '{{ zookeeper_tlssidecar_requests_cpu }}'
-          memory: '{{ zookeeper_tlssidecar_requests_memory }}'
-        limits:
-          cpu: '{{ zookeeper_tlssidecar_limits_cpu }}'
-          memory: '{{ zookeeper_tlssidecar_limits_memory }}'
-      livenessProbe:
-        initialDelaySeconds: {{ zookeeper_tlssidecar_liveness_probe_initial_delay_seconds }}
-        timeoutSeconds: {{ zookeeper_tlssidecar_liveness_probe_timeout_seconds }}
-      readinessProbe:
-        initialDelaySeconds: {{ zookeeper_tlssidecar_readiness_probe_initial_delay_seconds }}
-        timeoutSeconds: {{ zookeeper_tlssidecar_readiness_probe_timeout_seconds }}
   entityOperator:
     topicOperator:
       resources:
@@ -247,20 +258,6 @@ spec:
       livenessProbe:
         initialDelaySeconds: {{ user_operator_liveness_probe_initial_delay_seconds }}
         timeoutSeconds: {{ user_operator_liveness_probe_timeout_seconds }}
-    tlsSidecar:
-      resources:
-        requests:
-          cpu: "{{ entity_operator_tlssidecar_requests_cpu }}"
-          memory: {{ entity_operator_tlssidecar_requests_memory }}
-        limits:
-          cpu: "{{ entity_operator_tlssidecar_limits_cpu }}"
-          memory: {{ entity_operator_tlssidecar_limits_memory }}
-      readinessProbe:
-        initialDelaySeconds: {{ entity_operator_tlssidecar_readiness_probe_initial_delay_seconds }}
-        timeoutSeconds: {{ entity_operator_tlssidecar_readiness_probe_timeout_seconds }}
-      livenessProbe:
-        initialDelaySeconds: {{ entity_operator_tlssidecar_liveness_probe_initial_delay_seconds }}
-        timeoutSeconds: {{ entity_operator_tlssidecar_liveness_probe_timeout_seconds }}
   kafkaExporter:
     groupRegex: ".*"
     topicRegex: "^topic-.+"

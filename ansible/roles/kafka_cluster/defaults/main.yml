@@ -18,18 +18,8 @@ zookeeper_readiness_probe_timeout_seconds: 5
 zookeeper_liveness_probe_initial_delay_seconds: 30
 zookeeper_liveness_probe_timeout_seconds: 5
 
-zookeeper_tlssidecar_requests_cpu: 50m
-zookeeper_tlssidecar_requests_memory: 50M
-zookeeper_tlssidecar_limits_cpu: 100m
-zookeeper_tlssidecar_limits_memory: 100M
-
-zookeeper_tlssidecar_liveness_probe_initial_delay_seconds: 15
-zookeeper_tlssidecar_liveness_probe_timeout_seconds: 5
-zookeeper_tlssidecar_readiness_probe_initial_delay_seconds: 20
-zookeeper_tlssidecar_readiness_probe_timeout_seconds: 5
-
-kafka_version: 2.4.0
-kafka_log_message_format_version: "2.4"
+kafka_version: 2.6.0
+kafka_log_message_format_version: "2.6"
 kafka_replicas: 3
 # persistent, ephemeral
 kafka_storage_type: persistent
@@ -48,16 +38,6 @@ kafka_readiness_probe_initial_delay_seconds: 15
 kafka_readiness_probe_timeout_seconds: 5
 kafka_liveness_probe_initial_delay_seconds: 45
 kafka_liveness_probe_timeout_seconds: 5
-
-kafka_tlssidecar_requests_cpu: 50m
-kafka_tlssidecar_requests_memory: 50M
-kafka_tlssidecar_limits_cpu: 100m
-kafka_tlssidecar_limits_memory: 100M
-
-kafka_tlssidecar_liveness_probe_initial_delay_seconds: 15
-kafka_tlssidecar_liveness_probe_timeout_seconds: 5
-kafka_tlssidecar_readiness_probe_initial_delay_seconds: 20
-kafka_tlssidecar_readiness_probe_timeout_seconds: 5
 
 topic_operator_requests_cpu: 250m
 topic_operator_requests_memory: 250M
