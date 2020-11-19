@@ -209,7 +209,7 @@
 
 - name: uninstall kafka topics
   import_role:
-    name: openshift_kafka_topics
+    name: kafka_topics
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
@@ -218,7 +218,7 @@
 
 - name: uninstall kafka cluster
   import_role:
-    name: openshift_kafka_cluster
+    name: kafka_cluster
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
