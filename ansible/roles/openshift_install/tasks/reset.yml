@@ -42,11 +42,17 @@
 
 # uninstall kafka
 - name: uninstall kafka topics
-  shell: "{{ openshift_cli }} get kafkatopic --no-headers -n {{ namespace_kafka_cluster }} | awk '{print $1}' | xargs -I VAR {{ openshift_cli }} delete kafkatopic VAR -n {{ namespace_kafka_cluster }}"
+  import_role:
+    name: kafka_topics
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_kafka_cluster }}"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
+    work_dir_name: kafka-topics
 
 - name: uninstall kafka cluster
   import_role:
-    name: openshift_kafka_cluster
+    name: kafka_cluster
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
@@ -85,7 +91,7 @@
 # install kafka
 - name: install kafka cluster
   import_role:
-    name: openshift_kafka_cluster
+    name: kafka_cluster
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
     resources_dir: "{{ resources_base_dir }}/amq-streams"
@@ -93,7 +99,7 @@
 
 - name: install kafka topics
   import_role:
-    name: openshift_kafka_topics
+    name: kafka_topics
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
     resources_dir: "{{ resources_base_dir }}/amq-streams"
