@@ -1,0 +1,27 @@
+---
+
+- name: "delete infinispan secret"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ datagrid_connect_secret }}"
+    namespace: "{{ namespace }}"
+    kind: secret  
+
+- name: "delete infinispan custom resource"
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ datagrid_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: infinispan
+
+- name: "delete datagrid operator in {{ namespace }} namespace"
+  import_role:
+    name: operator_olm
+    tasks_from: uninstall
+  vars:
+    operator_name: datagrid-operator
+    subscription_namespace: "{{ namespace }}"
+    subscription_name: "{{ datagrid_operator_subscription_name }}"
+    csv_prefix: "{{ datagrid_operator_csv_prefix }}"
