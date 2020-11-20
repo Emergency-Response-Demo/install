@@ -177,7 +177,7 @@
 
 - name: uninstall datagrid
   import_role:
-    name: openshift_datagrid
+    name: datagrid
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_datagrid }}"

@@ -95,7 +95,7 @@
 
 - name: install datagrid
   import_role:
-    name: openshift_datagrid
+    name: datagrid
   vars:
     namespace: "{{ namespace_datagrid }}"
     resources_dir: "{{ resources_base_dir }}/datagrid"
