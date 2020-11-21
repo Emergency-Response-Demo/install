@@ -4,8 +4,8 @@ application_name: "{{ disaster_simulator_service_application_name }}"
 
 service_account: disaster-simulator-service
 
-resources_limits_cpu: 500m
-resources_limits_memory: 1536Mi
+resources_limits_cpu: 200m
+resources_limits_memory: 512Mi
 resources_requests_cpu: 100m
 resources_requests_memory: 256Mi
 
