@@ -33,7 +33,7 @@ process_service_postgresql_resources_requests_memory: 256Mi
 process_service_postgresql_resources_limits_cpu: 500m
 process_service_postgresql_resources_limits_memory: 512Mi
 process_service_postgresql_volume_capacity: 5Gi
-process_service_postgresql_imagestream_tag: '9.6'
+process_service_postgresql_imagestream_tag: '10-el8'
 process_service_postgresql_imagestream: postgresql
 process_service_postgresql_imagestream_namespace: openshift
 

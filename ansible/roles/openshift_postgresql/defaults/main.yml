@@ -7,7 +7,7 @@ postgresql_storage_type: persistent
 postgresql_pv_capacity: 5Gi
 postgresql_imagestream_name: postgresql
 postgresql_imagestream_namespace: openshift
-postgresql_imagestream_tag: "9.6"
+postgresql_imagestream_tag: "12-el8"
 postgresql_max_connections: 100
 postgresql_max_prepared_transactions: 100
 postgresql_memory_limit: 512Mi
