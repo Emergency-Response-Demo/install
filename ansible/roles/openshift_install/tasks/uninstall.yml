@@ -278,6 +278,7 @@
     namespace: "{{ namespace_sso }}"
     resources_dir: "{{ resources_base_dir }}/sso"
     work_dir_name: sso
+  when: uninstall_cluster_resources|bool == true  
 
 - name: uninstall knative operator
   import_role:
@@ -287,6 +288,7 @@
     namespace: "{{ namespace_knativeserving }}"
     resources_dir: "{{ resources_base_dir }}/knative"
     work_dir_name: knative
+  when: uninstall_cluster_resources|bool == true
 
 - name: "delete namespace {{ namespace_nexus }}"
   oc_project:
@@ -294,4 +296,3 @@
     state: absent
     name: "{{ namespace_nexus }}"
   when: uninstall_cluster_resources|bool == true
-

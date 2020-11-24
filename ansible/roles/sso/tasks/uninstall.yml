@@ -4,74 +4,30 @@
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    kind: Keycloak
+    kind: keycloaks.keycloak.org
     name: rhsso
     namespace: "{{ namespace }}"
-  when: uninstall_cluster_resources|bool == true
 
-- name: "delete keycloak route"
-  oc_obj:
+- name: "delete sso operator in {{ namespace_sso }}"
+  import_role:
+    name: operator_olm
+    tasks_from: uninstall
+  vars:
+    operator_name: sso-operator
+    subscription_namespace: "{{ namespace_sso }}"
+    subscription_name: "{{ sso_operator_subscription_name }}"
+    csv_prefix: "{{ sso_operator_csv_prefix }}"
+
+- name: "delete operatorgroup from {{ namespace_sso }} namespace"
+  import_role:
+    name: operatorgroup
+    tasks_from: uninstall
+  vars:
+    operatorgroup_name: "{{ namespace_sso }}"
+    operatorgroup_namespace: "{{ namespace_sso }}"
+
+- name: "delete namespace {{ namespace_sso }}"
+  oc_project:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    kind: route
-    name: sso
-    namespace: "{{ namespace }}"
-  when: uninstall_cluster_resources|bool == true
-
-- name: "delete keycloak operator"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    kind: deployment
-    name: keycloak-operator
-    namespace: "{{ namespace }}"
-  when: uninstall_cluster_resources|bool == true
-
-- name: "delete keycloak operator role binding"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    namespace: "{{ namespace }}"
-    kind: rolebinding
-    name: keycloak-operator
-  when: uninstall_cluster_resources|bool == true
-
-- name: "delete keycloak operator role"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    namespace: "{{ namespace }}"
-    kind: role
-    name: keycloak-operator
-  when: uninstall_cluster_resources|bool == true
-
-- name: "delete keycloak-operator service account"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    kind: serviceaccount
-    name: keycloak-operator
-    namespace: "{{ namespace }}"
-  when: uninstall_cluster_resources|bool == true
-
-- name: "delete {{ namespace }} namespace"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    kind: project
-    name: "{{ namespace }}"
-  when: uninstall_cluster_resources|bool == true
-
-- name: "delete keycloak crds"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    kind: crd
-    name: "{{ item }}"
-  loop:
-    - keycloaks.keycloak.org
-    - keycloakrealms.keycloak.org
-    - keycloakusers.keycloak.org
-    - keycloakclients.keycloak.org
-    - keycloakbackups.keycloak.org
-  when: uninstall_cluster_resources|bool == true
+    name: "{{ namespace_sso }}"
