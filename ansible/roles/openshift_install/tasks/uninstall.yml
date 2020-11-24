@@ -291,3 +291,4 @@
     namespace: "{{ namespace_sso }}"
     resources_dir: "{{ resources_base_dir }}/sso"
     work_dir_name: sso
+  when: uninstall_cluster_resources|bool == true  

@@ -1,13 +1,14 @@
 ---
 
-keycloak_crd_template: keycloak-crd.yml
-keycloak_realm_crd_template: keycloak-realm-crd.yml
-keycloak_user_crd_template: keycloak-user-crd.yml
-keycloak_client_crd_template: keycloak-client-crd.yml
-keycloak_backup_crd_template: keycloak-backup-crd.yml
-keycloak_operator_role_template: keycloak-operator-role.yml
-keycloak_operator_rolebinding_template: keycloak-operator-rolebinding.yml
-keycloak_operator_template: keycloak-operator.yml
-keycloak_cr_template: keycloak-cr.yml
+# rhsso operator
+sso_operator_subscription_template: subscription.yml
+sso_operator_packagemanifest: keycloak-operator
+sso_operator_deployment_name: keycloak-operator
+sso_operator_subscription_name: keycloak-operator
+sso_operator_subscription_channel: alpha
+sso_operator_subscription_automatic_installplan_approval: false
+sso_operator_subscription_starting_csv: ""
+sso_operator_csv_prefix: keycloak-operator
 
+keycloak_cr_template: keycloak-cr.yml
 keycloak_route_template: keycloak-route.yml
