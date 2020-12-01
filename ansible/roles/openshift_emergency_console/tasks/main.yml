@@ -25,6 +25,7 @@
       PROCESS_VIEWER: "http://{{ process_viewer_application_name }}.{{ namespace }}.svc:8080"
       RESPONDER_SIMULATOR: "http://{{ responder_simulator_service_application_name }}.{{ namespace }}.svc:8080"
       DISASTER_SIMULATOR: "http://{{ disaster_simulator_service_application_name }}.{{ namespace }}.svc:8080"
+      DISASTER_SIMULATOR_ROUTE: "http://{{ project_admin }}-disaster-simulator.{{ ocp_domain }}"
       PRIORITY: "http://{{ incident_priority_service_application_name }}.{{ namespace }}.svc:8080"
       DISASTER: "http://{{ disaster_service_application_name }}.{{ namespace }}.svc:8080"
 

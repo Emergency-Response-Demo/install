@@ -150,6 +150,11 @@ items:
                 configMapKeyRef:
                   key: DISASTER_SIMULATOR
                   name: {{ emergency_console_config_configmap }}
+            - name: DISASTER_SIMULATOR_ROUTE
+              valueFrom:
+                configMapKeyRef:
+                  key: DISASTER_SIMULATOR_ROUTE
+                  name: {{ emergency_console_config_configmap }}
             - name: PRIORITY 
               valueFrom:
                 configMapKeyRef:
