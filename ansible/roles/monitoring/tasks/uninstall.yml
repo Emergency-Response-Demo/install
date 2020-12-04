@@ -167,14 +167,6 @@
     name: grafanas.integreatly.org
   when: uninstall_cluster_resources|bool == true
 
-- name: "delete clusterrole for get namespaces"
-  oc_obj:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    name: get-namespaces
-    kind: clusterrole
-  when: uninstall_cluster_resources|bool == true
-
 - name: delete project
   oc_project:
     oc_binary: "{{ openshift_cli }}"
