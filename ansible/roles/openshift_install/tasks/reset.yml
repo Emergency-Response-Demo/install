@@ -32,13 +32,23 @@
 - name: scale down disaster service
   shell: "{{ openshift_cli }} scale --replicas=0 dc {{ disaster_service_application_name }} -n {{ namespace_services }}"
 
-# scale down datawarehouse
-- name: scale down datawarehouse
-  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ dw_application_name }} -n {{ namespace_services }}"
-
 # scale down process viewer
 - name: scale down process viewer
-  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ process_viewer_application_name }} -n {{ namespace_services }}"  
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ process_viewer_application_name }} -n {{ namespace_services }}"
+
+# scale down disaster service
+- name: scale down disaster service
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ disaster_service_application_name }} -n {{ namespace_services }}"
+
+# uninstall datawarehouse service
+- name: uninstall datawarehouse service
+  import_role:
+    name: openshift_datawarehouse
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/datawarehouse"
+    work_dir_name: datawarehouse
 
 # uninstall kafka
 - name: uninstall kafka topics
@@ -79,7 +89,7 @@
     work_dir_name: postgresql
 
 # uninstall postgresql process service
-- name: uninstall process service
+- name: uninstall process service postgresql
   import_role:
     name: openshift_process_service
     tasks_from: remove_postgresql
@@ -133,6 +143,15 @@
     resources_dir: "{{ resources_base_dir }}/process-service"
     work_dir_name: process-service
 
+# install datawarehouse service
+- name: install datawarehouse service
+  import_role:
+    name: openshift_datawarehouse
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/datawarehouse"
+    work_dir_name: datawarehouse
+
 # scale up process service
 - name: scale up process service
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ process_service_application_name }} -n {{ namespace_services }}"
@@ -154,7 +173,7 @@
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ incident_priority_service_application_name }} -n {{ namespace_services }}"
 
 # scale up responder simulator service
-- name: scale down responder simulator service
+- name: scale up responder simulator service
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ responder_simulator_service_application_name }} -n {{ namespace_services }}"
 
 # scale up emergency console
@@ -165,10 +184,10 @@
 - name: scale up disaster service
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ disaster_service_application_name }} -n {{ namespace_services }}"
 
-# scale up datawarehouse
-- name: scale up datawarehouse
-  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ dw_application_name }} -n {{ namespace_services }}"
-
 # scale up process viewer
 - name: scale up process viewer
-  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ process_viewer_application_name }} -n {{ namespace_services }}"  
+  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ process_viewer_application_name }} -n {{ namespace_services }}"
+
+# scale up disaster service
+- name: scale down disaster service
+  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ disaster_service_application_name }} -n {{ namespace_services }}"
