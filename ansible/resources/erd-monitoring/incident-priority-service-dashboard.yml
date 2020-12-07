@@ -3,7 +3,7 @@ kind: GrafanaDashboard
 metadata:
   name: incident-priority-service-dashboard
   labels:
-    monitoring-key: "{{ application_monitoring_label_value }}"
+    monitoring-key: "{{ monitoring_label_value }}"
 spec:
   json: |
     {
@@ -66,7 +66,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(jvm_memory_used_bytes{area=\"heap\",job=\"{{ project_admin }}-incident-priority-service\"}) by (pod)",
+              "expr": "sum(jvm_memory_used_bytes{area=\"heap\",job=\"incident-priority-service\"}) by (pod)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -74,7 +74,7 @@ spec:
               "refId": "A"
             },
             {
-              "expr": "sum(jvm_memory_max_bytes{area=\"heap\",job=\"{{ project_admin }}-incident-priority-service\"}) by (pod)",
+              "expr": "sum(jvm_memory_max_bytes{area=\"heap\",job=\"incident-priority-service\"}) by (pod)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -82,7 +82,7 @@ spec:
               "refId": "B"
             },
             {
-              "expr": "sum(jvm_memory_committed_bytes{area=\"heap\",job=\"{{ project_admin }}-incident-priority-service\"}) by (pod)",
+              "expr": "sum(jvm_memory_committed_bytes{area=\"heap\",job=\"incident-priority-service\"}) by (pod)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -170,7 +170,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(jvm_memory_used_bytes{area=\"nonheap\",job=\"{{ project_admin }}-incident-priority-service\"}) by (pod)",
+              "expr": "sum(jvm_memory_used_bytes{area=\"nonheap\",job=\"incident-priority-service\"}) by (pod)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -178,7 +178,7 @@ spec:
               "refId": "A"
             },
             {
-              "expr": "sum(jvm_memory_max_bytes{area=\"nonheap\",job=\"{{ project_admin }}-incident-priority-service\"}) by (pod)",
+              "expr": "sum(jvm_memory_max_bytes{area=\"nonheap\",job=\"incident-priority-service\"}) by (pod)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -186,7 +186,7 @@ spec:
               "refId": "B"
             },
             {
-              "expr": "sum(jvm_memory_committed_bytes{area=\"nonheap\",job=\"{{ project_admin }}-incident-priority-service\"}) by (pod)",
+              "expr": "sum(jvm_memory_committed_bytes{area=\"nonheap\",job=\"incident-priority-service\"}) by (pod)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -274,7 +274,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(container_memory_working_set_bytes{pod=~'{{ project_admin }}-incident-priority-service-.*',namespace='{{ namespace_services }}',container='',}) BY (pod, namespace)",
+              "expr": "sum(container_memory_working_set_bytes{pod=~'incident-priority-service-.*',namespace='{{ namespace_services }}',container='',}) BY (pod, namespace)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -362,7 +362,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "system_cpu_usage{job=\"{{ project_admin }}-incident-priority-service\"}",
+              "expr": "system_cpu_usage{job=\"incident-priority-service\"}",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -370,7 +370,7 @@ spec:
               "refId": "A"
             },
             {
-              "expr": "process_cpu_usage{job=\"{{ project_admin }}-incident-priority-service\"}",
+              "expr": "process_cpu_usage{job=\"incident-priority-service\"}",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -378,7 +378,7 @@ spec:
               "refId": "B"
             },
             {
-              "expr": "avg_over_time(process_cpu_usage{job=\"{{ project_admin }}-incident-priority-service\"}[15m])",
+              "expr": "avg_over_time(process_cpu_usage{job=\"incident-priority-service\"}[15m])",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -466,7 +466,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "pod:container_cpu_usage:sum{namespace=\"{{ namespace_services }}\", pod=~\"{{ project_admin }}-incident-priority-service-.*\"}*1000",
+              "expr": "pod:container_cpu_usage:sum{namespace=\"{{ namespace_services }}\", pod=~\"incident-priority-service-.*\"}*1000",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -554,7 +554,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "rate(jvm_gc_pause_seconds_count{job=\"{{ project_admin }}-incident-priority-service\"}[1m])*60",
+              "expr": "rate(jvm_gc_pause_seconds_count{job=\"incident-priority-service\"}[1m])*60",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -642,7 +642,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "(rate(jvm_gc_pause_seconds_sum{job=\"{{ project_admin }}-incident-priority-service\"}[1m])/rate(jvm_gc_pause_seconds_count{job=\"{{ project_admin }}-incident-priority-service\"}[1m]))*1000",
+              "expr": "(rate(jvm_gc_pause_seconds_sum{job=\"incident-priority-service\"}[1m])/rate(jvm_gc_pause_seconds_count{job=\"incident-priority-service\"}[1m]))*1000",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -1099,7 +1099,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "kafka:messages_consumed:total:rate1m{job=\"{{ project_admin }}-incident-priority-service\", pod=~\"{{ project_admin }}-incident-priority-service-.*\"}",
+              "expr": "kafka:messages_consumed:total:rate1m{job=\"incident-priority-service\", pod=~\"incident-priority-service-.*\"}",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -1308,7 +1308,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "(vertx:http_responsetime:sum:rate1m/vertx:http_responsetime:count:rate1m{job=\"{{ project_admin }}-incident-priority-service\", path=\"/priority/:incidentId\"})*1000",
+              "expr": "(vertx:http_responsetime:sum:rate1m/vertx:http_responsetime:count:rate1m{job=\"incident-priority-service\", path=\"/priority/:incidentId\"})*1000",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -1395,7 +1395,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "vertx:http_responsetime:count:rate1m{job=\"{{ project_admin }}-incident-priority-service\", path=\"/priority/:incidentId\"}",
+              "expr": "vertx:http_responsetime:count:rate1m{job=\"incident-priority-service\", path=\"/priority/:incidentId\"}",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -1576,7 +1576,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "rate(vertx_eventbus_delivered_total{job=\"{{ project_admin }}-incident-priority-service\"}[1m])",
+              "expr": "rate(vertx_eventbus_delivered_total{job=\"incident-priority-service\"}[1m])",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,

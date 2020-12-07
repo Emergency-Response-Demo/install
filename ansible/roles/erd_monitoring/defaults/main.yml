@@ -1,9 +1,13 @@
 ---
 
-monitoring_kafka_servicemonitor_template: emergency-response-kafka-servicemonitor.yml
+prometheus_monitoring_role_template: prometheus-monitoring-role.yml
+prometheus_monitoring_role_name: prometheus-monitoring
+
+monitoring_kafka_podmonitor_template: kafka-podmonitor.yml
 monitoring_application_servicemonitor_template: emergency-response-application-servicemonitor.yml 
 monitoring_actuator_servicemonitor_template: emergency-response-actuator-servicemonitor.yml 
-monitoring_grafana_dashboard_template: emergency-response-grafanadashboard.yml
+
+erdemo_grafana_dashboard_template: emergency-response-grafanadashboard.yml
 
 monitoring_mission_commander_template: mission-commander-kpis-grafanadashboard.yml
 monitoring_dw_postgresql_datasource_template: dw-postgresql-grafanadatasource.yml
@@ -12,6 +16,9 @@ openshift_monitoring_datasource_template: openshift-monitoring-grafanadatasource
 
 incident_priority_prometheus_rules_template: incident-priority-service-prometheus-rules.yml
 incident_priority_service_dashboard_template: incident-priority-service-dashboard.yml
+
+kafka_cluster_dashboard_template: kafka-cluster-dashboard.yml
+kafka_connect_dashboard_template: kafka-connect-dashboard.yml
 
 incident_service_prometheus_rules_template: incident-service-prometheus-rules.yml
 incident_service_dashboard_template: incident-service-dashboard.yml

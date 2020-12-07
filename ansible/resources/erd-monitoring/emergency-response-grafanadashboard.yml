@@ -3,7 +3,7 @@ kind: GrafanaDashboard
 metadata:
   name: emergency-response-dashboard
   labels:
-    monitoring-key: "{{ application_monitoring_label_value }}"
+    monitoring-key: "{{ monitoring_label_value }}"
 spec:
   json: |
     {
