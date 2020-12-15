@@ -1,13 +1,12 @@
 ---
 
-- name: "remove knativeeventingkafka"
+- name: "remove knativekafka"
   oc_obj:
     state: absent
     oc_binary: "{{ openshift_cli }}"
-    kind: KnativeEventingKafka
+    kind: KnativeKafka
     namespace: "{{ namespace_knativeeventing }}"
-    name: knative-eventing
-
+    name: knative-kafka
 
 - name: "remove knativeeventing"
   oc_obj:
@@ -16,7 +15,6 @@
     kind: KnativeEventing
     namespace: "{{ namespace_knativeeventing }}"
     name: knative-eventing
-
 
 - name: "Delete {{ namespace_knativeeventing }} project"
   oc_obj:
@@ -40,106 +38,12 @@
     kind: Project
     name: "{{ namespace_knativeserving }}"
 
-
-- name: "get all install plans in openshift-operators namespace"
-  oc_obj:
-    state: list
-    oc_binary: "{{ openshift_cli }}"
-    kind: InstallPlan
-    namespace: openshift-operators
-  register: r_serverless_install_plan
-
-- name: set serverless install plan name
-  set_fact:
-    serverless_install_plan_name: "{{ r_serverless_install_plan.ansible_module_results.results[0]['items'] | to_json | from_json | json_query(query) }}"
+- name: "delete serverless operator in {{ namespace_serverless_operator }} namespace"
+  import_role:
+    name: operator_olm
+    tasks_from: uninstall
   vars:
-    query: >-
-      [?starts_with(spec.clusterServiceVersionNames[0], 'serverless-operator')].metadata.name|[0]
-
-- name: find all serverless related CSVs
-  set_fact:
-    serverless_csvs: "{{ r_serverless_install_plan.ansible_module_results.results[0]['items'] | to_json | from_json | json_query(query) }}"
-  vars:
-    query: >-
-      [?starts_with(spec.clusterServiceVersionNames[0], 'serverless-operator')].spec.clusterServiceVersionNames
-
-- name: delete all serverless related csv
-  when: serverless_csvs | length > 0
-  oc_obj:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    kind: ClusterServiceVersion
-    name: "{{ item }}"
-    namespace: openshift-operators
-  loop: "{{ serverless_csvs[0] }}"
-
-- name: "delete subscription for serverless operator "
-  oc_obj:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    name: "{{ serverless_subscription_name }}"
-    namespace: openshift-operators
-    kind: Subscription
-
-- name: "remove serverless installplan"
-  when:
-  - serverless_install_plan_name is defined
-  - serverless_install_plan_name | default("") | length > 0
-  oc_obj:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    kind: InstallPlan
-    namespace: openshift-operators
-    name: "{{ serverless_install_plan_name }}"
-
-- name: "get all install plans in openshift-operators namespace"
-  oc_obj:
-    state: list
-    oc_binary: "{{ openshift_cli }}"
-    kind: InstallPlan
-    namespace: openshift-operators
-  register: r_knative_kafka_install_plan
-
-- name: set knative kafka install plan name
-  set_fact:
-    knative_kafka_install_plan_name: "{{ r_knative_kafka_install_plan.ansible_module_results.results[0]['items'] | to_json | from_json | json_query(query) }}"
-  vars:
-    query: >-
-      [?starts_with(spec.clusterServiceVersionNames[0], 'knative-kafka-operator')].metadata.name|[0]
-
-- name: find all knative kafka related CSVs
-  set_fact:
-    knative_kafka_csvs: "{{ r_knative_kafka_install_plan.ansible_module_results.results[0]['items'] | to_json | from_json | json_query(query) }}"
-  vars:
-    query: >-
-      [?starts_with(spec.clusterServiceVersionNames[0], 'knative-kafka-operator')].spec.clusterServiceVersionNames
-
-- name: delete all knative kafka related csv
-  when: knative_kafka_csvs | length > 0
-  oc_obj:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    kind: ClusterServiceVersion
-    name: "{{ item }}"
-    namespace: openshift-operators
-  loop: "{{ knative_kafka_csvs[0] }}"
-
-- name: "delete subscription for knative kafka operator "
-  oc_obj:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    name: "{{ knative_kafka_subscription_name }}"
-    namespace: openshift-operators
-    kind: Subscription
-
-- name: "remove knative kafka installplan"
-  when:
-  - knative_kafka_install_plan_name is defined
-  - knative_kafka_install_plan_name | default("") | length > 0
-  oc_obj:
-    state: absent
-    oc_binary: "{{ openshift_cli }}"
-    kind: InstallPlan
-    namespace: openshift-operators
-    name: "{{ knative_kafka_install_plan_name }}"
-
+    operator_name: serverless-operator
+    subscription_namespace: "{{ namespace_serverless_operator }}"
+    subscription_name: "{{ serverless_operator_subscription_name }}"
+    csv_prefix: "{{ serverless_operator_csv_prefix }}"
