@@ -1,9 +1,7 @@
 ---
 
-namespace_strimzi_operator: kafka-operator-erd
+namespace_amq_streams_operator: er-amq-streams-operator
 namespace_kafka_cluster: "{{ project_admin }}-{{ project_name }}"
-
-strimzi_cluster_operator: strimzi-cluster-operator
 
 kafka_cluster: kafka-cluster
 

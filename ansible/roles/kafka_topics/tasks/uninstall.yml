@@ -1,9 +1,19 @@
 ---
 
-# topics
-- name: remove topics
-  include_tasks: remove_topic.yml
+- name: list kafka topic instances
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}" 
+    kind: KafkaTopic
+    namespace: "{{ namespace }}"
+  register: r_kafka_topics
+
+- name: remove kafka topics
+  oc_obj:
+    state: absent
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ item.metadata.name }}"
+    kind: kafkatopic
+    namespace: "{{ namespace }}"
   with_items:
-    - "{{ kafka_topics }}"
-  loop_control:
-    loop_var: topic
+    - "{{ r_kafka_topics.ansible_module_results.results[0]['items'] }}"

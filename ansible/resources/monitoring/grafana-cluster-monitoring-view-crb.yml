@@ -1,7 +1,8 @@
+---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: grafana-cluster-monitoring-view{{ namespace_postfix }}
+  name: grafana-cluster-monitoring-view-{{ project_admin }}
 subjects:
   - kind: ServiceAccount
     name: grafana-serviceaccount

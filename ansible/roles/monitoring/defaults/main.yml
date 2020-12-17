@@ -1,38 +1,49 @@
 ---
 
-monitoring_label_value: "{{ application_monitoring_label_value }}"
+# prometheus operator
+prometheus_operator_subscription_template: subscription.yml
+prometheus_operator_packagemanifest: prometheus
+prometheus_operator_deployment_name: prometheus-operator
+prometheus_operator_subscription_name: prometheus
+prometheus_operator_subscription_channel: beta
+prometheus_operator_subscription_automatic_installplan_approval: false
+prometheus_operator_subscription_starting_csv: ""
+prometheus_operator_csv_prefix: prometheusoperator
 
-monitoring_prometheus_retention: 45d
-monitoring_prometheus_storage_request: 10Gi
+# grafana operator
+grafana_operator_subscription_template: subscription.yml
+grafana_operator_packagemanifest: grafana-operator
+grafana_operator_deployment_name: grafana-operator
+grafana_operator_subscription_name: grafana-operator
+grafana_operator_subscription_channel: alpha
+grafana_operator_subscription_automatic_installplan_approval: false
+grafana_operator_subscription_starting_csv: ""
+grafana_operator_csv_prefix: grafana-operator
 
-monitoring_namespace: "{{ namespace }}"
-namespace_postfix: "-{{ project_admin }}"
+prometheus_image: quay.io/openshift/origin-prometheus:4.6
+prometheus_auth_proxy_image: quay.io/openshift/origin-oauth-proxy:4.6
+prometheus_storage_request: 10Gi
+prometheus_retention: 45d
+prometheus_requests_cpu: 50m
+prometheus_requests_memory: 400Mi
+prometheus_limits_cpu: 500m
+prometheus_limits_memory: 1Gi
+prometheus_serviceaccount_template: prometheus-serviceaccount.yml
+prometheus_cr_template: prometheus-cr.yml
+prometheus_cr_name: "{{ project_admin }}-er-monitoring"
+prometheus_oauth_proxy_secret: prometheus-k8s-proxy
+prometheus_route_template: prometheus-route.yml
+prometheus_route_name: prometheus-route
+prometheus_service_template: prometheus-service.yml
+prometheus_service_name: prometheus-service
+prometheus_tls_secret: prometheus-k8s-tls
 
-monitoring_grafana_crd_template: grafana_crd.yml
-monitoring_grafana_dashboard_crd_template: grafana_dashboard_crd.yml
-monitoring_grafana_datasource_crd_template: grafana_datasource_crd.yml
-monitoring_grafana_clusterrole_template: grafana_cluster_role.yml
-monitoring_grafana_clusterrole_binding_template: grafana_cluster_role_binding.yml
-monitoring_grafana_proxy_clusterrole_template: grafana_proxy_cluster_role.yml
-monitoring_grafana_proxy_clusterrole_binding_template: grafana_proxy_cluster_role_binding.yml
-monitoring_prometheus_crd_template: prometheus_crd.yml
-monitoring_prometheus_alert_manager_crd_template: prometheus_alert_manager_crd.yml
-monitoring_prometheus_service_monitor_crd_template: prometheus_service_monitor_crd.yml
-monitoring_prometheus_rule_crd_template: prometheus_rule_crd.yml
-monitoring_prometheus_clusterrole_template: prometheus_cluster_role.yml
-monitoring_prometheus_clusterrole_binding_template: prometheus_cluster_role_binding.yml
-monitoring_prometheus_operator_clusterrole_template: prometheus_operator_cluster_role.yml
-monitoring_prometheus_operator_clusterrole_binding_template: prometheus_operator_cluster_role_binding.yml
-monitoring_alert_manager_clusterrole_template: alert_manager_cluster_role.yml
-monitoring_alert_manager_clusterrole_binding_template: alert_manager_cluster_role_binding.yml
-monitoring_blakbox_crd_template: blackbox_target_crd.yml
-application_monitoring_crd_template: application_monitoring_crd.yml
-application_monitoring_cr_template: application_monitoring_cr.yml
-application_monitoring_operator_sa_template: application_monitoring_operator_sa.yml
-application_monitoring_operator_role_template: application_monitoring_operator_role.yml
-application_monitoring_operator_role_binding_template: application_monitoring_operator_role_binding.yml
-application_monitoring_operator_template: application_monitoring_operator.yml
+grafana_cr_name: grafana
+grafana_cr_template: grafana-cr.yml
+grafana_auth_proxy_image: quay.io/openshift/origin-oauth-proxy:4.6
+grafana_oauth_proxy_secret: grafana-k8s-proxy
+grafana_datasource_template: grafana-datasource.yml
+grafana_datasource_name: prometheus
 
 clusterrole_get_namespaces_template: get-namespaces-clusterrole.yml
-
 grafana_cluster_monitoring_view_crb_template: grafana-cluster-monitoring-view-crb.yml

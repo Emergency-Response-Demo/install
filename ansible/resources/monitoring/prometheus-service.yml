@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: '{{ prometheus_service_name }}'
+  annotations:
+    service.alpha.openshift.io/serving-cert-secret-name: '{{ prometheus_tls_secret }}'
+spec:
+  type: ClusterIP
+  ports:
+    - name: web
+      port: 9091
+      protocol: TCP
+      targetPort: oproxy
+    - name: upstream
+      port: 9090
+      protocol: TCP
+      targetPort: web
+  selector:
+    app: prometheus
+  sessionAffinity: None

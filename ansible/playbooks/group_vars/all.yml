@@ -9,6 +9,8 @@ resources_base_dir: "{{ home_dir }}/resources"
 openshift_cli: oc
 
 project_name: er-demo
+metrics_project_name: er-monitoring
+tools_project_name: er-tools
 
 project_admin: user1
 
@@ -20,3 +22,5 @@ uninstall_cluster_resources: false
 namespace_knativeserving: knative-serving
 namespace_knativeeventing: knative-eventing
 install_knative: true
+
+operatorgroup_name: er-demo-operators

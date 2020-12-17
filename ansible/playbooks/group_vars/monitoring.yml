@@ -1,8 +1,7 @@
 ---
 
-namespace_monitoring: "{{ project_admin }}-er-metrics"
+namespace_monitoring: "{{ project_admin }}-{{ metrics_project_name }}"
 
-middleware_monitoring_operator_release_tag: '0.0.29'
-middleware_monitoring_operator_resources: 'https://raw.githubusercontent.com/integr8ly/application-monitoring-operator/{{ middleware_monitoring_operator_release_tag }}/deploy'
+monitoring_label_value: "{{ project_admin }}-er-monitoring"
 
-application_monitoring_label_value: "{{ project_admin }}-application-monitoring"
+prometheus_serviceaccount_name: prometheus-service-account

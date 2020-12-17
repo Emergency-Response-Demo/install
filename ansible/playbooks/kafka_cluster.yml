@@ -11,17 +11,17 @@
   tasks:
     - set_fact:
         namespace: "{{ namespace_kafka_cluster }}"
-        resources_dir: "{{ resources_base_dir }}/strimzi"
+        resources_dir: "{{ resources_base_dir }}/amq-streams"
         work_dir_name: kafka-cluster
     - include_role:
-        name: ../roles/openshift_kafka_cluster
+        name: ../roles/kafka_cluster
       when: >
         ACTION is not defined or
         ACTION is none or
         ACTION|trim() == "" or
         ACTION|trim() == "create"
     - include_role:
-        name: ../roles/openshift_kafka_cluster
+        name: ../roles/kafka_cluster
         tasks_from: uninstall
       when: >
         ACTION is defined and

@@ -8,67 +8,88 @@
     name: "{{ namespace }}"
     labels:
       - key: monitoring-key
-        value: "{{ application_monitoring_label_value }}"
+        value: "{{ monitoring_label_value }}"
 
-- name: "copy Kafka servicemonitor template"
+- name: "create prometheus monitoring role in {{ namespace }} namespace"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ prometheus_monitoring_role_name }}"
+    namespace: "{{ namespace }}"
+    kind: Role
+    files:
+      - "{{ resources_dir }}/{{ prometheus_monitoring_role_template }}"
+
+- name: "add prometheus monitoring role to prometheus serviceaccount in project {{ namespace }}"
+  oc_adm_policy_user:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    rolebinding_name: prometheus-monitoring
+    namespace: "{{ namespace }}"
+    resource_kind: role
+    role_namespace: "{{ namespace }}"
+    user: "system:serviceaccount:{{ namespace_monitoring }}:{{ prometheus_serviceaccount_name }}"
+    resource_name: "{{ prometheus_monitoring_role_name }}"
+
+- name: "copy Kafka podmonitor template"
   template:
-    src: "{{ resources_dir }}/{{ monitoring_kafka_servicemonitor_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_kafka_servicemonitor_template }}"
+    src: "{{ resources_dir }}/{{ monitoring_kafka_podmonitor_template }}"
+    dest: "{{ work_dir }}/{{ monitoring_kafka_podmonitor_template }}"
+
+- name: "create Kafka podmonitor resource"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: kafka-resources-metrics
+    namespace: "{{ namespace_monitoring }}"
+    kind: PodMonitor
+    files:
+      - "{{ work_dir }}/{{ monitoring_kafka_podmonitor_template }}"
 
 - name: "copy application servicemonitor template"
   template:
     src: "{{ resources_dir }}/{{ monitoring_application_servicemonitor_template }}"
     dest: "{{ work_dir }}/{{ monitoring_application_servicemonitor_template }}"
 
-- name: "copy actuator endpoint servicemonitor template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_actuator_servicemonitor_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_actuator_servicemonitor_template }}"
-
-- name: "copy application grafana dashboard template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_grafana_dashboard_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_grafana_dashboard_template }}"
-
-- name: "copy application grafana datasource template {{ monitoring_dw_postgresql_datasource_template }}"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_dw_postgresql_datasource_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_dw_postgresql_datasource_template }}"
-
-- name: "copy application grafana dashboard template {{ monitoring_mission_commander_template }}"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_mission_commander_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_mission_commander_template }}"
-
-- name: "create Kafka servicemonitor resource"
-  oc_obj:
-    state: present
-    oc_binary: "{{ openshift_cli }}"
-    name: emergency-response-kafka
-    namespace: "{{ namespace }}"
-    kind: ServiceMonitor
-    files:
-      - "{{ work_dir }}/{{ monitoring_kafka_servicemonitor_template }}"
-
 - name: "create application servicemonitor resource"
   oc_obj:
     state: present
     oc_binary: "{{ openshift_cli }}"
     name: emergency-response-services
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace_monitoring }}"
     kind: ServiceMonitor
     files:
       - "{{ work_dir }}/{{ monitoring_application_servicemonitor_template }}"
+
+- name: "copy actuator endpoint servicemonitor template"
+  template:
+    src: "{{ resources_dir }}/{{ monitoring_actuator_servicemonitor_template }}"
+    dest: "{{ work_dir }}/{{ monitoring_actuator_servicemonitor_template }}"
 
 - name: "create actuator servicemonitor resource"
   oc_obj:
     state: present
     oc_binary: "{{ openshift_cli }}"
     name: emergency-response-services-actuator
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace_monitoring }}"
     kind: ServiceMonitor
     files:
       - "{{ work_dir }}/{{ monitoring_actuator_servicemonitor_template }}"
+
+- name: "create incident priority service prometheus rules"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: incident-priority-service-prometheus-rules
+    namespace: "{{ namespace_monitoring }}"
+    kind: PrometheusRule
+    files:
+      - "{{ resources_dir }}/{{ incident_priority_prometheus_rules_template }}"
+
+- name: "copy application grafana dashboard template"
+  template:
+    src: "{{ resources_dir }}/{{ erdemo_grafana_dashboard_template }}"
+    dest: "{{ work_dir }}/{{ erdemo_grafana_dashboard_template }}"
 
 - name: "create grafana dashboard emergency-response-dashboard"
   oc_obj:
@@ -78,7 +99,12 @@
     namespace: "{{ namespace_monitoring }}"
     kind: GrafanaDashboard
     files:
-      - "{{ work_dir }}/{{ monitoring_grafana_dashboard_template }}"
+      - "{{ work_dir }}/{{ erdemo_grafana_dashboard_template }}"
+
+- name: "copy application grafana datasource template {{ monitoring_dw_postgresql_datasource_template }}"
+  template:
+    src: "{{ resources_dir }}/{{ monitoring_dw_postgresql_datasource_template }}"
+    dest: "{{ work_dir }}/{{ monitoring_dw_postgresql_datasource_template }}"
 
 - name: "create application grafana datasource ds-dw-postgresql"
   oc_obj:
@@ -90,6 +116,11 @@
     files:
       - "{{ work_dir }}/{{ monitoring_dw_postgresql_datasource_template }}"
 
+- name: "copy application grafana dashboard template {{ monitoring_mission_commander_template }}"
+  template:
+    src: "{{ resources_dir }}/{{ monitoring_mission_commander_template }}"
+    dest: "{{ work_dir }}/{{ monitoring_mission_commander_template }}"
+
 - name: "create application grafana dashboard mission-commander-kpis"
   oc_obj:
     state: present
@@ -99,15 +130,6 @@
     kind: GrafanaDashboard
     files:
       - "{{ work_dir }}/{{ monitoring_mission_commander_template }}"
-
-- name: "give clusterrole get-namespaces privilege to {{ project_admin }}"
-  oc_adm_policy_user:
-    state: present
-    oc_binary: "{{ openshift_cli }}"
-    rolebinding_name: "{{ project_admin }}-get-namespaces"
-    resource_kind: cluster-role
-    resource_name: get-namespaces
-    user: "{{ project_admin }}"
 
 - name: "obtain token for grafana serviceaccount"
   shell: |
@@ -131,31 +153,6 @@
     files:
       - "{{ work_dir }}/{{ openshift_monitoring_datasource_template }}"
 
-- name: "create incident priority service prometheus rules"
-  oc_obj:
-    state: present
-    oc_binary: "{{ openshift_cli }}"
-    name: incident-priority-service-prometheus-rules
-    namespace: "{{ namespace_monitoring }}"
-    kind: PrometheusRule
-    files:
-      - "{{ resources_dir }}/{{ incident_priority_prometheus_rules_template }}"
-
-- name: "copy incident service prometheus rules template"
-  template:
-    src: "{{ resources_dir }}/{{ incident_service_prometheus_rules_template }}"
-    dest: "{{ work_dir }}/{{ incident_service_prometheus_rules_template }}"
-
-- name: "create incident service prometheus rules"
-  oc_obj:
-    state: present
-    oc_binary: "{{ openshift_cli }}"
-    name: incident-service-prometheus-rules
-    namespace: "{{ namespace_monitoring }}"
-    kind: PrometheusRule
-    files:
-      - "{{ work_dir }}/{{ incident_service_prometheus_rules_template }}"
-
 - name: "copy incident priority service grafana dashboard template"
   template:
     src: "{{ resources_dir }}/{{ incident_priority_service_dashboard_template }}"
@@ -177,24 +174,42 @@
     files:
       - "{{ work_dir }}/{{ incident_priority_service_dashboard_template }}"
 
-- name: "copy incident service grafana dashboard template"
+- name: "copy kafka cluster grafana dashboard template"
   template:
-    src: "{{ resources_dir }}/{{ incident_service_dashboard_template }}"
-    dest: "{{ work_dir }}/{{ incident_service_dashboard_template }}"
+    src: "{{ resources_dir }}/{{ kafka_cluster_dashboard_template }}"
+    dest: "{{ work_dir }}/{{ kafka_cluster_dashboard_template }}"
   vars:
     pod: !unsafe "{{pod}}"
-    action: !unsafe "{{action}}"
-    cause: !unsafe "{{cause}}"
+    persistentvolumeclaim: !unsafe "{{persistentvolumeclaim}}"
+    kubernetes_pod_name: !unsafe "{{kubernetes_pod_name}}"
+    listener: !unsafe "{{listener}}"
     topic: !unsafe "{{topic}}"
-    code: !unsafe "{{code}}"
-    status: !unsafe "{{status}}"
+    partition: !unsafe "{{partition}}"
 
-- name: "create incident service grafana dashboard"
+- name: "create kafka cluster grafana dashboard"
   oc_obj:
     state: present
     oc_binary: "{{ openshift_cli }}"
-    name: incident-service-dashboard
+    name: kafka-cluster-dashboard
     namespace: "{{ namespace_monitoring }}"
     kind: GrafanaDashboard
     files:
-      - "{{ work_dir }}/{{ incident_service_dashboard_template }}"
+      - "{{ work_dir }}/{{ kafka_cluster_dashboard_template }}"
+
+- name: "copy kafka connect grafana dashboard template"
+  template:
+    src: "{{ resources_dir }}/{{ kafka_connect_dashboard_template }}"
+    dest: "{{ work_dir }}/{{ kafka_connect_dashboard_template }}"
+  vars:
+    kubernetes_pod_name: !unsafe "{{kubernetes_pod_name}}"
+    connector: !unsafe "{{connector}}"
+
+- name: "create kafka connect grafana dashboard"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: kafka-connect-dashboard
+    namespace: "{{ namespace_monitoring }}"
+    kind: GrafanaDashboard
+    files:
+      - "{{ work_dir }}/{{ kafka_connect_dashboard_template }}"

@@ -1,297 +1,191 @@
 ---
 
-- name: "label {{ namespace }} namespace"
-  oc_label:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: namespace
-    name: "{{ namespace }}"
-    labels:
-      - key: integreatly-middleware-service
-        value: "true"
-      - key: monitoring-key
-        value: "{{ application_monitoring_label_value }}"
+- name: "create operatorgroup in {{ namespace }}"
+  import_role:
+    name: operatorgroup
+  vars:
+    operatorgroup_name: "{{ namespace }}"
+    operatorgroup_namespace: "{{ namespace }}"
+    operatorgroup_target_namespace: "{{ namespace }}"
 
-- name: "create Grafana crd"
+- name: "deploy prometheus operator in {{ namespace }}"
+  import_role:
+    name: operator_olm
+  vars:
+    operator_name: prometheus-operator
+    packagemanifest: "{{ prometheus_operator_packagemanifest }}"
+    subscription_channel: "{{ prometheus_operator_subscription_channel }}"
+    subscription_namespace: "{{ namespace }}"
+    subscription_name: "{{ prometheus_operator_subscription_name }}"
+    automatic_installplan_approval: "{{ prometheus_operator_subscription_automatic_installplan_approval }}"
+    subscription_starting_csv: "{{ prometheus_operator_subscription_starting_csv }}"
+    csv_prefix: "{{ prometheus_operator_csv_prefix }}"
+
+- name: "wait until prometheus operator is active"
   oc_obj:
+    state: list
     oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: grafanas.integreatly.org
-    files:
-      - "{{ resources_dir }}/{{ monitoring_grafana_crd_template }}"
-
-- name: "create Grafana dashboard crd"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: grafanadashboards.integreatly.org
-    files:
-      - "{{ resources_dir }}/{{ monitoring_grafana_dashboard_crd_template }}"
-
-- name: "create Grafana datasource crd"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: grafanadatasources.integreatly.org
-    files:
-      - "{{ resources_dir }}/{{ monitoring_grafana_datasource_crd_template }}"
-
-- name: "copy Grafana clusterrole template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_grafana_clusterrole_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_grafana_clusterrole_template }}"
-
-- name: "create Grafana clusterrole"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: clusterrole
-    name: grafana-operator
-    files:
-      - "{{ work_dir }}/{{ monitoring_grafana_clusterrole_template }}"
-
-- name: "copy Grafana clusterrole binding template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_grafana_clusterrole_binding_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_grafana_clusterrole_binding_template }}"
-
-- name: "create Grafana clusterrole binding"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: clusterrolebinding
-    name: grafana-operator{{ namespace_postfix }}
+    kind: Deployment
+    name: "{{ prometheus_operator_deployment_name }}"
     namespace: "{{ namespace }}"
-    files:
-      - "{{ work_dir }}/{{ monitoring_grafana_clusterrole_binding_template }}"
+  register: r_prometheus_operator_deployment
+  retries: 30
+  delay: 10
+  changed_when: false
+  until:
+    - r_prometheus_operator_deployment.ansible_module_results.results[0].status.readyReplicas is defined
+    - r_prometheus_operator_deployment.ansible_module_results.results[0].status.replicas is defined
+    - >-
+      r_prometheus_operator_deployment.ansible_module_results.results[0].status.readyReplicas ==
+      r_prometheus_operator_deployment.ansible_module_results.results[0].status.replicas
 
-- name: "copy Grafana proxy clusterrole template"
+- name: "copy prometheus service account template"
   template:
-    src: "{{ resources_dir }}/{{ monitoring_grafana_proxy_clusterrole_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_grafana_proxy_clusterrole_template }}"
+    src: "{{ resources_dir }}/{{ prometheus_serviceaccount_template }}"
+    dest: "{{ work_dir }}/{{ prometheus_serviceaccount_template }}"
 
-- name: "create Grafana proxy clusterrole"
+- name: "deploy prometheus service account"
   oc_obj:
-    oc_binary: "{{ openshift_cli }}"
     state: present
-    kind: clusterrole
-    name: grafana-proxy
-    files:
-      - "{{ work_dir }}/{{ monitoring_grafana_proxy_clusterrole_template }}"
-
-- name: "copy Grafana proxy clusterrole binding template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_grafana_proxy_clusterrole_binding_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_grafana_proxy_clusterrole_binding_template }}"
-
-- name: "create Grafana proxy clusterrole binding"
-  oc_obj:
     oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: clusterrolebinding
-    name: "grafana-proxy{{ namespace_postfix }}"
+    name: "{{ prometheus_serviceaccount_name }}"
     namespace: "{{ namespace }}"
-    files:
-      - "{{ work_dir }}/{{ monitoring_grafana_proxy_clusterrole_binding_template }}"
-
-- name: "create Prometheus crd"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: prometheuses.monitoring.coreos.com
-    files:
-      - "{{resources_dir }}/{{ monitoring_prometheus_crd_template }}"
-
-- name: "create Prometheus alert manager crd"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: alertmanagers.monitoring.coreos.com
-    files:
-      - "{{ resources_dir }}/{{ monitoring_prometheus_alert_manager_crd_template }}"
-
-- name: "create Prometheus service monitor crd"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: servicemonitors.monitoring.coreos.com
-    files:
-      - "{{ resources_dir }}/{{ monitoring_prometheus_service_monitor_crd_template }}"
-
-- name: "create Prometheus rule crd"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: prometheusrules.monitoring.coreos.com
-    files:
-      - "{{ resources_dir }}/{{ monitoring_prometheus_rule_crd_template }}"
-
-- name: "copy Prometheus clusterrole template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_prometheus_clusterrole_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_prometheus_clusterrole_template }}"
-
-- name: "create Prometheus clusterrole"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: clusterrole
-    name: prometheus-application-monitoring
-    files:
-      - "{{ work_dir }}/{{ monitoring_prometheus_clusterrole_template }}"
-
-- name: "copy Prometheus clusterrole binding template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_prometheus_clusterrole_binding_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_prometheus_clusterrole_binding_template }}"
-
-- name: "create Prometheus clusterrole binding"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: clusterrolebinding
-    name: "prometheus-application-monitoring{{ namespace_postfix }}"
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ work_dir }}/{{ monitoring_prometheus_clusterrole_binding_template }}"
-
-- name: "copy Prometheus operator clusterrole template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_prometheus_operator_clusterrole_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_prometheus_operator_clusterrole_template }}"
-
-- name: "create Prometheus operator clusterrole"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: clusterrole
-    name: prometheus-application-monitoring-operator
-    files:
-      - "{{ work_dir }}/{{ monitoring_prometheus_operator_clusterrole_template }}"
-
-- name: "copy Prometheus operator clusterrole binding template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_prometheus_operator_clusterrole_binding_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_prometheus_operator_clusterrole_binding_template }}"
-
-- name: "create Prometheus operator clusterrole binding"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: clusterrolebinding
-    name: "prometheus-application-monitoring-operator{{ namespace_postfix }}"
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ work_dir }}/{{ monitoring_prometheus_operator_clusterrole_binding_template }}"
-
-- name: "copy Alertmanager clusterrole template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_alert_manager_clusterrole_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_alert_manager_clusterrole_template }}"
-
-- name: "create Alertmanager clusterrole"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: clusterrole
-    name: alertmanager-application-monitoring
-    files:
-      - "{{ work_dir }}/{{ monitoring_alert_manager_clusterrole_template }}"
-
-- name: "copy AlertManager clusterrole binding template"
-  template:
-    src: "{{ resources_dir }}/{{ monitoring_alert_manager_clusterrole_binding_template }}"
-    dest: "{{ work_dir }}/{{ monitoring_alert_manager_clusterrole_binding_template }}"
-
-- name: "create AlertManager clusterrole binding"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: clusterrolebinding
-    name: "alertmanager-application-monitoring{{ namespace_postfix }}"
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ work_dir }}/{{ monitoring_alert_manager_clusterrole_binding_template }}"
-
-- name: "create BlackboxTarget crd"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: blackboxtargets.applicationmonitoring.integreatly.org
-    files:
-      - "{{ resources_dir }}/{{ monitoring_blakbox_crd_template }}"
-
-- name: "create ApplicationMonitoring crd"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: applicationmonitorings.applicationmonitoring.integreatly.org
-    files:
-      - "{{ resources_dir }}/{{ application_monitoring_crd_template }}"
-
-- name: "create application monitoring operator service account"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
     kind: serviceaccount
-    name: application-monitoring-operator
-    namespace: "{{ namespace }}"
     files:
-      - "{{ resources_dir }}/{{ application_monitoring_operator_sa_template }}"
+      - "{{ work_dir }}/{{ prometheus_serviceaccount_template }}"
 
-- name: "create application monitoring operator role"
-  oc_obj:
+- name: "define random value for oauth session"
+  set_fact:
+    prometheus_oauth_session: "{{ lookup('password', '/dev/null chars=ascii_letters length=43') }}"
+
+- name: "prometheus oauth proxy secret"
+  oc_secret:
     oc_binary: "{{ openshift_cli }}"
     state: present
-    kind: role
-    name: application-monitoring-operator
     namespace: "{{ namespace }}"
-    files:
-      - "{{ resources_dir }}/{{ application_monitoring_operator_role_template }}"
+    name: "{{ prometheus_oauth_proxy_secret }}"
+    type: generic
+    from_literal:
+      session_secret: "{{ prometheus_oauth_session }}"
 
-- name: "create application monitoring operator rolebinding"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: rolebinding
-    name: application-monitoring-operator
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ resources_dir }}/{{ application_monitoring_operator_role_binding_template }}"
-
-- name: "create application monitoring operator"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: deployment
-    name: application-monitoring-operator
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ resources_dir }}/{{ application_monitoring_operator_template }}"
-
-- name: "copy application monitoring cr template"
+- name: "copy prometheus service template"
   template:
-    src: "{{ resources_dir }}/{{ application_monitoring_cr_template }}"
-    dest: "{{ work_dir }}/{{ application_monitoring_cr_template }}"
+    src: "{{ resources_dir }}/{{ prometheus_service_template }}"
+    dest: "{{ work_dir }}/{{ prometheus_service_template }}"
 
-- name: "create application monitoring cr"
+- name: "deploy prometheus service"
   oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ prometheus_service_name }}"
+    namespace: "{{ namespace }}"
+    kind: service
+    files:
+      - "{{ work_dir }}/{{ prometheus_service_template }}"
+
+- name: "copy prometheus route template"
+  template:
+    src: "{{ resources_dir }}/{{ prometheus_route_template }}"
+    dest: "{{ work_dir }}/{{ prometheus_route_template }}"
+
+- name: "deploy prometheus route"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ prometheus_route_name }}"
+    namespace: "{{ namespace }}"
+    kind: route
+    files:
+      - "{{ work_dir }}/{{ prometheus_route_template }}"
+
+- name: "copy prometheus custom resource template"
+  template:
+    src: "{{ resources_dir }}/{{ prometheus_cr_template }}"
+    dest: "{{ work_dir }}/{{ prometheus_cr_template }}"
+
+- name: "deploy prometheus cr"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ prometheus_cr_name }}"
+    namespace: "{{ namespace }}"
+    kind: prometheus
+    files:
+      - "{{ work_dir }}/{{ prometheus_cr_template }}"   
+
+- name: "deploy grafana operator in {{ namespace }}"
+  import_role:
+    name: operator_olm
+  vars:
+    operator_name: grafana-operator
+    packagemanifest: "{{ grafana_operator_packagemanifest }}"
+    subscription_channel: "{{ grafana_operator_subscription_channel }}"
+    subscription_namespace: "{{ namespace }}"
+    subscription_name: "{{ grafana_operator_subscription_name }}"
+    automatic_installplan_approval: "{{ grafana_operator_subscription_automatic_installplan_approval }}"
+    csv_prefix: "{{ grafana_operator_csv_prefix }}"
+
+- name: "wait until grafana operator is active"
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    kind: Deployment
+    name: "{{ grafana_operator_deployment_name }}"
+    namespace: "{{ namespace }}"
+  register: r_grafana_operator_deployment
+  retries: 30
+  delay: 10
+  changed_when: false
+  until:
+    - r_grafana_operator_deployment.ansible_module_results.results[0].status.readyReplicas is defined
+    - r_grafana_operator_deployment.ansible_module_results.results[0].status.replicas is defined
+    - >-
+      r_grafana_operator_deployment.ansible_module_results.results[0].status.readyReplicas ==
+      r_grafana_operator_deployment.ansible_module_results.results[0].status.replicas
+
+- name: "define random value for oauh session"
+  set_fact:
+    grafana_oauth_session: "{{ lookup('password', '/dev/null chars=ascii_letters length=43') }}"
+
+- name: "grafana outh proxy secret"
+  oc_secret:
     oc_binary: "{{ openshift_cli }}"
     state: present
-    kind: ApplicationMonitoring
-    name: "middleware-monitoring{{ namespace_postfix }}"
     namespace: "{{ namespace }}"
+    name: "{{ grafana_oauth_proxy_secret }}"
+    type: generic
+    from_literal:
+      session_secret: "{{ grafana_oauth_session }}"
+
+- name: "copy grafana datasource template"
+  template:
+    src: "{{ resources_dir }}/{{ grafana_datasource_template }}"
+    dest: "{{ work_dir }}/{{ grafana_datasource_template }}"
+
+- name: "deploy grafana datasource"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ grafana_datasource_name }}"
+    namespace: "{{ namespace }}"
+    kind: grafanadatasource
     files:
-      - "{{ work_dir }}/{{ application_monitoring_cr_template }}"
+      - "{{ work_dir }}/{{ grafana_datasource_template }}" 
+
+- name: "copy grafana custom resource template"
+  template:
+    src: "{{ resources_dir }}/{{ grafana_cr_template }}"
+    dest: "{{ work_dir }}/{{ grafana_cr_template }}"
+
+- name: "deploy grafana cr"
+  oc_obj:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ grafana_cr_name }}"
+    namespace: "{{ namespace }}"
+    kind: grafana
+    files:
+      - "{{ work_dir }}/{{ grafana_cr_template }}" 
 
 - name: "create clusterrole for get namespaces"
   oc_obj:
@@ -301,6 +195,15 @@
     kind: clusterrole
     files:
       - "{{ resources_dir }}/{{ clusterrole_get_namespaces_template }}"
+
+- name: "give clusterrole get-namespaces privilege to {{ project_admin }}"
+  oc_adm_policy_user:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    rolebinding_name: "{{ project_admin }}-get-namespaces"
+    resource_kind: cluster-role
+    resource_name: get-namespaces
+    user: "{{ project_admin }}"
 
 - name: "copy grafana cluster monitoring clusterrole binding template"
   template:
@@ -312,6 +215,6 @@
     oc_binary: "{{ openshift_cli }}"
     state: present
     kind: clusterrolebinding
-    name: "grafana-cluster-monitoring-view{{ namespace_postfix }}"
+    name: "grafana-cluster-monitoring-view-{{ project_admin }}"
     files:
       - "{{ work_dir }}/{{ grafana_cluster_monitoring_view_crb_template }}"

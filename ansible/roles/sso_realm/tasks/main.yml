@@ -1,5 +1,23 @@
 ---
 
+- name: wait for sso to be ready
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"    
+    kind: Statefulset
+    name: keycloak
+    namespace: "{{ namespace_sso }}"
+  register: r_sso_statefulset
+  retries: 30
+  delay: 10
+  changed_when: false
+  until:
+    - r_sso_statefulset.ansible_module_results.results[0].status.readyReplicas is defined
+    - r_sso_statefulset.ansible_module_results.results[0].status.replicas is defined
+    - >-
+      r_sso_statefulset.ansible_module_results.results[0].status.readyReplicas ==
+      r_sso_statefulset.ansible_module_results.results[0].status.replicas
+
 # https://github.com/Emergency-Response-Demo/install/issues/71
 - name: "Define random value for variable incident_commander_role_id "
   set_fact:

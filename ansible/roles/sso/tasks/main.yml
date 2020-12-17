@@ -1,96 +1,43 @@
 ---
 
-- name: "create keycloak crd"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: keycloaks.keycloak.org
-    files:
-      - "{{ resources_dir }}/{{ keycloak_crd_template }}"
-
-- name: "create keycloak realm crd"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: keycloakrealms.keycloak.org
-    files:
-      - "{{ resources_dir }}/{{ keycloak_realm_crd_template }}"
-
-- name: "create keycloak user crd"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: keycloakusers.keycloak.org
-    files:
-      - "{{ resources_dir }}/{{ keycloak_user_crd_template }}"
-
-- name: "create keycloak client crd"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: keycloakclients.keycloak.org
-    files:
-      - "{{ resources_dir }}/{{ keycloak_client_crd_template }}"
-
-- name: "create keycloak backup crd"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: keycloakbackups.keycloak.org
-    files:
-      - "{{ resources_dir }}/{{ keycloak_backup_crd_template }}"
-
-- name: "create keycloak-operator service account"
-  oc_serviceaccount:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    name: keycloak-operator
-    namespace: "{{ namespace }}"
-
-- name: "create keycloak operator role"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    namespace: "{{ namespace }}"
-    kind: role
-    name: keycloak-operator
-    files:
-      - "{{ resources_dir }}/{{ keycloak_operator_role_template }}"
-
-- name: "create keycloak operator role binding"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    namespace: "{{ namespace }}"
-    kind: rolebinding
-    name: keycloak-operator
-    files:
-      - "{{ resources_dir }}/{{ keycloak_operator_rolebinding_template }}"
-
-- name: "deploy keycloak operator"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: deployment
-    name: keycloak-operator
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ resources_dir }}/{{ keycloak_operator_template }}"
-
-- name: "wait until operator is deployed"
-  shell: "{{ openshift_cli }} get deployment keycloak-operator -o template --template={{ json_template }} -n {{ namespace }}"
+- name: "create operatorgroup in {{ namespace_sso }}"
+  import_role:
+    name: operatorgroup
   vars:
-    json_template: '\{\{.status.readyReplicas\}\}'
-  register: result
-  until: result.stdout == "1"
+    operatorgroup_name: "{{ namespace_sso }}"
+    operatorgroup_namespace: "{{ namespace_sso }}"
+    operatorgroup_target_namespace: "{{ namespace_sso }}"
+
+- name: "deploy sso operator in {{ namespace_sso }}"
+  import_role:
+    name: operator_olm
+  vars:
+    operator_name: sso-operator
+    packagemanifest: "{{ sso_operator_packagemanifest }}"
+    subscription_channel: "{{ sso_operator_subscription_channel }}"
+    subscription_namespace: "{{ namespace_sso }}"
+    subscription_name: "{{ sso_operator_subscription_name }}"
+    automatic_installplan_approval: "{{ sso_operator_subscription_automatic_installplan_approval }}"
+    subscription_starting_csv: "{{ sso_operator_subscription_starting_csv  }}"
+    csv_prefix: "{{ sso_operator_csv_prefix }}"
+
+- name: "wait until sso operator is active"
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    kind: Deployment
+    name: "{{ sso_operator_deployment_name }}"
+    namespace: "{{ namespace_sso }}"
+  register: r_sso_operator_deployment
   retries: 30
   delay: 10
   changed_when: false
+  until:
+    - r_sso_operator_deployment.ansible_module_results.results[0].status.readyReplicas is defined
+    - r_sso_operator_deployment.ansible_module_results.results[0].status.replicas is defined
+    - >-
+      r_sso_operator_deployment.ansible_module_results.results[0].status.readyReplicas ==
+      r_sso_operator_deployment.ansible_module_results.results[0].status.replicas
 
 - name: "copy keycloak custom resource template"
   template:
@@ -103,7 +50,7 @@
     state: present
     kind: keycloaks.keycloak.org
     name: rhsso
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace_sso }}"
     files:
       - "{{ work_dir }}/{{ keycloak_cr_template }}"
 
@@ -113,6 +60,6 @@
     state: present
     kind: route
     name: sso
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace_sso }}"
     files:
       - "{{ resources_dir }}/{{ keycloak_route_template }}"

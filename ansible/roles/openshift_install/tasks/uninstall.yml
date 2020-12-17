@@ -144,7 +144,7 @@
 
 - name: uninstall datagrid
   import_role:
-    name: openshift_datagrid
+    name: datagrid
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_datagrid }}"
@@ -209,29 +209,30 @@
 
 - name: uninstall kafka topics
   import_role:
-    name: openshift_kafka_topics
+    name: kafka_topics
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
     work_dir_name: kafka-topics
 
 - name: uninstall kafka cluster
   import_role:
-    name: openshift_kafka_cluster
+    name: kafka_cluster
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
     work_dir_name: kafka-cluster
 
-- name: uninstall kafka operator
+- name: uninstall amq streams operator
   import_role:
-    name: openshift_strimzi_operator
+    name: amq_streams_operator
     tasks_from: uninstall
   vars:
-    namespace: "{{ namespace_strimzi_operator }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
-    work_dir_name: strimzi-operator
+    namespace: "{{ namespace_amq_streams_operator }}"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
+    work_dir_name: amq-streams-operator
+  when: uninstall_cluster_resources|bool == true
 
 - name: uninstall monitoring stack
   import_role:
@@ -254,11 +255,11 @@
     state: absent
     name: "{{ namespace_tools }}"
 
-- name: delete namespace kafka operator
+- name: delete namespace monitoring
   oc_project:
     oc_binary: "{{ openshift_cli }}"
     state: absent
-    name: "{{ namespace_strimzi_operator }}"
+    name: "{{ namespace_monitoring }}"
 
 - name: uninstall sso realm
   import_role:
@@ -277,6 +278,7 @@
     namespace: "{{ namespace_sso }}"
     resources_dir: "{{ resources_base_dir }}/sso"
     work_dir_name: sso
+  when: uninstall_cluster_resources|bool == true  
 
 - name: uninstall knative operator
   import_role:
@@ -286,6 +288,7 @@
     namespace: "{{ namespace_knativeserving }}"
     resources_dir: "{{ resources_base_dir }}/knative"
     work_dir_name: knative
+  when: uninstall_cluster_resources|bool == true
 
 - name: "delete namespace {{ namespace_nexus }}"
   oc_project:
@@ -293,4 +296,3 @@
     state: absent
     name: "{{ namespace_nexus }}"
   when: uninstall_cluster_resources|bool == true
-

@@ -17,28 +17,28 @@
     work_dir_name: "{{ project_admin }}-monitoring"
   when: install_monitoring is defined and install_monitoring|bool == true
 
-- name: install kafka operator
+- name: install amq streams operator
   import_role:
-    name: openshift_strimzi_operator
+    name: amq_streams_operator
   vars:
-    namespace: "{{ namespace_strimzi_operator }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
-    work_dir_name: strimzi-operator
+    namespace: "{{ namespace_amq_streams_operator }}"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
+    work_dir_name: amq-streams-operator
 
 - name: install kafka cluster
   import_role:
-    name: openshift_kafka_cluster
+    name: kafka_cluster
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
     work_dir_name: kafka-cluster
 
 - name: install kafka topics
   import_role:
-    name: openshift_kafka_topics
+    name: kafka_topics
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
     work_dir_name: kafka-topics
 
 - name: install jenkins
@@ -103,7 +103,6 @@
     resources_dir: "{{ resources_base_dir }}/kafka-connect"
     work_dir_name: kafka-connect
 
-
 - name: install sso realm
   import_role:
     name: sso_realm
@@ -114,7 +113,7 @@
 
 - name: install datagrid
   import_role:
-    name: openshift_datagrid
+    name: datagrid
   vars:
     namespace: "{{ namespace_datagrid }}"
     resources_dir: "{{ resources_base_dir }}/datagrid"
