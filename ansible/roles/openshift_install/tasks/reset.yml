@@ -43,7 +43,7 @@
 # uninstall datawarehouse service
 - name: uninstall datawarehouse service
   import_role:
-    name: openshift_datawarehouse
+    name: datawarehouse
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_services }}"
@@ -81,7 +81,7 @@
 # uninstall postgresql
 - name: uninstall postgresql
   import_role:
-    name: openshift_postgresql
+    name: postgresql
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_postgresql }}"
@@ -91,7 +91,7 @@
 # uninstall postgresql process service
 - name: uninstall process service postgresql
   import_role:
-    name: openshift_process_service
+    name: process_service
     tasks_from: remove_postgresql
   vars:
     namespace: "{{ namespace_services }}"
@@ -127,7 +127,7 @@
 # install postgresql
 - name: install postgresql
   import_role:
-    name: openshift_postgresql
+    name: postgresql
   vars:
     namespace: "{{ namespace_postgresql }}"
     resources_dir: "{{ resources_base_dir }}/postgresql"
@@ -136,7 +136,7 @@
 # install postgresql process service
 - name: install process service
   import_role:
-    name: openshift_process_service
+    name: process_service
     tasks_from: deploy_postgresql
   vars:
     namespace: "{{ namespace_services }}"
@@ -146,7 +146,7 @@
 # install datawarehouse service
 - name: install datawarehouse service
   import_role:
-    name: openshift_datawarehouse
+    name: datawarehouse
   vars:
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/datawarehouse"

@@ -18,14 +18,14 @@
         resources_dir: "{{ resources_base_dir }}/mission-service"
         work_dir_name: mission-service
     - include_role:
-        name: ../roles/openshift_mission_service
+        name: ../roles/mission_service
       when: >
         ACTION is not defined or
         ACTION is none or
         ACTION|trim() == "" or
         ACTION|trim() == "install"
     - include_role:
-        name: ../roles/openshift_mission_service
+        name: ../roles/mission_service
         tasks_from: uninstall
       when: >
         ACTION is defined and

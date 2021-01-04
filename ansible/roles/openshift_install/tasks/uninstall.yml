@@ -2,7 +2,7 @@
 
 - name: uninstall datawarehouse service
   import_role:
-    name: openshift_datawarehouse
+    name: datawarehouse
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_services }}"
@@ -11,7 +11,7 @@
 
 - name: uninstall disaster service
   import_role:
-    name: openshift_disaster_service
+    name: disaster_service
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_services }}"
@@ -29,7 +29,7 @@
 
 - name: uninstall disaster simulator service
   import_role:
-    name: openshift_disaster_simulator_service
+    name: disaster_simulator_service
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_services }}"
@@ -38,7 +38,7 @@
 
 - name: uninstall emergency console
   import_role:
-    name: openshift_emergency_console
+    name: emergency_console
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_services }}"
@@ -47,7 +47,7 @@
 
 - name: uninstall responder service
   import_role:
-    name: openshift_responder_service
+    name: responder_service
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_services }}"
@@ -56,7 +56,7 @@
 
 - name: uninstall process service
   import_role:
-    name: openshift_process_service
+    name: process_service
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_services }}"
@@ -65,7 +65,7 @@
 
 - name: uninstall mission service
   import_role:
-    name: openshift_mission_service
+    name: mission_service
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_services }}"
@@ -74,7 +74,7 @@
 
 - name: uninstall incident service
   import_role:
-    name: openshift_incident_service
+    name: incident_service
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_services }}"
@@ -83,7 +83,7 @@
 
 - name: uninstall incident process viewer
   import_role:
-    name: openshift_process_viewer
+    name: process_viewer
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_services }}"
@@ -92,7 +92,7 @@
 
 - name: uninstall incident priority service
   import_role:
-    name: openshift_incident_priority_service
+    name: incident_priority_service
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_services }}"
@@ -119,7 +119,7 @@
 
 - name: uninstall postgresql
   import_role:
-    name: openshift_postgresql
+    name: postgresql
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_postgresql }}"
@@ -128,7 +128,7 @@
 
 - name: uninstall pgadmin4
   import_role:
-    name: openshift_pgadmin4
+    name: pgadmin4
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_tools }}"

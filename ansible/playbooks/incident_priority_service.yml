@@ -16,14 +16,14 @@
         resources_dir: "{{ resources_base_dir }}/incident-priority-service"
         work_dir_name: incident-priority-service
     - include_role:
-        name: ../roles/openshift_incident_priority_service
+        name: ../roles/incident_priority_service
       when: >
         ACTION is not defined or
         ACTION is none or
         ACTION|trim() == "" or
         ACTION|trim() == "install"
     - include_role:
-        name: ../roles/openshift_incident_priority_service
+        name: ../roles/incident_priority_service
         tasks_from: uninstall
       when: >
         ACTION is defined and

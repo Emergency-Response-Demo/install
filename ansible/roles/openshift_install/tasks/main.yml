@@ -43,7 +43,7 @@
 
 - name: install common nexus
   import_role:
-    name: openshift_nexus
+    name: nexus
   vars:
     namespace: "{{ namespace_nexus }}"
     resources_dir: "{{ resources_base_dir }}/nexus"
@@ -51,7 +51,7 @@
 
 - name: install pgadmin4
   import_role:
-    name: openshift_pgadmin4
+    name: pgadmin4
   vars:
     namespace: "{{ namespace_tools }}"
     resources_dir: "{{ resources_base_dir }}/pgadmin4"
@@ -60,7 +60,7 @@
 
 - name: install postgresql
   import_role:
-    name: openshift_postgresql
+    name: postgresql
   vars:
     namespace: "{{ namespace_postgresql }}"
     resources_dir: "{{ resources_base_dir }}/postgresql"
@@ -84,7 +84,7 @@
 
 - name: install incident service
   import_role:
-    name: openshift_incident_service
+    name: incident_service
   vars:
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/incident-service"
@@ -92,7 +92,7 @@
 
 - name: install process viewer
   import_role:
-    name: openshift_process_viewer
+    name: process_viewer
   vars:
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/process-viewer"
@@ -100,7 +100,7 @@
 
 - name: install incident priority service
   import_role:
-    name: openshift_incident_priority_service
+    name: incident_priority_service
   vars:
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/incident-priority-service"
@@ -108,7 +108,7 @@
 
 - name: install mission service
   import_role:
-    name: openshift_mission_service
+    name: mission_service
   vars:
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/mission-service"
@@ -116,7 +116,7 @@
 
 - name: install process service
   import_role:
-    name: openshift_process_service
+    name: process_service
   vars:
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/process-service"
@@ -124,7 +124,7 @@
 
 - name: install responder service
   import_role:
-    name: openshift_responder_service
+    name: responder_service
   vars:
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/responder-service"
@@ -140,7 +140,7 @@
 
 - name: install disaster simulator service
   import_role:
-    name: openshift_disaster_simulator_service
+    name: disaster_simulator_service
   vars:
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/disaster-simulator-service"
@@ -148,7 +148,7 @@
 
 - name: install emergency console
   import_role:
-    name: openshift_emergency_console
+    name: emergency_console
   vars:
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/emergency-console"
@@ -156,7 +156,7 @@
 
 - name: install disaster service
   import_role:
-    name: openshift_disaster_service
+    name: disaster_service
   vars:
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/disaster-service"
@@ -173,7 +173,7 @@
 
 - name: install openshift_datawarehouse
   import_role:
-    name: openshift_datawarehouse
+    name: datawarehouse
   vars:
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/datawarehouse"
