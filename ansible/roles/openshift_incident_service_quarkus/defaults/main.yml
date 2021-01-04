@@ -7,7 +7,7 @@ service_account: incident-service
 expose_service: false
 
 resources_limits_cpu: 500m
-resources_limits_memory: 500Mi
+resources_limits_memory: 250Mi
 resources_requests_cpu: 100m
 resources_requests_memory: 200Mi
 
