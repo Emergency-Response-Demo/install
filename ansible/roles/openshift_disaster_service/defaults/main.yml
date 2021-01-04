@@ -15,20 +15,8 @@ sso_configmap: sso-config
 
 application_properties: application-config.yaml
 
-application_image: redhat-openjdk18-openshift:1.7
-application_image_namespace: openshift
-
-buildconfig_name: "{{ application_name }}-binary"
-buildconfig_template: disaster-service-binary-buildconfig.yml
-
-imagestream_name: "{{ application_name }}"
-imagestream_template: disaster-service-imagestream.yml
-
 image_imagestream_name: "{{ application_name }}"
 image_imagestream_template: disaster-service-image-is.yml
-
-pipeline_buildconfig_name: "{{ application_name }}-pipeline"
-pipeline_buildconfig_template: disaster-service-pipeline.yml
 
 application_template: disaster-service.yml
 

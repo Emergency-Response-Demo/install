@@ -11,7 +11,7 @@
     state: present
     namespace: "{{ namespace }}"
     kind: imagestream
-    name: "{{ image_imagestream_name }}"
+    name: "{{ imagestream_name }}"
     files:
       - "{{ work_dir }}/{{ image_imagestream_template }}"
 

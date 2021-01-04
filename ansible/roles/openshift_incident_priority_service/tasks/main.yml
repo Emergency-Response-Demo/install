@@ -56,8 +56,4 @@
     from_file:
       logback.xml: "{{ work_dir }}/logback.xml"
 
-- import_tasks: deploy_from_source.yml
-  when: deploy_from is defined and deploy_from == "source"
-
 - import_tasks: deploy_from_image.yml
-  when: deploy_from is defined and deploy_from == "image"

@@ -43,8 +43,4 @@
       LNames.txt: "{{ work_dir }}/LNames.txt"
       FNames.txt: "{{ work_dir }}/FNames.txt"
 
-- import_tasks: deploy_from_source.yml
-  when: deploy_from is defined and deploy_from == "source"
-
 - import_tasks: deploy_from_image.yml
-  when: deploy_from is defined and deploy_from == "image"

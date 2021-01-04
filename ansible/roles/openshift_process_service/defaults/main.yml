@@ -51,26 +51,10 @@ logging_style: dev
 
 service_account: process-service
 
-buildconfig_template: process-service-binary-buildconfig.yml
-buildconfig_name: "{{ application_name }}-binary"
-
-pipeline_buildconfig_name: "{{ application_name }}-pipeline"
-pipeline_buildconfig_template: process-service-pipeline.yml
-
-imagestream_template: process-service-imagestream.yml
-imagestream_name: "{{ application_name }}"
-
 image_imagestream_name: "{{ application_name }}"
 image_imagestream_template: process-service-image-is.yml
 
 application_template: process-service.yml
-
-openjdk_template: openjdk-imagestream.yml
-openjdk_imagestream_name: openjdk18-openshift
-openjdk_imagestream_tag: 1.6
-
-application_image: openjdk18-openshift:1.6
-application_image_namespace: openshift
 
 incident_process_assignment_delay: PT20S
 

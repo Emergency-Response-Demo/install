@@ -20,23 +20,12 @@
 
 - name: uninstall responder simulator service
   import_role:
-    name: openshift_responder_simulator_service
+    name: responder_simulator_service
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/responder-simulator-service"
     work_dir_name: responder-simulator-service
-  when: deploy_from is defined and deploy_from == "source"
-
-- name: uninstall responder simulator service
-  import_role:
-    name: responder_simulator_quarkus
-    tasks_from: uninstall
-  vars:
-    namespace: "{{ namespace_services }}"
-    resources_dir: "{{ resources_base_dir }}/responder-simulator-quarkus"
-    work_dir_name: responder-simulator-quarkus
-  when: deploy_from is defined and deploy_from == "image"
 
 - name: uninstall disaster simulator service
   import_role:
@@ -56,15 +45,6 @@
     resources_dir: "{{ resources_base_dir }}/emergency-console"
     work_dir_name: emergency-console
 
-- name: uninstall responder client app
-  import_role:
-    name: openshift_responder_client_app
-    tasks_from: uninstall
-  vars:
-    namespace: "{{ namespace_services }}"
-    resources_dir: "{{ resources_base_dir }}/responder-client-app"
-    work_dir_name: responder-client-app
-
 - name: uninstall responder service
   import_role:
     name: openshift_responder_service
@@ -73,17 +53,6 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/responder-service"
     work_dir_name: responder-service
-  when: deploy_from is defined and deploy_from == "source"
-
-- name: uninstall responder service
-  import_role:
-    name: openshift_responder_service_quarkus
-    tasks_from: uninstall
-  vars:
-    namespace: "{{ namespace_services }}"
-    resources_dir: "{{ resources_base_dir }}/responder-service-quarkus"
-    work_dir_name: responder-service-quarkus
-  when: deploy_from is defined and deploy_from == "image"
 
 - name: uninstall process service
   import_role:
@@ -102,26 +71,15 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/mission-service"
     work_dir_name: mission-service
-  when: deploy_from is defined and deploy_from == "source"
-
-- name: uninstall mission service
-  import_role:
-    name: openshift_mission_service
-    tasks_from: uninstall
-  vars:
-    namespace: "{{ namespace_services }}"
-    resources_dir: "{{ resources_base_dir }}/mission-service"
-    work_dir_name: mission-service
-  when: deploy_from is defined and deploy_from == "image"
 
 - name: uninstall incident service
   import_role:
-    name: openshift_incident_service_quarkus
+    name: openshift_incident_service
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_services }}"
-    resources_dir: "{{ resources_base_dir }}/incident-service-quarkus"
-    work_dir_name: incident-service-quarkus
+    resources_dir: "{{ resources_base_dir }}/incident-service"
+    work_dir_name: incident-service
 
 - name: uninstall incident process viewer
   import_role:
@@ -140,31 +98,6 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/incident-priority-service"
     work_dir_name: incident-priority-service
-
-- name: uninstall incident process
-  import_role:
-    name: openshift_incident_process
-    tasks_from: uninstall
-  vars:
-    namespace: "{{ namespace_services }}"
-    resources_dir: "{{ resources_base_dir }}/incident-process"
-    work_dir_name: incident-process
-
-- name: uninstall assignment rules
-  import_role:
-    name: openshift_assignment_rules
-    tasks_from: uninstall
-  vars:
-    resources_dir: "{{ resources_base_dir }}/assignment-rules"
-    work_dir_name: assignment-rules
-
-- name: uninstall assignment rules model
-  import_role:
-    name: openshift_assignment_rules_model
-    tasks_from: uninstall
-  vars:
-    resources_dir: "{{ resources_base_dir }}/assignment-rules-model"
-    work_dir_name: assignment-rules-model
 
 - name: uninstall emergency response demo monitoring
   import_role:
@@ -201,25 +134,6 @@
     namespace: "{{ namespace_tools }}"
     resources_dir: "{{ resources_base_dir }}/pgadmin4"
     work_dir_name: pgadmin4
-
-- name: uninstall nexus
-  import_role:
-    name: openshift_nexus
-    tasks_from: uninstall
-  vars:
-    namespace: "{{ namespace_tools }}"
-    resources_dir: "{{ resources_base_dir }}/nexus"
-    work_dir_name: nexuss
-  when: deploy_from is defined and deploy_from == "source"
-
-- name: uninstall jenkins
-  import_role:
-    name: openshift_jenkins
-    tasks_from: uninstall
-  vars:
-    namespace: "{{ namespace_tools }}"
-    work_dir_name: jenkins
-    resources_dir: "{{ resources_base_dir }}/jenkins"
 
 - name: uninstall kafka topics
   import_role:

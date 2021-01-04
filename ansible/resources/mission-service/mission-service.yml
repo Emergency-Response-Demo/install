@@ -7,7 +7,6 @@ items:
   metadata:
     labels:
       app: {{ application_name }}
-      monitoring: prometheus
       expose: "true"
     name: {{ application_name }}
   spec:
@@ -56,16 +55,6 @@ items:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.namespace
-            - name: JAVA_OPTIONS
-              value: >
-                -Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory
-                -Dlogback.configurationFile=/app/logging/logback.xml
-            - name: AB_JOLOKIA_OFF
-              value: "true"
-            - name: APP_CONFIGMAP_NAME
-              value: {{ application_configmap }}
-            - name: APP_CONFIGMAP_KEY
-              value: {{ application_configmap_key }}
             imagePullPolicy: IfNotPresent
             name: {{ application_name }}
             ports:
@@ -87,7 +76,7 @@ items:
                 path: /health
                 port: 8080
                 scheme: HTTP
-              initialDelaySeconds: 10
+              initialDelaySeconds: 3
               periodSeconds: 10
               timeoutSeconds: 1
             resources:
@@ -102,10 +91,8 @@ items:
             terminationMessagePath: /dev/termination-log
             terminationMessagePolicy: File
             volumeMounts:
-            - mountPath: /app/logging
-              name: logging
-            - mountPath: /deployments/config
-              name: config
+              - mountPath: /deployments/config
+                name: config
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         schedulerName: default-scheduler
@@ -114,16 +101,10 @@ items:
         serviceAccountName: {{ service_account }}
         terminationGracePeriodSeconds: 30
         volumes:
-        - configMap:
-            name: {{ logging_configmap }}
-          name: logging
-        - configMap:
-            defaultMode: 420
-            items:
-              - key: {{ application_configmap_key }}
-                path: {{ application_configmap_key }}
-            name: {{ application_configmap }}
-          name: config
+          - configMap:
+              defaultMode: 420
+              name: {{ application_configmap }}
+            name: config
     triggers:
       - type: ConfigChange
       - imageChangeParams:

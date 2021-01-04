@@ -1,8 +1,8 @@
 ---
 
-incident_service_quarkus_tracing_image_tag: tracing
-responder_service_quarkus_tracing_image_tag: tracing
-mission_service_quarkus_tracing_image_tag: tracing
+incident_service_tracing_image_tag: tracing
+responder_service_tracing_image_tag: tracing
+mission_service_tracing_image_tag: tracing
 process_service_tracing_image_tag: tracing
 incident_priority_service_tracing_image_tag: tracing
 responder_simulator_service_tracing_image_tag: tracing

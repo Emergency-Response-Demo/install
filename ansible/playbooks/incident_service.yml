@@ -15,7 +15,7 @@
     - set_fact:
         namespace: "{{ namespace_services }}"
         resources_dir: "{{ resources_base_dir }}/incident-service"
-        work_dir_name: incident-service
+        work_dir_name: incident-services
     - include_role:
         name: ../roles/openshift_incident_service
       when: >

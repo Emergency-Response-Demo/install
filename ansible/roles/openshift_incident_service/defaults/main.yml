@@ -4,30 +4,21 @@ application_name: "{{ incident_service_application_name }}"
 
 service_account: incident-service
 
+expose_service: false
+
 resources_limits_cpu: 500m
 resources_limits_memory: 250Mi
 resources_requests_cpu: 100m
 resources_requests_memory: 200Mi
 
-application_configmap: incident-service
-logging_configmap: incident-service-logging
+application_configmap: "{{ incident_service_application_configmap }}"
 
 application_properties: application.properties
 
-application_image: redhat-openjdk18-openshift:1.7
-application_image_namespace: openshift
-
-buildconfig_name: "{{ application_name }}-binary"
-buildconfig_template: incident-service-binary-buildconfig.yml
+application_route_host_name: "{{ application_name }}.{{ namespace }}.{{ ocp_domain }}"
 
 imagestream_name: "{{ application_name }}"
-imagestream_template: incident-service-imagestream.yml
-
-image_imagestream_name: "{{ application_name }}"
 image_imagestream_template: incident-service-image-is.yml
-
-pipeline_buildconfig_name: "{{ application_name }}-pipeline"
-pipeline_buildconfig_template: incident-service-pipeline.yml
 
 application_template: incident-service.yml
 
@@ -35,15 +26,6 @@ kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka
 kafka_bootstrap_port: 9092
 kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
 kafka_groupid: incident-service
-kafka_consumer_concurrency: 5
 
-kafka_incident_reported_event_topic: topic-incident-event
-kafka_incident_updated_event_topic: topic-incident-event
+kafka_incident_event_topic: topic-incident-event
 kafka_update_incident_command_topic: topic-incident-command
-
-narayana_pool_max_total: 20
-
-logging_style: dev
-
-prometheus_endpoint_path: "/actuator/prometheus"
-prometheus_endpoint_port: 8080

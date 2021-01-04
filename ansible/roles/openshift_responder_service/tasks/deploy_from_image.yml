@@ -5,13 +5,13 @@
     src: "{{ resources_dir }}/{{ image_imagestream_template }}"
     dest: "{{ work_dir }}/{{ image_imagestream_template }}"
 
-- name: create imagestream in the {{ namespace }} project
+- name: "create imagestream in the {{ namespace }} project"
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: present
     namespace: "{{ namespace }}"
     kind: imagestream
-    name: "{{ image_imagestream_name }}"
+    name: "{{ imagestream_name }}"
     files:
       - "{{ work_dir }}/{{ image_imagestream_template }}"
 
@@ -23,7 +23,7 @@
     src: "{{ resources_dir }}/{{ application_template }}"
     dest: "{{ work_dir }}/{{ application_template }}"
 
-- name: check if {{ application_name }} application is deployed
+- name: "check if {{ application_name }} application is deployed"
   oc_obj:
     oc_binary: "{{ openshift_cli }}"
     state: list
@@ -32,7 +32,7 @@
     kind: dc
   register: result
 
-- name: deploy {{ application_name }} application
+- name: "deploy {{ application_name }} application"
   oc_list:
     oc_binary: "{{ openshift_cli }}"
     state: present

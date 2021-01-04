@@ -17,21 +17,7 @@
     namespace: "{{ namespace }}"
     rolebinding_name: "{{ service_account }}-view"
 
-- name: get postgresql credentials secret
-  oc_secret:
-    state: list
-    oc_binary: "{{ openshift_cli }}"
-    namespace: "{{ namespace_postgresql }}"
-    decode: true
-    name: "{{ postgresql_credentials_secret }}"
-  register: postgresql_credentials
-
-- set_fact:
-    database_user: "{{ postgresql_credentials.ansible_module_results.decoded[\"database-user\"] }}"
-    database_password: "{{ postgresql_credentials.ansible_module_results.decoded[\"database-password\"] }}"
-    database_name: "{{ postgresql_credentials.ansible_module_results.decoded[\"database-name\"] }}"
-
-- name: copy application properties template
+- name: "copy {{ application_configmap }} configmap template"
   template:
     src: "{{ resources_dir }}/{{ application_properties }}"
     dest: "{{ work_dir }}/{{ application_properties }}"
@@ -43,7 +29,6 @@
     name: "{{ application_configmap }}"
     namespace: "{{ namespace }}"
     from_file:
-      dir: "{{ work_dir }}/{{ application_properties }}"
+      dir: "{{ work_dir }}/application.properties"
 
 - import_tasks: deploy_from_image.yml
-  when: deploy_from is defined and deploy_from == "image"

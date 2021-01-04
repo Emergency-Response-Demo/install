@@ -4,28 +4,16 @@ application_name: "{{ mission_service_application_name }}"
 
 service_account: mission-service
 
-resources_limits_cpu: 1000m
-resources_limits_memory: 1Gi
-resources_requests_cpu: 250m
+resources_limits_cpu: 500m
+resources_limits_memory: 500Mi
+resources_requests_cpu: 200m
 resources_requests_memory: 250Mi
 
-application_configmap: mission-service
-application_configmap_key: app-config.properties
-logging_configmap: mission-service-logging
+application_configmap: "{{ mission_service_application_configmap }}"
 
-application_image: redhat-openjdk18-openshift:1.7
-application_image_namespace: openshift
-
-buildconfig_name: "{{ application_name }}-binary"
-buildconfig_template: mission-service-binary-buildconfig.yml
-
-pipeline_buildconfig_name: "{{ application_name }}-pipeline"
-pipeline_buildconfig_template: mission-service-pipeline.yml
+application_properties: application.properties
 
 imagestream_name: "{{ application_name }}"
-imagestream_template: mission-service-imagestream.yml
-
-image_imagestream_name: "{{ application_name }}"
 image_imagestream_template: mission-service-image-is.yml
 
 application_template: mission-service.yml
@@ -35,15 +23,10 @@ kafka_bootstrap_port: 9092
 kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
 kafka_groupid: mission-service
 
-kafka_create_mission_command_topic: topic-mission-command
-kafka_mission_updated_event_topic: topic-mission-event
-kafka_update_responder_location_topic: topic-responder-location-update
-kafka_update_responder_command_topic: topic-responder-command
-kafka_autocommit: 'true'
+kafka_mission_command_topic: topic-mission-command
+kafka_mission_event_topic: topic-mission-event
+kafka_responder_location_update_topic: topic-responder-location-update
+kafka_responder_command_topic: topic-responder-command
 
-datagrid_service: "{{ datagrid_application_name }}.{{ namespace_datagrid }}.svc"
-datagrid_port: 11222
-
-map_token: ""
-
-logging_style: dev
+datagrid_server_list: "{{ datagrid_application_name }}.{{ namespace_datagrid }}.svc:11222"
+datagrid_cache_name: mission 

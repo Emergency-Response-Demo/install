@@ -14,20 +14,8 @@ service_account: process-viewer
 
 application_properties: application-config.yaml
 
-application_image: redhat-openjdk18-openshift:1.7
-application_image_namespace: openshift
-
-buildconfig_name: "{{ application_name }}-binary"
-buildconfig_template: process-viewer-binary-buildconfig.yml
-
-imagestream_name: "{{ application_name }}"
-imagestream_template: process-viewer-imagestream.yml
-
 image_imagestream_name: "{{ application_name }}"
 image_imagestream_template: process-viewer-image-is.yml
-
-pipeline_buildconfig_name: "{{ application_name }}-pipeline"
-pipeline_buildconfig_template: process-viewer-pipeline.yml
 
 application_template: process-viewer.yml
 

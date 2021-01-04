@@ -16,7 +16,7 @@
       - "{{ work_dir }}/{{ image_imagestream_template }}"
 
 - set_fact:
-    application_image_tag: "{{ mission_service_quarkus_image_tag }}"
+    application_image_tag: "{{ responder_simulator_image_tag }}"
 
 - name: copy application template
   template:
