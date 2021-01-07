@@ -60,4 +60,4 @@ incident_aggregation_service_image_tag=latest
 incident_finder_service_image=quay.io/btison/erdemo-incident-finder-service
 incident_finder_service_image_tag=latest
 
-kafka_connect_image=quay.io/btison/strimzi-debezium-postgresql:1.4.0-1.1.2.Final
+kafka_connect_image=quay.io/emergencyresponsedemo/strimzi-debezium-postgresql:1.6.0-1.3.1.Final
