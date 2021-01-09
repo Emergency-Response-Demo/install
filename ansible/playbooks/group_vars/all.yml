@@ -9,7 +9,7 @@ resources_base_dir: "{{ home_dir }}/resources"
 openshift_cli: oc
 
 project_name: er-demo
-metrics_project_name: er-monitoring
+monitoring_project_name: er-monitoring
 tools_project_name: er-tools
 
 monitoring_label: prometheus

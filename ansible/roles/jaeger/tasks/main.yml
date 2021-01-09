@@ -1,65 +1,35 @@
 ---
 
-- name: create jaeger crd
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: crd
-    name: jaegers.jaegertracing.io
-    files:
-      - "{{ resources_dir }}/{{ jaeger_crd_template }}"
-
-- name: "create jaeger operator service account"
-  oc_serviceaccount:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    name: jaeger-operator
-    namespace: "{{ namespace }}"
-
-- name: "create jaeger operator role"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    namespace: "{{ namespace }}"
-    kind: role
-    name: jaeger-operator
-    files:
-      - "{{ resources_dir }}/{{ jaeger_operator_role_template }}"
-
-- name: "create jaeger operator role binding"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    namespace: "{{ namespace }}"
-    kind: rolebinding
-    name: jaeger-operator
-    files:
-      - "{{ resources_dir }}/{{ jaeger_operator_rolebinding_template }}"
-      
-- name: "copy jaeger operator template"
-  template:
-    src: "{{ resources_dir }}/{{ jaeger_operator_template }}"
-    dest: "{{ work_dir }}/{{ jaeger_operator_template }}"
-
-- name: "deploy jaeger operator"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: deployment
-    name: jaeger-operator
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ work_dir }}/{{ jaeger_operator_template }}"
-
-- name: "wait until operator is deployed"
-  shell: "{{ openshift_cli }} get deployment jaeger-operator -o template --template={{ json_template }} -n {{ namespace }}"
+- name: "deploy jaeger operator in {{ jaeger_operator_subscription_namespace }}"
+  import_role:
+    name: operator_olm
   vars:
-    json_template: '\{\{.status.readyReplicas\}\}'
-  register: result
-  until: result.stdout == "1"
+    operator_name: jaeger-product
+    packagemanifest: "{{ jaeger_operator_packagemanifest }}"
+    subscription_channel: "{{ jaeger_operator_subscription_channel }}"
+    subscription_namespace: "{{ jaeger_operator_subscription_namespace }}"
+    subscription_name: "{{ jaeger_operator_subscription_name }}"
+    automatic_installplan_approval: "{{ jaeger_operator_subscription_automatic_installplan_approval }}"
+    subscription_starting_csv: "{{ jaeger_operator_subscription_starting_csv }}"
+    csv_prefix: "{{ jaeger_operator_csv_prefix }}"
+
+- name: "wait until jaeger operator is active"
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    kind: Deployment
+    name: "{{ jaeger_operator_deployment_name }}"
+    namespace: "{{ jaeger_operator_subscription_namespace }}"
+  register: r_jaeger_operator_deployment
   retries: 30
   delay: 10
   changed_when: false
+  until:
+    - r_jaeger_operator_deployment.ansible_module_results.results[0].status.readyReplicas is defined
+    - r_jaeger_operator_deployment.ansible_module_results.results[0].status.replicas is defined
+    - >-
+      r_jaeger_operator_deployment.ansible_module_results.results[0].status.readyReplicas ==
+      r_jaeger_operator_deployment.ansible_module_results.results[0].status.replicas
 
 - name: "copy jaeger custom resource template"
   template:

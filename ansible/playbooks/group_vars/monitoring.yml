@@ -1,6 +1,6 @@
 ---
 
-namespace_monitoring: "{{ project_admin }}-{{ metrics_project_name }}"
+namespace_monitoring: "{{ project_admin }}-{{ monitoring_project_name }}"
 
 monitoring_label_value: "{{ project_admin }}-er-monitoring"
 
