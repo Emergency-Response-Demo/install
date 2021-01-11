@@ -15,16 +15,16 @@
     - set_fact:
         namespace: "{{ namespace_services }}"
         resources_dir: "{{ resources_base_dir }}/incident-service"
-        work_dir_name: incident-service
+        work_dir_name: incident-services
     - include_role:
-        name: ../roles/openshift_incident_service
+        name: ../roles/incident_service
       when: >
         ACTION is not defined or
         ACTION is none or
         ACTION|trim() == "" or
         ACTION|trim() == "install"
     - include_role:
-        name: ../roles/openshift_incident_service
+        name: ../roles/incident_service
         tasks_from: uninstall
       when: >
         ACTION is defined and

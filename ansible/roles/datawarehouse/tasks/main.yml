@@ -1,0 +1,120 @@
+---
+
+
+#####       PostgreSQL for Datawarehouse        ########
+- name: create {{ postgresql_service_account }} service account
+  oc_serviceaccount:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ postgresql_service_account }}"
+    namespace: "{{ namespace }}"
+
+- name: create work directory
+  file:
+    path: "{{ work_dir }}/{{ postgresql_init_configmap }}"
+    state: directory
+
+- name: copy init files to work directory
+  copy:
+    src: "{{ item }}"
+    dest: "{{ work_dir }}/{{ postgresql_init_configmap }}/"
+  with_fileglob:
+    - "{{ resources_dir }}/sql/*.sh"
+
+- name: download sql scripts from remote repository
+  get_url:
+    url: "{{ item }}"
+    dest: "{{ work_dir }}/{{ postgresql_init_configmap }}/"
+  with_items:
+     - "{{ dw_postgresql_init_scripts }}"
+
+- name: create {{ postgresql_init_configmap }} configmap
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ postgresql_init_configmap }}"
+    namespace: "{{ namespace }}"
+    from_file:
+      dir: "{{ work_dir }}/{{ postgresql_init_configmap }}"
+
+- name: copy postgresql template
+  template:
+    src: "{{ postgresql_template }}"
+    dest: "{{ work_dir }}/postgresql.yml"
+
+- name: postgresql secret
+  oc_secret:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    namespace: "{{ namespace }}"
+    name: "{{ dw_postgresql_credentials_secret }}"
+    type: generic
+    from_literal:
+      database-user: "{{ dw_postgresql_username }}"
+      database-password: "{{ dw_postgresql_password }}"
+      database-name: "{{ dw_postgresql_database }}"
+
+- name: "check if {{ dw_postgresql_application_name }} is deployed"
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ dw_postgresql_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: dc
+  register: result
+
+- name: "deploy {{ dw_postgresql_application_name }}"
+  oc_list:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/postgresql.yml"
+  when: result.ansible_module_results.stderr is defined and result.ansible_module_results.stderr != ""
+
+- name: "wait until {{ dw_postgresql_application_name }} database is up and running"
+  shell: "{{ openshift_cli }} get dc {{ dw_postgresql_application_name }} -o template --template={{ json_template }} -n {{ namespace }}"
+  vars:
+    json_template: '\{\{.status.readyReplicas\}\}'
+  register: result
+  until: result.stdout == "1"
+  retries: 10
+  delay: 30
+  changed_when: false
+########################################################
+
+######       Datawarehouse Warehouse Service        ########
+- name: create {{ dw_application_name }} service account
+  oc_serviceaccount:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ dw_application_name }}"
+    namespace: "{{ namespace }}"
+
+- name: give cluster view privileges to {{ dw_application_name }} service account
+  oc_adm_policy_user:
+    state: present
+    oc_binary: "{{ openshift_cli }}"
+    resource_kind: role
+    resource_name: view
+    user: "system:serviceaccount:{{ namespace }}:{{ dw_application_name }}"
+    namespace: "{{ namespace }}"
+    rolebinding_name: "{{ dw_application_name }}-view"
+
+- name: "copy {{ application_properties }} template"
+  template:
+    src: "{{ application_properties_resource }}"
+    dest: "{{ work_dir }}/{{ application_properties }}"
+
+- name: "create {{ cm_name }} configmap"
+  oc_configmap:
+    oc_binary: "{{ openshift_cli }}"
+    state: present
+    name: "{{ cm_name }}"
+    namespace: "{{ namespace }}"
+    from_file:
+      dir: "{{ work_dir }}/{{ application_properties }}"
+
+- import_tasks: deploy_from_image.yml
+
+########################################################

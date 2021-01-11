@@ -1,7 +1,13 @@
 ---
 
-jaeger_crd_template: jaeger-crd.yml
-jaeger_operator_role_template: jaeger-operator-role.yml
-jaeger_operator_rolebinding_template: jaeger-operator-rolebinding.yml
-jaeger_operator_template: jaeger-operator.yml
+jaeger_operator_packagemanifest: jaeger-product
+
+jaeger_operator_subscription_starting_csv: ""
+jaeger_operator_subscription_automatic_installplan_approval: false
+jaeger_operator_subscription_channel: stable
+jaeger_operator_subscription_name: jaeger-product
+jaeger_operator_subscription_namespace: openshift-operators
+jaeger_operator_csv_prefix: jaeger-operator
+jaeger_operator_deployment_name: jaeger-operator
+
 jaeger_cr_template: jaeger-cr.yml

@@ -1,0 +1,33 @@
+---
+
+application_name: "{{ incident_priority_service_application_name }}"
+
+service_account: incident-priority-service
+
+resources_limits_cpu: 500m
+resources_limits_memory: 500Mi
+resources_requests_cpu: 200m
+resources_requests_memory: 200Mi
+
+application_configmap: "{{ incident_priority_service_application_configmap }}"
+logging_configmap: incident-priority-service-logging
+sso_configmap: sso-config
+
+application_properties: application-config.yaml
+
+image_imagestream_name: "{{ application_name }}"
+image_imagestream_template: incident-priority-service-image-is.yml
+
+application_template: incident-priority-service.yml
+
+kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
+kafka_bootstrap_port: 9092
+kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
+kafka_groupid: incident-priority
+
+kafka_incident_assignment_event_topic: topic-incident-event
+
+logging_style: dev
+
+prometheus_endpoint_path: "/metrics"
+prometheus_endpoint_port: 8080

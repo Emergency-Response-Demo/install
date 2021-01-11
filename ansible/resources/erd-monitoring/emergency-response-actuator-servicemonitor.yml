@@ -3,13 +3,16 @@ kind: ServiceMonitor
 metadata:
   labels:
     k8s-app: prometheus
-    monitoring-key: "{{ application_monitoring_label_value }}"
+    monitoring-key: "{{ monitoring_label_value }}"
   name: emergency-response-services-actuator
 spec:
   endpoints:
     - interval: 5s
       path: /actuator/prometheus
       port: http
+  namespaceSelector:
+    matchNames:
+      - '{{ namespace }}'
   selector:
     matchLabels:
       monitoring: prometheus-actuator

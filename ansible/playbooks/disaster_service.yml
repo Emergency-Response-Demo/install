@@ -16,14 +16,14 @@
         resources_dir: "{{ resources_base_dir }}/disaster-service"
         work_dir_name: disaster-service
     - include_role:
-        name: ../roles/openshift_disaster_service
+        name: ../roles/disaster_service
       when: >
         ACTION is not defined or
         ACTION is none or
         ACTION|trim() == "" or
         ACTION|trim() == "install"
     - include_role:
-        name: ../roles/openshift_disaster_service
+        name: ../roles/disaster_service
         tasks_from: uninstall
       when: >
         ACTION is defined and

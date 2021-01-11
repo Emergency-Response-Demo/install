@@ -1,9 +1,7 @@
 ---
 
-namespace_strimzi_operator: "{{ project_admin }}-{{ project_name }}"
+namespace_amq_streams_operator: "{{ project_admin }}-{{ project_name }}"
 namespace_kafka_cluster: "{{ project_admin }}-{{ project_name }}"
-
-strimzi_cluster_operator: strimzi-cluster-operator
 
 kafka_cluster: kafka-cluster
 

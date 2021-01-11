@@ -18,14 +18,14 @@
         resources_dir: "{{ resources_base_dir }}/emergency-console"
         work_dir_name: emergency-console
     - include_role:
-        name: ../roles/openshift_emergency_console
+        name: ../roles/emergency_console
       when: >
         ACTION is not defined or
         ACTION is none or
         ACTION|trim() == "" or
         ACTION|trim() == "install"
     - include_role:
-        name: ../roles/openshift_emergency_console
+        name: ../roles/emergency_console
         tasks_from: uninstall
       when: >
         ACTION is defined and

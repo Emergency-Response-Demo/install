@@ -1,5 +1,7 @@
 ---
 
-namespace_monitoring: "{{ project_admin }}-{{ metrics_project_name }}"
+namespace_monitoring: "{{ project_admin }}-{{ monitoring_project_name }}"
 
-application_monitoring_label_value: "{{ project_admin }}-application-monitoring"
+monitoring_label_value: "{{ project_admin }}-er-monitoring"
+
+prometheus_serviceaccount_name: prometheus-service-account

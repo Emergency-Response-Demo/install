@@ -1,0 +1,29 @@
+---
+
+application_name: "{{ disaster_service_application_name }}"
+
+service_account: disaster-service
+
+resources_limits_cpu: 500m
+resources_limits_memory: 500Mi
+resources_requests_cpu: 200m
+resources_requests_memory: 200Mi
+
+application_configmap: "{{ disaster_service_application_configmap }}"
+logging_configmap: disaster-service-logging
+sso_configmap: sso-config
+
+application_properties: application-config.yaml
+
+image_imagestream_name: "{{ application_name }}"
+image_imagestream_template: disaster-service-image-is.yml
+
+application_template: disaster-service.yml
+
+datagrid_service: "{{ datagrid_application_name }}.{{ namespace_datagrid }}.svc"
+datagrid_port: 11222
+
+logging_style: dev
+
+prometheus_endpoint_path: "/metrics"
+prometheus_endpoint_port: 8080

@@ -1,0 +1,59 @@
+---
+
+- name: remove deployment config
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ application_name }}"
+    namespace: "{{ namespace }}"
+    kind: dc
+
+- name: remove service
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ application_name }}"
+    namespace: "{{ namespace }}"
+    kind: service
+
+- name: delete imagestream from the {{ namespace }} project
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ application_name }}"
+    namespace: "{{ namespace }}"
+    kind: imagestream
+
+- name: remove application configmap
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ application_configmap }}"
+    namespace: "{{ namespace }}"
+    kind: configmap
+
+- name: remove logging configmap
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ logging_configmap }}"
+    namespace: "{{ namespace }}"
+    kind: configmap
+
+- name: remove service account
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ service_account }}"
+    namespace: "{{ namespace }}"
+    kind: serviceaccount
+
+- name: remove rolebinding
+  oc_obj:
+    oc_binary: "{{ openshift_cli }}"
+    state: absent
+    name: "{{ service_account }}-view"
+    namespace: "{{ namespace }}"
+    kind: rolebinding
+
+- include_tasks: remove_postgresql.yml

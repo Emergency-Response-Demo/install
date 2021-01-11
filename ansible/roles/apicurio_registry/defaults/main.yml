@@ -1,21 +1,12 @@
 ---
 
-application_name: apicurio-registry
+apicurio_registry_operator_packagemanifest: apicurio-registry
 
-service_account: apicurio-registry-operator
-
-apicurio_registry_operator_role_template: operator-role.yml
-
-apicurio_registry_operator_rolebinding_template: operator-rolebinding.yml
-
-apicurio_registry_operator_crd_template: apicurio-registry-crd.yml
-
-apicurio_registry_operator_deployment: apicurio-registry-operator
-apicurio_registry_operator_template: apicurio-registry-operator.yml
-
-apicurio_registry_operator_image: apicurio/apicurio-registry-operator:0.0.3
-
-apicurio_registry_kafka_streams_image: docker.io/apicurio/apicurio-registry-streams:1.2.2.Final
+apicurio_registry_operator_subscription_starting_csv: ""
+apicurio_registry_operator_subscription_automatic_installplan_approval: false
+apicurio_registry_operator_subscription_name: apicurio-registry
+apicurio_registry_operator_csv_prefix: apicurio-registry
+apicurio_registry_operator_deployment_name: apicurio-registry-operator
 
 apicurio_registry_kafka_topic_template: kafka-topic.yml
 apicurio_registry_kafka_topic_name_globalid: global-id-topic

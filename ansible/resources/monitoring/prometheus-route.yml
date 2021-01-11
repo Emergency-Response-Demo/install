@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ prometheus_route_name }}
+spec:
+  port:
+    targetPort: web
+  tls:
+    termination: Reencrypt
+  to:
+    kind: Service
+    name: {{ prometheus_service_name }}
+  wildcardPolicy: None

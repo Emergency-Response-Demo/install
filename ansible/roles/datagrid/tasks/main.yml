@@ -1,0 +1,106 @@
+---
+
+- name: "create operatorgroup in {{ namespace }}"
+  import_role:
+    name: operatorgroup
+  vars:
+    operatorgroup_namespace: "{{ namespace }}"
+    operatorgroup_target_namespace: "{{ namespace }}"
+
+- name: "deploy datagrid operator in {{ namespace }}"
+  import_role:
+    name: operator_olm
+  vars:
+    operator_name: datagrid-operator
+    packagemanifest: "{{ datagrid_operator_packagemanifest }}"
+    subscription_channel: "{{ datagrid_operator_subscription_channel }}"
+    subscription_namespace: "{{ namespace }}"
+    subscription_name: "{{ datagrid_operator_subscription_name }}"
+    automatic_installplan_approval: "{{ datagrid_operator_subscription_automatic_installplan_approval }}"
+    subscription_starting_csv: "{{ datagrid_operator_subscription_starting_csv  }}"
+    csv_prefix: "{{ datagrid_operator_csv_prefix }}"
+
+- name: "wait until datagrid operator is active"
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    kind: Deployment
+    name: "{{ datagrid_operator_deployment_name }}"
+    namespace: "{{ namespace }}"
+  register: r_datagrid_operator_deployment
+  retries: 30
+  delay: 10
+  changed_when: false
+  until:
+    - r_datagrid_operator_deployment.ansible_module_results.results[0].status.readyReplicas is defined
+    - r_datagrid_operator_deployment.ansible_module_results.results[0].status.replicas is defined
+    - >-
+      r_datagrid_operator_deployment.ansible_module_results.results[0].status.readyReplicas ==
+      r_datagrid_operator_deployment.ansible_module_results.results[0].status.replicas
+
+# deploy datagrid
+- name: "check if datagrid is deployed"
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ datagrid_application_name }}"
+    namespace: "{{ namespace }}"
+    kind: infinispan
+  register: r_resource_status
+
+- name: "set status of infinispan custom resource"
+  set_fact:
+    register_infinispan: "{{ r_resource_status.ansible_module_results.results[0].status.conditions[0].status }}" 
+  when: r_resource_status.ansible_module_results.results[0].status is defined
+
+- block:
+
+  # set infinispan user credentials
+  - name: "copy {{ resources_dir }}/connect_secret.yml"
+    template:
+      src: "{{ resources_dir }}/connect_secret.yml"
+      dest: "{{ work_dir }}/connect_secret.yml"
+
+  - name: "create infinispan secret"
+    oc_obj:
+      state: present
+      oc_binary: "{{ openshift_cli }}"
+      name: "{{ datagrid_connect_secret }}"
+      namespace: "{{ namespace }}"
+      kind: secret
+      files:
+        - "{{ work_dir }}/connect_secret.yml"
+
+  - name: "copy {{ resources_dir }}/datagrid_cr.yml "
+    template:
+      src: "{{ resources_dir }}/datagrid_cr.yml"
+      dest: "{{ work_dir }}/datagrid-cr.yml"
+
+  - name: "create infinispan custom resource"
+    oc_obj:
+      state: present
+      oc_binary: "{{ openshift_cli }}"
+      name: "{{ datagrid_application_name }}"
+      namespace: "{{ namespace }}"
+      kind: infinispan
+      files:
+        - "{{ work_dir }}/datagrid-cr.yml"
+
+  - name: "wait until infinispan statefulset has started, replicas = {{ number_of_replicas }}"
+    oc_obj:
+      state: list
+      oc_binary: "{{ openshift_cli }}"
+      kind: statefulset
+      name: "{{ datagrid_application_name }}"
+      namespace: "{{ namespace }}"
+    register: r_datagrid_statefulset
+    retries: 30
+    delay: 10
+    until:
+      - r_datagrid_statefulset.ansible_module_results.results[0].status is defined
+      - r_datagrid_statefulset.ansible_module_results.results[0].status.currentReplicas == number_of_replicas
+
+  when: >
+    register_infinispan is not defined or
+    register_infinispan is none or
+    register_infinispan != true

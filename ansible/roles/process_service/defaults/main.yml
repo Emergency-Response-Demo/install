@@ -1,0 +1,75 @@
+---
+
+application_name: "{{ process_service_application_name }}"
+
+application_configmap: "{{ process_service_application_configmap }}"
+logging_configmap: process-service-logging
+
+resources_limits_cpu: 1000m
+resources_limits_memory: 1Gi
+resources_requests_cpu: 250m
+resources_requests_memory: 500Mi
+
+kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
+kafka_bootstrap_port: 9092
+kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
+kafka_groupid: process-service
+kafka_consumer_concurrency: 5
+
+kafka_incident_reported_event_topic: topic-incident-event
+kafka_create_mission_command_topic: topic-mission-command
+kafka_mission_event_topic: topic-mission-event
+kafka_update_responder_command_topic: topic-responder-command
+kafka_responder_updated_event_topic: topic-responder-event
+kafka_update_incident_command_topic: topic-incident-command
+kafka_incident_assignment_event_topic: topic-incident-event
+
+process_service_postgresql_template: postgresql.yml
+process_service_postgresql_init_configmap: "{{ process_service_postgresql_service_name }}-init"
+process_service_postgresql_max_connections: 100
+process_service_postgresql_max_prepared_transactions: 100
+process_service_postgresql_resources_requests_cpu: 100m
+process_service_postgresql_resources_requests_memory: 256Mi
+process_service_postgresql_resources_limits_cpu: 500m
+process_service_postgresql_resources_limits_memory: 512Mi
+process_service_postgresql_volume_capacity: 5Gi
+process_service_postgresql_imagestream_tag: '10-el8'
+process_service_postgresql_imagestream: postgresql
+process_service_postgresql_imagestream_namespace: openshift
+
+process_service_postgresql_storage_type: persistent
+
+process_service_postgresql_host: "{{ process_service_postgresql_service_name }}"
+
+narayana_dbcp_max_total: 20
+
+quartz_configuration: "/app/config/jbpm-quartz.properties"
+quartz_datasource_dbcp_max_total: 20
+quartz_clustered: true
+
+logging_style: dev
+
+service_account: process-service
+
+image_imagestream_name: "{{ application_name }}"
+image_imagestream_template: process-service-image-is.yml
+
+application_template: process-service.yml
+
+incident_process_assignment_delay: PT20S
+
+responder_service_scheme: http
+responder_service_url: "{{ responder_service_application_name }}.{{ namespace }}.svc:8080"
+responder_service_available_responders_path: /responders/available
+responder_service_available_responders_limit: 100
+
+incident_priority_service_scheme: http
+incident_priority_service_url: "{{ incident_priority_service_application_name }}.{{ namespace }}.svc:8080"
+incident_priority_service_incident_priority_path: "/priority/{incidentId}"
+
+disaster_service_scheme: http
+disaster_service_url: "{{ disaster_service_application_name }}.{{ namespace }}.svc:8080"
+disaster_service_shelters_path: "/shelters"
+
+prometheus_endpoint_path: "/actuator/prometheus"
+prometheus_endpoint_port: 8080

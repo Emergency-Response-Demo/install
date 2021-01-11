@@ -86,7 +86,7 @@
     "--reporter.grpc.tls.server-name=jaeger-collector-headless.{{ namespace_monitoring }}.svc.cluster.local"]}}, 
     {"op": "add", "path": "/spec/template/spec/volumes/1", "value": {"name": "jaeger-service-ca", 
     "configMap": {"name": "jaeger-service-ca", "items": [{"key": "service-ca.crt", "path": "service-ca.crt"}], "defaultMode": 420}} }, 
-    {"op": "replace", "path": "/spec/triggers/1/imageChangeParams/from/name", "value": "{{ incident_service_application_name }}:{{ incident_service_quarkus_tracing_image_tag }}"}]' 
+    {"op": "replace", "path": "/spec/triggers/1/imageChangeParams/from/name", "value": "{{ incident_service_application_name }}:{{ incident_service_tracing_image_tag }}"}]' 
     -n {{ namespace_services }}
   when: r_incident_service_dc_labels_tracing[0] != "true"
 
@@ -154,7 +154,7 @@
     "--reporter.grpc.tls.server-name=jaeger-collector-headless.{{ namespace_monitoring }}.svc.cluster.local"]}}, 
     {"op": "add", "path": "/spec/template/spec/volumes/1", "value": {"name": "jaeger-service-ca", 
     "configMap": {"name": "jaeger-service-ca", "items": [{"key": "service-ca.crt", "path": "service-ca.crt"}], "defaultMode": 420}} }, 
-    {"op": "replace", "path": "/spec/triggers/1/imageChangeParams/from/name", "value": "{{ responder_service_application_name }}:{{ responder_service_quarkus_tracing_image_tag }}"}]' 
+    {"op": "replace", "path": "/spec/triggers/1/imageChangeParams/from/name", "value": "{{ responder_service_application_name }}:{{ responder_service_tracing_image_tag }}"}]' 
     -n {{ namespace_services }}
   when: r_responder_service_dc_labels_tracing[0] != "true"
 
@@ -222,7 +222,7 @@
     "--reporter.grpc.tls.server-name=jaeger-collector-headless.{{ namespace_monitoring }}.svc.cluster.local"]}}, 
     {"op": "add", "path": "/spec/template/spec/volumes/1", "value": {"name": "jaeger-service-ca", 
     "configMap": {"name": "jaeger-service-ca", "items": [{"key": "service-ca.crt", "path": "service-ca.crt"}], "defaultMode": 420}} }, 
-    {"op": "replace", "path": "/spec/triggers/1/imageChangeParams/from/name", "value": "{{ mission_service_application_name }}:{{ mission_service_quarkus_tracing_image_tag }}"}]' 
+    {"op": "replace", "path": "/spec/triggers/1/imageChangeParams/from/name", "value": "{{ mission_service_application_name }}:{{ mission_service_tracing_image_tag }}"}]' 
     -n {{ namespace_services }}
   when: r_mission_service_dc_labels_tracing[0] != "true"
 

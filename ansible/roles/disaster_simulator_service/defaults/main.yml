@@ -1,0 +1,22 @@
+---
+
+application_name: "{{ disaster_simulator_service_application_name }}"
+
+service_account: disaster-simulator-service
+
+resources_limits_cpu: 200m
+resources_limits_memory: 512Mi
+resources_requests_cpu: 100m
+resources_requests_memory: 256Mi
+
+application_configmap: disaster-simulator
+application_configmap_key: app-config.properties
+lnames_configmap_key: LNames.txt
+fnames_configmap_key: FNames.txt
+
+image_imagestream_name: "{{ application_name }}"
+image_imagestream_template: disaster-simulator-service-image-is.yml
+
+application_template: disaster-simulator-service.yml
+
+logging_style: dev

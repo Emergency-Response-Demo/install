@@ -1,65 +1,42 @@
 ---
 
-- name: "create {{ service_account }} service account"
-  oc_serviceaccount:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    name: "{{ service_account }}"
-    namespace: "{{ namespace }}"
-
-- name: create role for apicurio registry operator
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: role
-    name: apicurio-registry-operator
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ resources_dir }}/{{ apicurio_registry_operator_role_template }}"
-
-- name: create rolebinding for apicurio registry operator
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: rolebinding
-    namespace: "{{ namespace }}"
-    name: apicurio-registry-operator
-    files:
-      - "{{ resources_dir }}/{{ apicurio_registry_operator_rolebinding_template }}"
-
-- name: create apicurio registry crd
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: CustomResourceDefinition
-    namespace: "{{ namespace }}"
-    name: apicurioregistries.apicur.io
-    files:
-      - "{{ resources_dir }}/{{ apicurio_registry_operator_crd_template }}"
-
-- name: copy apicurio registry depoyment template
-  template:
-    src: "{{ resources_dir }}/{{ apicurio_registry_operator_template }}"
-    dest: "{{ work_dir }}/{{ apicurio_registry_operator_template }}"
-
-- name: create apicurio operator deployment
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: present
-    kind: deployment
-    name: "{{ apicurio_registry_operator_deployment }}"
-    namespace: "{{ namespace }}"
-    files:
-      - "{{ work_dir }}/{{ apicurio_registry_operator_template }}"
-
-- name: wait until apicurio registry operator is active
-  shell: "{{ openshift_cli }} get deployment {{ apicurio_registry_operator_deployment }} -o template --template={{ json_template }} -n {{ namespace }}"
+- name: "create operatorgroup in {{ namespace }}"
+  import_role:
+    name: operatorgroup
   vars:
-    json_template: '\{\{.status.readyReplicas\}\}'
-  register: result
-  until: result.stdout == "1"
+    operatorgroup_namespace: "{{ namespace }}"
+    operatorgroup_target_namespace: "{{ namespace }}"
+
+- name: "deploy apicurio registry operator in {{ namespace }}"
+  import_role:
+    name: operator_olm
+  vars:
+    operator_name: apicurio-registry
+    packagemanifest: "{{ apicurio_registry_operator_packagemanifest }}"
+    subscription_channel: ""
+    subscription_namespace: "{{ namespace }}"
+    subscription_name: "{{ apicurio_registry_operator_subscription_name }}"
+    automatic_installplan_approval: "{{ apicurio_registry_operator_subscription_automatic_installplan_approval }}"
+    subscription_starting_csv: "{{ apicurio_registry_operator_subscription_starting_csv }}"
+    csv_prefix: "{{ apicurio_registry_operator_csv_prefix }}"
+
+- name: "wait until apicurio registry operator is active"
+  oc_obj:
+    state: list
+    oc_binary: "{{ openshift_cli }}"
+    kind: Deployment
+    name: "{{ apicurio_registry_operator_deployment_name }}"
+    namespace: "{{ namespace }}"
+  register: r_apicurio_registry_operator_deployment
   retries: 30
   delay: 10
+  changed_when: false
+  until:
+    - r_apicurio_registry_operator_deployment.ansible_module_results.results[0].status.readyReplicas is defined
+    - r_apicurio_registry_operator_deployment.ansible_module_results.results[0].status.replicas is defined
+    - >-
+      r_apicurio_registry_operator_deployment.ansible_module_results.results[0].status.readyReplicas ==
+      r_apicurio_registry_operator_deployment.ansible_module_results.results[0].status.replicas
 
 - name: copy apicurio kafka topic templates
   template:

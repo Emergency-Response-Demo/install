@@ -2,9 +2,6 @@
 # MapBox API token, see https://docs.mapbox.com/help/how-mapbox-works/access-tokens/
 map_token=replaceme
 
-# valid choices: image, source
-deploy_from=image
-
 # If set to True, then every user that creates an account in Emergency Response demo will automatically be a "realm-admin"
 set_realm_admin_as_default=false
 
@@ -18,17 +15,11 @@ install_tools=true
 emergency_response_theme_extension=https://github.com/Emergency-Response-Demo/emergency-sso/releases/download/v1.0.0/emergency-sso-theme-1.0.0.jar
 
 # images
-incident_service_image=quay.io/emergencyresponsedemo/incident-service
-incident_service_image_tag=2.4
+incident_service_image=quay.io/btison/erdemo-incident-service-quarkus
+incident_service_image_tag=6bd25b3
 
-incident_service_quarkus_image=quay.io/btison/erdemo-incident-service-quarkus
-incident_service_quarkus_image_tag=6bd25b3
-
-responder_service_image=quay.io/emergencyresponsedemo/responder-service
-responder_service_image_tag=2.4
-
-responder_service_quarkus_image=quay.io/btison/erdemo-responder-service-quarkus
-responder_service_quarkus_image_tag=90d9467
+responder_service_image=quay.io/btison/erdemo-responder-service-quarkus
+responder_service_image_tag=90d9467
 
 process_viewer_image=quay.io/emergencyresponsedemo/process-viewer
 process_viewer_image_tag=2.7
@@ -40,25 +31,16 @@ process_service_image=quay.io/emergencyresponsedemo/process-service
 process_service_image_tag=2.4
 
 disaster_simulator_service_image=quay.io/emergencyresponsedemo/disaster-simulator
-disaster_simulator_service_image_tag=2.7
+disaster_simulator_service_image_tag=f1dbe66
 
-mission_service_image=quay.io/emergencyresponsedemo/mission-service
-mission_service_image_tag=1cafabd
+mission_service_image=quay.io/btison/erdemo-mission-service-quarkus
+mission_service_image_tag=1c4e22b
 
-mission_service_quarkus_image=quay.io/btison/erdemo-mission-service-quarkus
-mission_service_quarkus_image_tag=3efc25e
-
-responder_simulator_image=quay.io/emergencyresponsedemo/responder-simulator
-responder_simulator_image_tag=2.4
-
-responder_simulator_quarkus_image=quay.io/btison/erdemo-responder-simulator-quarkus
-responder_simulator_quarkus_image_tag=599c564
+responder_simulator_image=quay.io/btison/erdemo-responder-simulator-quarkus
+responder_simulator_image_tag=79fdf95
 
 emergency_console_image=quay.io/emergencyresponsedemo/emergency-console
 emergency_console_image_tag=4202a31
-
-responder_client_app_image=quay.io/emergencyresponsedemo/responder-client-app
-responder_client_app_image_tag=2.4
 
 disaster_service_image=quay.io/emergencyresponsedemo/disaster-service
 disaster_service_image_tag=2.7
@@ -78,53 +60,4 @@ incident_aggregation_service_image_tag=latest
 incident_finder_service_image=quay.io/btison/erdemo-incident-finder-service
 incident_finder_service_image_tag=latest
 
-kafka_connect_image=quay.io/btison/strimzi-debezium-postgresql:1.4.0-1.1.2.Final
-
-# source repos
-incident_service_git_repo=https://github.com/Emergency-Response-Demo/incident-service.git
-incident_service_git_branch=master
-
-responder_simulator_service_git_repo=https://github.com/Emergency-Response-Demo/responder-simulator.git
-responder_simulator_service_git_branch=master
-
-responder_service_git_repo=https://github.com/Emergency-Response-Demo/responder-service.git
-responder_service_git_branch=master
-
-incident_process_git_repo=https://github.com/Emergency-Response-Demo/incident-process-kjar.git
-incident_process_git_branch=master
-
-assignment_rules_git_repo=https://github.com/Emergency-Response-Demo/cajun-navy-rules.git
-assignment_rules_git_branch=master
-
-assignment_rules_model_git_repo=https://github.com/Emergency-Response-Demo/cajun-navy-rules-model.git
-assignment_rules_model_git_branch=master
-
-process_service_git_repo=https://github.com/Emergency-Response-Demo/process-service.git
-process_service_git_branch=master
-
-mission_service_git_repo=https://github.com/Emergency-Response-Demo/mission-service.git
-mission_service_git_branch=master
-
-emergency_console_git_repo=https://github.com/Emergency-Response-Demo/emergency-console.git
-emergency_console_git_branch=master
-
-process_viewer_git_repo=https://github.com/Emergency-Response-Demo/process-viewer.git
-process_viewer_git_branch=master
-
-incident_priority_service_git_repo=https://github.com/Emergency-Response-Demo/incident-priority-service.git
-incident_priority_service_git_branch=master
-
-disaster_simulator_service_git_repo=https://github.com/Emergency-Response-Demo/disaster-simulator.git
-disaster_simulator_service_git_branch=master
-
-responder_client_app_git_repo=https://github.com/Emergency-Response-Demo/mobile-app.git
-responder_client_app_git_branch=master
-
-disaster_service_git_repo=https://github.com/Emergency-Response-Demo/disaster-service.git
-disaster_service_git_branch=master
-
-datawarehouse_service_git_repo=https://github.com/Emergency-Response-Demo/datawarehouse.git
-datawarehouse_service_git_branch=master
-
-incident_service_quarkus_git_repo=https://github.com/Emergency-Response-Demo/incident-service-quarkus.git
-incident_service_quarkus_git_branch=master
+kafka_connect_image=quay.io/emergencyresponsedemo/strimzi-debezium-postgresql:1.6.0-1.3.1.Final

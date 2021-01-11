@@ -1,0 +1,30 @@
+---
+
+application_name: "{{ responder_service_application_name }}"
+
+service_account: responder-service
+
+expose_service: false
+
+resources_limits_cpu: 500m
+resources_limits_memory: 250Mi
+resources_requests_cpu: 100m
+resources_requests_memory: 200Mi
+
+application_configmap: responder-service
+
+application_properties: application.properties
+
+imagestream_name: "{{ application_name }}"
+image_imagestream_template: responder-service-image-is.yml
+
+application_template: responder-service.yml
+
+kafka_bootstrap_service: "{{ kafka_cluster }}-kafka-bootstrap.{{ namespace_kafka_cluster }}.svc"
+kafka_bootstrap_port: 9092
+kafka_bootstrap_address: "{{ kafka_bootstrap_service }}:{{ kafka_bootstrap_port }}"
+kafka_groupid: responder-service
+
+kafka_responder_command_topic: topic-responder-command
+kafka_responder_update_location_event_topic: topic-responder-location-update
+kafka_responder_event_topic: topic-responder-event

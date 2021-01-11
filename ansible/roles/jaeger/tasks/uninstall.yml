@@ -8,33 +8,14 @@
     name: jaeger
     namespace: "{{ namespace }}"
 
-- name: "remove jaeger operator"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    kind: deployment
-    name: jaeger-operator
-    namespace: "{{ namespace }}"
-
-- name: "remove jaeger operator role binding"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    namespace: "{{ namespace }}"
-    kind: rolebinding
-    name: jaeger-operator
-
-- name: "remove jaeger operator role"
-  oc_obj:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    namespace: "{{ namespace }}"
-    kind: role
-    name: jaeger-operator
-
-- name: "remove jaeger operator service account"
-  oc_serviceaccount:
-    oc_binary: "{{ openshift_cli }}"
-    state: absent
-    name: jaeger-operator
-    namespace: "{{ namespace }}"
+- name: "remove jaeger operator in {{ jaeger_operator_subscription_namespace }}"
+  import_role:
+    name: operator_olm
+    tasks_from: uninstall
+  vars:
+    operator_name: jaeger-product
+    subscription_namespace: "{{ jaeger_operator_subscription_namespace }}"
+    subscription_name: "{{ jaeger_operator_subscription_name }}"
+    csv_prefix: "{{ jaeger_operator_csv_prefix }}"
+  when: uninstall_cluster_resources|bool == true  
+    

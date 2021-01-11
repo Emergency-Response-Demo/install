@@ -9,10 +9,15 @@ resources_base_dir: "{{ home_dir }}/resources"
 openshift_cli: oc
 
 project_name: er-demo
-metrics_project_name: er-metrics
+monitoring_project_name: er-monitoring
 tools_project_name: er-tools
 
 monitoring_label: prometheus
 
 uninstall_delete_project: false
 uninstall_cluster_resources: false
+
+operatorgroup_name: er-demo-operators
+
+namespace_knativeserving: knative-serving
+namespace_knativeeventing: knative-eventing

@@ -32,21 +32,37 @@
 - name: scale down disaster service
   shell: "{{ openshift_cli }} scale --replicas=0 dc {{ disaster_service_application_name }} -n {{ namespace_services }}"
 
-# scale down datawarehouse
-- name: scale down datawarehouse
-  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ dw_application_name }} -n {{ namespace_services }}"
-
 # scale down process viewer
 - name: scale down process viewer
-  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ process_viewer_application_name }} -n {{ namespace_services }}"  
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ process_viewer_application_name }} -n {{ namespace_services }}"
+
+# scale down disaster service
+- name: scale down disaster service
+  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ disaster_service_application_name }} -n {{ namespace_services }}"
+
+# uninstall datawarehouse service
+- name: uninstall datawarehouse service
+  import_role:
+    name: datawarehouse
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/datawarehouse"
+    work_dir_name: datawarehouse
 
 # uninstall kafka
 - name: uninstall kafka topics
-  shell: "{{ openshift_cli }} get kafkatopic --no-headers -n {{ namespace_kafka_cluster }} | awk '{print $1}' | xargs -I VAR {{ openshift_cli }} delete kafkatopic VAR -n {{ namespace_kafka_cluster }}"
+  import_role:
+    name: kafka_topics
+    tasks_from: uninstall
+  vars:
+    namespace: "{{ namespace_kafka_cluster }}"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
+    work_dir_name: kafka-topics
 
 - name: uninstall kafka cluster
   import_role:
-    name: openshift_kafka_cluster
+    name: kafka_cluster
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
@@ -55,7 +71,7 @@
 # uninstall datagrid
 - name: uninstall datagrid
   import_role:
-    name: openshift_datagrid
+    name: datagrid
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_datagrid }}"
@@ -65,7 +81,7 @@
 # uninstall postgresql
 - name: uninstall postgresql
   import_role:
-    name: openshift_postgresql
+    name: postgresql
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_postgresql }}"
@@ -73,46 +89,36 @@
     work_dir_name: postgresql
 
 # uninstall postgresql process service
-- name: uninstall process service
+- name: uninstall process service postgresql
   import_role:
-    name: openshift_process_service
+    name: process_service
     tasks_from: remove_postgresql
   vars:
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/process-service"
     work_dir_name: process-service
 
-# Recreate the SSO Realm
-# - name: reset sso realm
-#   import_role:
-#     name: sso_realm
-#     tasks_from: reset
-#   vars:
-#     namespace: "{{ namespace_services }}"
-#     resources_dir: "{{ resources_base_dir }}/sso_realm"
-#     work_dir_name: sso-realm
-
 # install kafka
 - name: install kafka cluster
   import_role:
-    name: openshift_kafka_cluster
+    name: kafka_cluster
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
     work_dir_name: kafka-cluster
 
 - name: install kafka topics
   import_role:
-    name: openshift_kafka_topics
+    name: kafka_topics
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
-    resources_dir: "{{ resources_base_dir }}/strimzi"
+    resources_dir: "{{ resources_base_dir }}/amq-streams"
     work_dir_name: kafka-topics
 
 # install datagrid
 - name: install datagrid
   import_role:
-    name: openshift_datagrid
+    name: datagrid
   vars:
     namespace: "{{ namespace_datagrid }}"
     resources_dir: "{{ resources_base_dir }}/datagrid"
@@ -121,7 +127,7 @@
 # install postgresql
 - name: install postgresql
   import_role:
-    name: openshift_postgresql
+    name: postgresql
   vars:
     namespace: "{{ namespace_postgresql }}"
     resources_dir: "{{ resources_base_dir }}/postgresql"
@@ -130,12 +136,21 @@
 # install postgresql process service
 - name: install process service
   import_role:
-    name: openshift_process_service
+    name: process_service
     tasks_from: deploy_postgresql
   vars:
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/process-service"
     work_dir_name: process-service
+
+# install datawarehouse service
+- name: install datawarehouse service
+  import_role:
+    name: datawarehouse
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/datawarehouse"
+    work_dir_name: datawarehouse
 
 # scale up process service
 - name: scale up process service
@@ -158,7 +173,7 @@
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ incident_priority_service_application_name }} -n {{ namespace_services }}"
 
 # scale up responder simulator service
-- name: scale down responder simulator service
+- name: scale up responder simulator service
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ responder_simulator_service_application_name }} -n {{ namespace_services }}"
 
 # scale up emergency console
@@ -169,10 +184,10 @@
 - name: scale up disaster service
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ disaster_service_application_name }} -n {{ namespace_services }}"
 
-# scale up datawarehouse
-- name: scale up datawarehouse
-  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ dw_application_name }} -n {{ namespace_services }}"
-
 # scale up process viewer
 - name: scale up process viewer
-  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ process_viewer_application_name }} -n {{ namespace_services }}"  
+  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ process_viewer_application_name }} -n {{ namespace_services }}"
+
+# scale up disaster service
+- name: scale down disaster service
+  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ disaster_service_application_name }} -n {{ namespace_services }}"

@@ -10,8 +10,6 @@ spec:
     extraJvmOpts: "-XX:NativeMemoryTracking=summary"
     cpu: "{{ total_container_cpu }}"
     memory: {{ total_container_memory }}
-  expose:
-    type: Route
   service:
     type: Cache
   security:

@@ -1,0 +1,29 @@
+---
+
+
+postgresql_service_account: "{{ dw_postgresql_application_name }}"
+
+postgresql_template: "{{ resources_dir }}/postgresql.yml"
+postgresql_init_configmap: "{{ dw_postgresql_application_name }}-init"
+postgresql_pv_capacity: 5Gi
+postgresql_version: 12-el8
+postgresql_is_namespace: openshift
+postgresql_max_connections: 100
+postgresql_max_prepared_transactions: 100
+postgresql_memory_limit: 512Mi
+postgresql_cpu_limit: 500m
+postgresql_memory_request: 256Mi
+postgresql_cpu_request: 100m
+
+dw_postgresql_init_scripts:
+  - https://raw.githubusercontent.com/Emergency-Response-Demo/sql-scripts/master/dw_database_ddl.sql
+
+dw_postgresql_credentials_secret: "{{ dw_postgresql_application_name }}-credentials"
+
+application_name: "{{ dw_application_name }}"
+cm_name: datawarehouse
+application_properties: application.properties
+application_properties_resource: "{{ resources_dir }}/{{ application_properties }}"
+
+binary_imagestream_template: datawarehouse-imagestream.yml
+application_template: datawarehouse-service.yml
