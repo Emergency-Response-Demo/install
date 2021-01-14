@@ -15,7 +15,7 @@ install_monitoring=true
 install_tools=true
 
 # SSO theme extension
-emergency_response_theme_extension=https://github.com/Emergency-Response-Demo/emergency-sso/releases/download/v1.0.0/emergency-sso-theme-1.0.0.jar
+emergency_response_theme_extension=https://github.com/Emergency-Response-Demo/emergency-sso/releases/download/v1.1.0/emergency-sso-theme-1.1.0.jar
 
 # images
 incident_service_image=quay.io/emergencyresponsedemo/incident-service
