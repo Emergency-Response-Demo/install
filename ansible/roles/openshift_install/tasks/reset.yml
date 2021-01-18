@@ -143,15 +143,6 @@
     resources_dir: "{{ resources_base_dir }}/process-service"
     work_dir_name: process-service
 
-# install datawarehouse service
-- name: install datawarehouse service
-  import_role:
-    name: datawarehouse
-  vars:
-    namespace: "{{ namespace_services }}"
-    resources_dir: "{{ resources_base_dir }}/datawarehouse"
-    work_dir_name: datawarehouse
-
 # scale up process service
 - name: scale up process service
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ process_service_application_name }} -n {{ namespace_services }}"
@@ -191,3 +182,12 @@
 # scale up disaster service
 - name: scale down disaster service
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ disaster_service_application_name }} -n {{ namespace_services }}"
+
+# install datawarehouse service
+- name: install datawarehouse service
+  import_role:
+    name: datawarehouse
+  vars:
+    namespace: "{{ namespace_services }}"
+    resources_dir: "{{ resources_base_dir }}/datawarehouse"
+    work_dir_name: datawarehouse
