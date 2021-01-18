@@ -4,6 +4,7 @@
   import_role:
     name: operatorgroup
   vars:
+    operatorgroup_name: "{{ namespace_amq_streams_operator }}"
     operatorgroup_namespace: "{{ namespace_amq_streams_operator }}"
     operatorgroup_target_namespace: "{{ namespace_amq_streams_operator }}"
 
