@@ -395,25 +395,21 @@
         value: "true"
 
 - name: get configmap for responder simulator
-  shell: '{{ openshift_cli }} get configmap {{ responder_simulator_service_application_configmap }} -n {{ namespace_services }} -o jsonpath="{.data.app-config\.properties}"'
+  shell: '{{ openshift_cli }} get configmap {{ responder_simulator_service_application_configmap }} -n {{ namespace_services }} -o jsonpath="{.data.application\.properties}"'
   register: r_responder_simulator_service_application_properties
 
-- name: write responder simulator application-config.yml to temporary file
+- name: write responder simulator application.properties to temporary file
   copy: 
     content: "{{ r_responder_simulator_service_application_properties.stdout }}" 
-    dest: "{{ work_dir }}/responder-simulator-service-app-config.properties"
+    dest: "{{ work_dir }}/responder-simulator-service-application.properties"
 
-- name: append tracing properties to app-config.properties file
+- name: append tracing properties to application.properties file
   blockinfile:
-    path: "{{ work_dir }}/responder-simulator-service-app-config.properties"
+    path: "{{ work_dir }}/responder-simulator-service-application.properties"
     block: |
-      # tracing
-      tracing.service-name=responder-simulator-service
-      tracing.reporter-log-spans=true
-      tracing.sampler-type=remote
-      tracing.sampler-manager-host-port=localhost:5778
-      tracing.agent-host=localhost 
-      tracing.agent-port=6831
+      quarkus.jaeger.agent-host-port=localhost:6831
+      quarkus.jaeger.sampler-manager-host-port=localhost:5778
+      quarkus.jaeger.service-name=responder-simulator-service
 
 - name: update responder simulator application configmap
   oc_configmap:
@@ -423,7 +419,7 @@
     namespace: "{{ namespace_services }}"
     update: true
     from_file:
-      app-config.properties: "{{ work_dir }}/responder-simulator-service-app-config.properties"
+      application.properties: "{{ work_dir }}/responder-simulator-service-application.properties"
 
 - name: get labels from responder simulator deploymentconfig
   oc_label:
