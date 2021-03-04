@@ -215,6 +215,6 @@
     oc_binary: "{{ openshift_cli }}"
     state: present
     kind: clusterrolebinding
-    name: "grafana-cluster-monitoring-view-{{ project_admin }}"
+    name: "grafana-cluster-monitoring-view-{{ namespace_monitoring }}"
     files:
       - "{{ work_dir }}/{{ grafana_cluster_monitoring_view_crb_template }}"
