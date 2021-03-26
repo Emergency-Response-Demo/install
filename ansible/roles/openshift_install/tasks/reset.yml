@@ -36,10 +36,6 @@
 - name: scale down process viewer
   shell: "{{ openshift_cli }} scale --replicas=0 dc {{ process_viewer_application_name }} -n {{ namespace_services }}"
 
-# scale down disaster service
-- name: scale down disaster service
-  shell: "{{ openshift_cli }} scale --replicas=0 dc {{ disaster_service_application_name }} -n {{ namespace_services }}"
-
 # uninstall datawarehouse service
 - name: uninstall datawarehouse service
   import_role:
@@ -178,10 +174,6 @@
 # scale up process viewer
 - name: scale up process viewer
   shell: "{{ openshift_cli }} scale --replicas=1 dc {{ process_viewer_application_name }} -n {{ namespace_services }}"
-
-# scale up disaster service
-- name: scale down disaster service
-  shell: "{{ openshift_cli }} scale --replicas=1 dc {{ disaster_service_application_name }} -n {{ namespace_services }}"
 
 # install datawarehouse service
 - name: install datawarehouse service
