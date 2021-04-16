@@ -19,6 +19,7 @@ kafka_consumer_concurrency: 5
 kafka_incident_reported_event_topic: topic-incident-event
 kafka_create_mission_command_topic: topic-mission-command
 kafka_mission_event_topic: topic-mission-event
+kafka_set_responder_unavailable_command_topic: topic-responder-command
 kafka_update_responder_command_topic: topic-responder-command
 kafka_responder_updated_event_topic: topic-responder-event
 kafka_update_incident_command_topic: topic-incident-command
