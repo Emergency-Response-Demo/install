@@ -20,4 +20,4 @@ spec:
     transforms: router
     transforms.router.type: io.debezium.transforms.outbox.EventRouter
     transforms.router.table.fields.additional.placement: 'type:header:ce_type,ce_specversion:header:ce_specversion,ce_source:header:ce_source,ce_time:header:ce_time,ce_datacontenttype:header:ce_contenttype,ce_datacontenttype:header:content-type,id:header:ce_id,ce_incidentid:header:ce_incidentid'
-    transforms.router.route.topic.replacement: topic-${routedByValue}
+    transforms.router.route.topic.replacement: '${routedByValue}'
