@@ -152,15 +152,6 @@
     namespace: "{{ namespace_kafka_cluster }}"
     work_dir_name: kafka-cluster
 
-- name: uninstall amq streams operator
-  import_role:
-    name: amq_streams_operator
-    tasks_from: uninstall
-  vars:
-    namespace: "{{ namespace_amq_streams_operator }}"
-    resources_dir: "{{ resources_base_dir }}/amq-streams"
-    work_dir_name: amq-streams-operator
-
 - name: uninstall monitoring stack
   import_role:
     name: monitoring

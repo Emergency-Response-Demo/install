@@ -1,6 +1,6 @@
 [all:vars]
 # MapBox API token, see https://docs.mapbox.com/help/how-mapbox-works/access-tokens/
-map_token=replaceme
+map_token=pk.eyJ1IjoiYXZhbGVycyIsImEiOiJja21ncG5xMGQwOXptMnZwd2xuYWtjajMxIn0.mTyHMLfNysy3fq0EkSr3QA
 
 # If set to True, then every user that creates an account in Emergency Response demo will automatically be a "realm-admin"
 set_realm_admin_as_default=false

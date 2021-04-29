@@ -17,13 +17,6 @@
     work_dir_name: "{{ project_admin }}-monitoring"
   when: install_monitoring is defined and install_monitoring|bool == true
 
-- name: install amq streams operator
-  import_role:
-    name: amq_streams_operator
-  vars:
-    namespace: "{{ namespace_amq_streams_operator }}"
-    resources_dir: "{{ resources_base_dir }}/amq-streams"
-    work_dir_name: amq-streams-operator
 
 - name: install kafka cluster
   import_role:
