@@ -1,6 +1,22 @@
 ---
 
-- name: remove kafka {{ kafka_cluster }}
+- name: delete kafka metrics configmap 
+  oc_obj:
+    state: absent
+    kind: configmap
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ kafka_configmap_metrics }}"
+    namespace: "{{ namespace }}"
+
+- name: delete zookeeper metrics configmap 
+  oc_obj:
+    state: absent
+    kind: configmap
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ zookeeper_configmap_metrics }}"
+    namespace: "{{ namespace }}"
+
+- name: "delete kafka {{ kafka_cluster }}"
   oc_obj:
     state: absent
     oc_binary: "{{ openshift_cli }}"

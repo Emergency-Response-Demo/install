@@ -1,12 +1,16 @@
 ---
 
-kafka_template: kafka.yaml
+kafka_template: kafka.yml
 
 zookeeper_replicas: 3
 # persistent, ephemeral
 zookeeper_storage_type: persistent
 zookeeper_volume_capacity: 1Gi
 zookeeper_delete_claim: "true"
+
+zookeeper_configmap_metrics_template: zookeeper-metrics-configmap.yml
+zookeeper_configmap_metrics: zookeeper-metrics
+zookeeper_configmap_metrics_key: metrics-config.yml
 
 zookeeper_requests_cpu: 100m
 zookeeper_requests_memory: 100M
@@ -18,16 +22,20 @@ zookeeper_readiness_probe_timeout_seconds: 5
 zookeeper_liveness_probe_initial_delay_seconds: 30
 zookeeper_liveness_probe_timeout_seconds: 5
 
-kafka_version: 2.6.0
-kafka_log_message_format_version: "2.6"
+kafka_version: 2.7.0
+kafka_log_message_format_version: "2.7"
 kafka_replicas: 3
 # persistent, ephemeral
 kafka_storage_type: persistent
-kafka_volume_capacity: 5Gi
+kafka_volume_capacity: 20Gi
 kafka_offsets_topic_replication_factor: 3
 kafka_transaction_state_log_replication_factor: 3
 transaction_state_log_min_isr: 2
 kafka_delete_claim: "true"
+
+kafka_configmap_metrics_template: kafka-metrics-configmap.yml
+kafka_configmap_metrics: kafka-metrics
+kafka_configmap_metrics_key: metrics-config.yml
 
 kafka_requests_cpu: 300m
 kafka_requests_memory: 500M
