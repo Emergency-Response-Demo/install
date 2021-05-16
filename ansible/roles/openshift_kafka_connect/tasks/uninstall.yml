@@ -1,5 +1,13 @@
 ---
 
+- name: delete kafka connect metrics configmap 
+  oc_obj:
+    state: absent
+    kind: configmap
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ kafka_connect_configmap_metrics }}"
+    namespace: "{{ namespace }}"
+
 - name: delete kafka connect object
   oc_obj:
     state: absent

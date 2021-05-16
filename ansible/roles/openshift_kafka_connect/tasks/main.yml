@@ -1,4 +1,19 @@
 ---
+- name: copy kafka connect metrics configmap template to work directory
+  template:
+    src: "{{ resources_dir }}/{{ kafka_connect_configmap_metrics_template }}"
+    dest: "{{ work_dir }}/{{ kafka_connect_configmap_metrics_template }}"
+
+- name: create kafka connect metrics configmap 
+  oc_obj:
+    state: present
+    kind: configmap
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ kafka_connect_configmap_metrics }}"
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/{{ kafka_connect_configmap_metrics_template }}"
+
 - name: copy kafka connect template to work directory
   template:
     src: "{{ resources_dir }}/{{ kafka_connect_template }}"
