@@ -75,7 +75,7 @@
     namespace: "{{ namespace_tools }}"
     resources_dir: "{{ resources_base_dir }}/pgadmin4"
     work_dir_name: pgadmin4
-  when: install_tools is defined and install_tools|bool == true  
+  when: install_tools is defined and install_tools|bool == true
 
 - name: install knative
   import_role:
@@ -84,8 +84,7 @@
     namespace: "{{ namespace_knativeserving }}"
     resources_dir: "{{ resources_base_dir }}/knative"
     work_dir_name: knative
-  when: install_knative is defined and install_knative|bool == true  
-
+  when: install_knative is defined and install_knative|bool == true
 
 - name: install postgresql
   import_role:
@@ -97,7 +96,7 @@
 
 - name: install Kafka Connect
   import_role:
-    name: openshift_kafka_connect
+    name: kafka_connect
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
     resources_dir: "{{ resources_base_dir }}/kafka-connect"
@@ -258,7 +257,7 @@
     namespace: "{{ namespace_services }}"
     resources_dir: "{{ resources_base_dir }}/find-service"
     work_dir_name: find-service
-  when: install_knative is defined and install_knative|bool == true and provision_find_service|bool 
+  when: install_knative is defined and install_knative|bool == true and provision_find_service|bool
 
 # Dependent on knative
 - name: install kafdrop
