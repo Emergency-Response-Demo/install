@@ -39,7 +39,7 @@
 # uninstall kafka
 - name: uninstall Kafka Connect
   import_role:
-    name: openshift_kafka_connect
+    name: kafka_connect
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
@@ -141,7 +141,7 @@
 # install Kafka Connect
 - name: install Kafka Connect
   import_role:
-    name: openshift_kafka_connect
+    name: kafka_connect
   vars:
     namespace: "{{ namespace_kafka_cluster }}"
     resources_dir: "{{ resources_base_dir }}/kafka-connect"

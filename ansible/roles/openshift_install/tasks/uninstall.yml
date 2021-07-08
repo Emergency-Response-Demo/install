@@ -200,7 +200,7 @@
 
 - name: uninstall Kafka Connect
   import_role:
-    name: openshift_kafka_connect
+    name: kafka_connect
     tasks_from: uninstall
   vars:
     namespace: "{{ namespace_kafka_cluster }}"

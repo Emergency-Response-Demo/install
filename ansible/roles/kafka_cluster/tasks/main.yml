@@ -1,4 +1,33 @@
 ---
+- name: copy kafka metrics configmap template to work directory
+  template:
+    src: "{{ resources_dir }}/{{ kafka_configmap_metrics_template }}"
+    dest: "{{ work_dir }}/{{ kafka_configmap_metrics_template }}"
+
+- name: create kafka metrics configmap 
+  oc_obj:
+    state: present
+    kind: configmap
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ kafka_configmap_metrics }}"
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/{{ kafka_configmap_metrics_template }}"
+
+- name: copy zookeeper metrics configmap template to work directory
+  template:
+    src: "{{ resources_dir }}/{{ zookeeper_configmap_metrics_template }}"
+    dest: "{{ work_dir }}/{{ zookeeper_configmap_metrics_template }}"
+
+- name: create zookeeper metrics configmap 
+  oc_obj:
+    state: present
+    kind: configmap
+    oc_binary: "{{ openshift_cli }}"
+    name: "{{ zookeeper_configmap_metrics }}"
+    namespace: "{{ namespace }}"
+    files:
+      - "{{ work_dir }}/{{ zookeeper_configmap_metrics_template }}"
 
 - name: copy kafka template to work directory
   template:

@@ -57,7 +57,7 @@ datawarehouse_service_image_tag=2.9
 process_service_postgresql_image=quay.io/emergencyresponsedemo/postgres-10-decoderbufs-fedora
 process_service_postgresql_image_stream_tag=2.9
 
-kafka_connect_image=quay.io/emergencyresponsedemo/strimzi-debezium-postgresql:1.6.0-1.3.1.Final
+kafka_connect_image=quay.io/emergencyresponsedemo/strimzi-debezium-postgresql:1.7.0-1.5.0.Final
 
 find_service_image=quay.io/emergencyresponsedemo/find-service
 find_service_image_tag=2.9
